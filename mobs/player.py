@@ -18,26 +18,20 @@ class Player(MOB):
         action=["crouch", "attack"]
         for a in action:
             self.actions.append(a)
-        
-        self.all_images={}
-        self.weapon="crossbow"
-        all_weapons=["gun", "crossbow", "shotgun"]
-        for weapon in all_weapons:
-            self.directory_assets=f"assets\\Bounty Hunter\\Individual Sprite\\Bounty_Hunter_{weapon}"
-            self.all_images[weapon]={}
-            self._get_images("idle", 8, 5, "Idle", "Idle_", weapon=weapon, coefficient=2)
-            self.origin_compteur_image_run=8
-            self._get_images('run', 8, self.origin_compteur_image_run, "Run","Run_", weapon=weapon, coefficient=2)
-            self.origin_compteur_image_fall = 6
-            self._get_images("fall", 3, self.origin_compteur_image_fall, "Fall", "Fall_", weapon=weapon, coefficient=2)
-            self._get_images("jump", 4, 4, "Jump", "Jump_", weapon=weapon, coefficient=2)  
-            self._get_images("crouch", 3, 1, "Croush", "Croush_", weapon=weapon, coefficient=2) 
-            self._get_images("attack1", 7, 3, "Attack1", "Attack_", weapon=weapon, coefficient=2) 
-            self._get_images("attack2", 7, 3, "Attack2", "Attack_", weapon=weapon, coefficient=2) 
-            self._get_images("hurt", 3, 4, "Hurt", "Hurt_", weapon=weapon, coefficient=2) 
-            self._get_images("dying", 7, 4, "Death", "Death_", weapon=weapon, coefficient=2) 
-        self.images=self.all_images[self.weapon]
-        self.directory_assets=f"assets\\Bounty Hunter\\Individual Sprite\\Bounty_Hunter_{self.weapon}"
+        self.images={}
+        self.directory_assets=f"assets\\TreasureHunters\\CaptainClownNose\\Sprites\\Captain\\Captain_Sword"
+        self.images
+        self._get_images("idle", 5, 5, "09-Idle_Sword", "Idle Sword 0")
+        self.origin_compteur_image_run=8
+        self._get_images('run', 6, self.origin_compteur_image_run, "Run_Sword","Run Sword 0")
+        self.origin_compteur_image_fall = 6
+        self._get_images("fall", 1, self.origin_compteur_image_fall, "12-Fall_Sword", "Fall Sword 0")
+        self._get_images("jump", 3, 4, "11-Jump_Sword", "Jump Sword 0")  
+        self._get_images("crouch", 2, 1, "13-Ground_Sword", "Ground Sword 0") 
+        self._get_images("attack1", 3, 3, "15-Attack 1", "Attack 1 0") 
+        self._get_images("attack2", 3, 3, "16-Attack 2", "Attack 2 0") 
+        self._get_images("hurt", 4, 4, "14-Hit Sword", "Hit Sword 0") 
+        self._get_images("dying", 4, 4, "07-Dead Hit", "Dead Hit 0") 
         
         self.image = self.images["idle"]["right"]["1"]
         
@@ -53,8 +47,8 @@ class Player(MOB):
         self.head_grab_wall = pygame.Rect(0,0,self.rect.width * 0.6, self.rect.height*0.1)
         self.rect_attack = pygame.Rect(0,0,self.rect.width * 0.3, self.rect.height*0.8)
         self.rect_attack_update_pos="left_right"
-        self.complement_collide_wall_right = self.body.w
-        self.complement_collide_wall_left = self.body.w
+        self.complement_collide_wall_right = self.body.w*1.5
+        self.complement_collide_wall_left = self.body.w*1.5
         self.is_mob=False
         
         # enregistrement de l'ancienne position pour que si on entre en collision avec un element du terrain la position soit permutte avec l'anciene
@@ -66,7 +60,6 @@ class Player(MOB):
         self.attack_damage["attack1"]=([4,5], 10)
         self.attack_damage["attack2"]=([2,3], 10)
         self.attack_damage["dash_attack"]=([6,7],7)
-        self.attack_damage['air_attack']=([[2,3,4], 7])
         
         self.has_air_attack = False
         self.is_attacking = False

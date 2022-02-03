@@ -12,7 +12,6 @@ class MOB(pygame.sprite.Sprite):
         self.actions = ["run", "fall", "jump", "idle", "dying", "hurt"]
         
         self.weapon=""
-        self.coord_map=[0,0]
         
         self.checkpoint=checkpoint
         
@@ -420,7 +419,7 @@ class MOB(pygame.sprite.Sprite):
                 self.rect_attack.topleft=self.rect.topleft
         
         # la vitesse de course du joueur ne ralentit pas tant qu'il coure ou chute
-        if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump" or self.action == "jump_edge" or self.is_attacking:
+        if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump" or self.is_attacking:
             self.time_cooldown_ralentissement = time.time()
         
         if self.action_image == "idle" and time.time() - self.time_cooldown_ralentissement > self.cooldown_ralentissement:
