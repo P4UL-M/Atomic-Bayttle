@@ -33,53 +33,26 @@ class MOB(pygame.sprite.Sprite):
         self.current_image = 1
         
         # course
-        self.speed_coeff=1
-        self.origin_speed_run = 2.5
-        self.max_speed_run = 4.5
-        self.speed = self.origin_speed_run
-        self.is_mouving_x = False
+        self.speed_coeff=1 ; self.origin_speed_run = 2.5 ; self.max_speed_run = 4.5 ; self.speed = self.origin_speed_run ; self.is_mouving_x = False
         
         # ralentissement
-        self.cooldown_ralentissement = 0.2
-        self.ralentit_bool = False
-        self.doit_ralentir = True
-        self.compteur_ralentissement = 0
+        self.cooldown_ralentissement = 0.2 ; self.ralentit_bool = False ; self.doit_ralentir = True ; self.compteur_ralentissement = 0
         
         # chute
-        self.original_speed_gravity = 5
-        self.is_falling = False
+        self.original_speed_gravity = 5 ; self.is_falling = False ; self.max_speed_gravity = 9 ; self.speed_gravity = self.original_speed_gravity
         self.t1_passage_a_travers_plateforme = 0
         self.cooldown_passage_a_travers_plateforme = 0.2
-        self.speed_gravity = self.original_speed_gravity
-        self.max_speed_gravity = 9
         
         # jump
-        self.a_sauter = True
-        self.is_jumping = False
+        self.a_sauter = True ; self.is_jumping = False ; self.speed_jump = 0 ; self.increment_jump = 0.25 
         self.compteur_jump_min = -4.5
         self.compteur_jump = self.compteur_jump_min
         self.compteur_jump_max = 0
-        self.speed_jump = 0
-        self.cooldown_able_to_jump = 0.1
-        self.timer_cooldown_able_to_jump = 0
-        self.cooldown_next_jump = 0.2
-        self.timer_cooldown_next_jump = 0
-        self.coord_debut_jump = [-999,-999]
-        self.increment_jump = 0.25      
         
-        # autre booleen
-        self.is_jumping_edge = False 
-        self.is_sliding = False
-        self.is_grabing_edge = False
-        self.a_dash = False
-        self.is_dashing = False    
-        self.is_sliding_ground = False
-        self.is_attacking=False
-        self.is_dashing_attacking=False
-        self.is_parying=False
-        self.has_air_attack = False
-        self.can_attack_while_jump=False
-        self.rect_attack_update_pos=""
+        self.cooldown_able_to_jump = 0.1 ; self.timer_cooldown_able_to_jump = 0
+        self.timer_cooldown_next_jump = 0 ; self.cooldown_next_jump = 0.2
+        self.coord_debut_jump = [-999,-999]
+             
         
         self.max_health=100
         self.health=self.max_health
@@ -92,16 +65,6 @@ class MOB(pygame.sprite.Sprite):
         self.motion=[1,1]
         
         self.particule=Particule(directory, self, self.zoom)
-
-    
-    def _random_choice(self, liste):
-        choice=random.randint(0, sum([e[1] for e in liste]))
-        liste=sorted(liste, key=lambda l:l[1])
-        c=0
-        for i in liste:
-            c+=i[1]
-            if c >= choice:
-                return i[0]
     
     def _get_images(self, action, nbr_image, compteur_image_max, directory_name, image_name, coefficient=1, reverse=False, weapon=""):
         try:
@@ -167,47 +130,29 @@ class MOB(pygame.sprite.Sprite):
         if self.action_image != "idle" and self.action_image != "attack1" and self.action_image != "attack2":
             self.images[self.action_image]["compteur_image_max"] = 4                    
         
-    def move_right(self, pieds_sur_sol = False): 
+    def move_left_right(self, dir, pieds_sur_sol=False):
         self.is_mouving_x = True
-        if not self.is_attacking:
-            self.position[0] += self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])
-            self.update_speed()
-        else:
-            self.position[0] += self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])*0.7
-            self.update_speed()
-            
+
+        x = self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])
+         
+        if dir=="left": self.position[0] -= x
+        else: self.position[0] += x
+        self.update_speed()
         if pieds_sur_sol:
-            if self.action_image != "run" and self.action_image != "jump" and self.action_image != "crouch" and not self.is_attacking and not self.is_parying:
-                self.change_direction("run","right") 
-        if self.direction != "right":
+            if self.action_image != "run" and self.action_image != "jump" and self.action_image != "crouch":
+                self.change_direction("run",dir) 
+        if self.direction != dir:
             if self.action_image == "crouch":
                 # we dont want the crouch animation du re start from the biggining
-                self.change_direction(self.action_image,"right",compteur_image=self.compteur_image, current_image=self.current_image)
-            elif not self.is_attacking and not self.is_parying:
-                self.change_direction(self.action_image,"right")       
+                self.change_direction(self.action_image,"right",compteur_image=self.compteur_image, current_image=self.current_image)      
             else:
-                self.direction="right" 
+                self.direction=dir    
+        
+    def move_right(self, pieds_sur_sol = False): 
+        self.move_left_right("right", pieds_sur_sol=pieds_sur_sol)
 
     def move_left(self, pieds_sur_sol = False): 
-        self.is_mouving_x = True
-        if not self.is_attacking:
-            self.position[0] -= self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])
-            self.update_speed()
-        else:
-            self.position[0] -= self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])*0.7
-            self.update_speed()
-            
-        if pieds_sur_sol:
-            if self.action_image != "run" and self.action_image != "jump" and self.action_image != "crouch" and not self.is_attacking and not self.is_parying:
-                self.change_direction("run","left") 
-        if self.direction != "left":
-            if self.action_image == "crouch":
-                # we dont want the crouch animation du re start from the biggining
-                self.change_direction(self.action_image,"left",compteur_image=self.compteur_image, current_image=self.current_image)
-            elif not self.is_attacking and not self.is_parying:
-                self.change_direction(self.action_image,"left")  
-            else:
-                self.direction="left"
+        self.move_left_right("left", pieds_sur_sol=pieds_sur_sol)
   
     def debut_saut(self):
         #penser à bien utiliser .copy() parce que sinon la valeur est la meme que self.position tous le temps
@@ -237,16 +182,10 @@ class MOB(pygame.sprite.Sprite):
     def update_speed_jump(self):
         self.speed_jump = (self.compteur_jump**2) * 0.7 *self.zoom * self.speed_dt
     
-    def debut_chute(self, attack=False):
-        if self.a_dash == False:
-            self.timer_cooldown_able_to_jump = time.time()
+    def debut_chute(self):
+        self.timer_cooldown_able_to_jump = time.time()
         self.is_falling = True
-        if not attack and not self.is_parying and not self.is_dashing_attacking:
-            if "up_to_fall" in self.actions:  self.change_direction('up_to_fall', self.direction)
-            else: self.change_direction('fall', self.direction)
-        else:
-            if "up_to_fall" in self.actions: self.action="up_to_fall"
-            else: self.action="fall"
+        self.change_direction('fall', self.direction)
         
     def chute(self):
         self.update_speed_gravity()
@@ -255,10 +194,7 @@ class MOB(pygame.sprite.Sprite):
     def fin_chute(self, jump_or_dash = False):
         self.is_falling = False
         self.speed_gravity = self.original_speed_gravity
-        if self.is_dashing_attacking:
-            self.action="idle"
-        elif not jump_or_dash and not self.is_parying:
-            self.debut_crouch()
+        self.debut_crouch()
     
     def update_speed_gravity(self):
         if self.speed_gravity < self.max_speed_gravity:
@@ -266,13 +202,11 @@ class MOB(pygame.sprite.Sprite):
             self.speed_gravity += self.speed_gravity*0.005 + self.original_speed_gravity*0.005
             # reduction de la vitesse de defilement des images quand la vitesse augmente
             if self.speed_gravity > 5:
-                if not self.is_attacking and not self.is_dashing_attacking:
-                    self.images[self.action_image]["compteur_image_max"] = 4
+                self.images[self.action_image]["compteur_image_max"] = 4
             elif self.speed_gravity > 6.5:
-                if not self.is_attacking and not self.is_dashing_attacking:
-                    self.images[self.action_image]["compteur_image_max"] = 3
+                self.images[self.action_image]["compteur_image_max"] = 3
         # vitesse maximal du defilement des images
-        elif self.images[self.action_image]["compteur_image_max"] != 2 and not self.is_attacking and not self.is_dashing_attacking:
+        elif self.images[self.action_image]["compteur_image_max"] != 2:
             self.images[self.action_image]["compteur_image_max"] = 2  
 
     def debut_ralentissement(self):
@@ -323,10 +257,6 @@ class MOB(pygame.sprite.Sprite):
     def update_animation(self):
         """change les animations du joueurs, appelé toutes les frames"""
         # changement de l'image tout les X ticks
-        if not self.is_attacking:
-            dir = self.direction
-        else:
-            dir=self.direction_attack
         if self.compteur_image < self.images[self.action_image]["compteur_image_max"]:
             if self.action_image == "run":
                 self.compteur_image += 1*self.speed_dt * abs(self.motion[0])
@@ -346,27 +276,27 @@ class MOB(pygame.sprite.Sprite):
                 # it doesnt matter if the mob doesnt have these actions
                 if self.action_image == "crouch":
                     if self.is_mouving_x:
-                        self.change_direction("run", dir)
+                        self.change_direction("run", self.direction)
                     else:
-                        self.change_direction("idle", dir)
-                elif self.action_image == "attack1" or self.action_image == "attack2" or self.action_image=="hurt" or self.action_image=="pary" or self.action_image=="air_attack":
+                        self.change_direction("idle", self.direction)
+                elif self.action_image=="hurt"or self.action_image=="air_attack":
                     self.is_attacking=False
                     self.is_parying=False
                     if not self.is_falling:
-                        self.change_direction("idle", dir)
+                        self.change_direction("idle", self.direction)
                     else:
-                        if "up_to_fall" in self.actions :self.change_direction("up_to_fall", dir)
-                        else: self.change_direction("fall", dir)
+                        if "up_to_fall" in self.actions :self.change_direction("up_to_fall", self.direction)
+                        else: self.change_direction("fall", self.direction)
                 elif self.action_image=="dying":
                     self.position=[self.checkpoint[0], self.checkpoint[1]-self.image.get_height()]
                     self.fin_chute()
-                    self.change_direction("idle", dir)
+                    self.change_direction("idle", self.direction)
                 else:
                     temp=False
                     self.current_image = 1
             
             if not temp:
-                self.image = self.images[self.action_image][dir][str(self.current_image)]
+                self.image = self.images[self.action_image][self.direction][str(self.current_image)]
                 transColor = self.image.get_at((0,0))
                 self.image.set_colorkey(transColor)
         
@@ -408,18 +338,9 @@ class MOB(pygame.sprite.Sprite):
         self.body.midbottom = self.rect.midbottom
         self.feet.midbottom = (self.rect.midbottom[0], self.rect.midbottom[1]-self.increment_foot)
         self.head.midtop = self.body.midtop
-        self.body_grab_wall.midbottom = self.rect.midbottom
-        self.head_grab_wall.midtop = self.body.midtop
-        if self.is_attacking and self.rect_attack_update_pos=="mid":
-            self.rect_attack.center = self.rect.center
-        elif self.is_attacking and self.rect_attack_update_pos=="left_right":
-            if self.direction_attack == "right":
-                self.rect_attack.topright=self.rect.topright
-            else:
-                self.rect_attack.topleft=self.rect.topleft
         
         # la vitesse de course du joueur ne ralentit pas tant qu'il coure ou chute
-        if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump" or self.is_attacking:
+        if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump":
             self.time_cooldown_ralentissement = time.time()
         
         if self.action_image == "idle" and time.time() - self.time_cooldown_ralentissement > self.cooldown_ralentissement:

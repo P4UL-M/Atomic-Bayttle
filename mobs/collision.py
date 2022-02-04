@@ -13,8 +13,8 @@ class Collision:
         
         if not platform_only:
             for ground in self.dico["ground"]:
-                if mob.feet.collidelist([ground]) > -1:
-                    if not mob.is_jumping_edge and not mob.is_jumping:
+                if mob.feet.collidelist(ground) > -1:
+                    if not mob.is_jumping:
                         mob.position[1] = ground[0].y - mob.image.get_height() + 1 + mob.increment_foot*2
                         # comme le joueur est sur le sol, il peut de nouveau dash / sauter
                         mob.a_sauter = False
@@ -26,7 +26,7 @@ class Collision:
                 if not passage_a_travers:
                     if mob.feet.collidelist(plateforme) > -1:
                         if (mob.position[1] + mob.image.get_height() - plateforme[0].y < 20) or "crab" in mob.id:
-                            if not mob.is_jumping_edge and not mob.is_jumping:
+                            if not mob.is_jumping:
                                 mob.position[1] = plateforme[0].y - mob.image.get_height() + 1 + mob.increment_foot*2
                                 # comme le joueur est sur une plateforme, il peut de nouveau dash / sauter
                                 mob.a_sauter = False
@@ -49,11 +49,11 @@ class Collision:
             if rect.collidelist(wall) > -1:
                 # si le joueur va a droite en etant a gauche du mur
                 # limage est plus grande que la partie visible du joueur, d'où mob.image.get_width()/2
-                if direction == 'right' and wall[0].x > mob.position[0] + mob.complement_collide_wall_right: 
+                if direction == 'right' and wall[0].x > mob.position[0] + mob.body.w: 
                     mob.move_back()   
                     return True
                 # si le joueur va a gauche en etant a droite du mur
-                if direction == 'left' and wall[0].x < mob.position[0] + mob.complement_collide_wall_left:  
+                if direction == 'left' and wall[0].x < mob.position[0] + mob.body.w:  
                     mob.move_back()  
                     return True
         return False

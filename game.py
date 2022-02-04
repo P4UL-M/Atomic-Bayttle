@@ -16,7 +16,7 @@ class Game:
         self.directory = os.path.dirname(os.path.realpath(__file__))
         
         info_screen = pygame.display.Info()
-        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.7),round(info_screen.current_h*0.7)))
+        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.8),round(info_screen.current_h*0.8)))
         self.screen.fill((200,100,100))       
         self.bg = pygame.Surface((self.screen.get_width(), self.screen.get_height()), flags=SRCALPHA)
         self.dt = 1/30
@@ -64,9 +64,7 @@ class Game:
             for sprite in group.sprites():
                 if self.scroll_rect.x - (self.screen.get_width()/2) - sprite.image.get_width() <= sprite.position[0] <= self.scroll_rect.x + (self.screen.get_width()/2)  + sprite.image.get_width() and \
                     self.scroll_rect.y - (self.screen.get_height()/2) - sprite.image.get_height() <= sprite.position[1] <= self.scroll_rect.y + (self.screen.get_height()/2)  + sprite.image.get_height():
-                        if "arbre" in sprite.id :new_x = self.screen.get_width()/2 + sprite.position[0] - self.scroll_rect.x - sprite.image.get_width()/2
-                        else:new_x=self.screen.get_width()/2 + sprite.position[0] - self.scroll_rect.x
-                        
+                        new_x=self.screen.get_width()/2 + sprite.position[0] - self.scroll_rect.x
                         new_y = self.screen.get_height()/2 + sprite.position[1] - self.scroll_rect.y
                         bg.blit(sprite.image, (new_x,new_y))
     
@@ -132,10 +130,7 @@ class Game:
         # si le joueur n'est pas sur un sol et ne chute pas on commence la chute
         if not self.collision.joueur_sur_sol(mob):
             if not mob.is_falling and not mob.is_jumping:
-                if mob.is_attacking:
-                    mob.debut_chute(attack=True)
-                else:
-                    mob.debut_chute()
+                mob.debut_chute()
         else:
             # sinon on stop la chute si il y en a une
             if mob.is_falling:
