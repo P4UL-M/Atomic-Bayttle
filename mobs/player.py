@@ -39,9 +39,12 @@ class Player(MOB):
         self.rect = self.image.get_rect()
 
         self.increment_foot=2
-        self.feet = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.1)
-        self.head = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.1)
-        self.body = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.8)
+        
+        self.body = pygame.Rect(0,0,self.rect.width * 0.4, self.rect.height*0.8)
+        self.feet = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.1)
+        self.head = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.1)
+        self.body_left = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.6)
+        self.body_right = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.6)
 
         self.is_mob=False
         

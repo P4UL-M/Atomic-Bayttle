@@ -2,11 +2,12 @@ import os
 from game import Game
 import pygame
 
-dierectory = os.path.dirname(os.path.realpath(__file__))
-
 pygame.init()
 
 if __name__ == "__main__":
 
     game = Game()
     game.run()
+    
+    # https://stackoverflow.com/questions/62058750/how-to-check-collisions-between-a-mask-and-rect-in-pygame
+    # https://www.pygame.org/docs/ref/mask.html

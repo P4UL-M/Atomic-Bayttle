@@ -10,6 +10,11 @@ class RenderMap:
         self.directory=directory
         self.screen_width = screen_width
         self.screen_height = screen_height
+        
+        self.image_map=pygame.image.load(f"{directory}\\assets\\map.png")
+        self.image_map=pygame.transform.scale(self.image_map, (self.image_map.get_width()*2, self.image_map.get_height()*2)).convert_alpha()
+        transColor = self.image_map.get_at((0,0))
+        self.image_map.set_colorkey(transColor)
 
         # informations about 1 map, concaining valides informations for every maps such as the width / tiewidht...
         self.tm = pytmx.util_pygame.load_pygame(f'{directory}\\assets\\tiled_maps\\1.tmx', pixelalpha=True)
@@ -27,7 +32,7 @@ class RenderMap:
         
         self.load_map()
         
-        self.dico={"wall":[], "ground":[], "ceilling":[], "platform":[], "spawn_player":()}
+        self.dico={"wall":[], "ground":[], "ceilling":[], "platform":[], "spawn_player":(), "collision":[]}
         self._load_objects_map(self.dico, self.tm)
     
     def get_height(self):
@@ -45,12 +50,14 @@ class RenderMap:
             x=obj.x*self.zoom
             y=obj.y*self.zoom
             if obj.type == "collision" and obj.name in ("wall", "ground", "ceilling", "platform"):
-                dico[obj.name].append([pygame.Rect(x  , y , obj.width * self.zoom, obj.height * self.zoom )])             
+                dico[obj.name].append([pygame.Rect(x  , y , obj.width * self.zoom, obj.height * self.zoom )])  
+                dico["collision"].append([pygame.Rect(x  , y , obj.width * self.zoom, obj.height * self.zoom )])           
             elif obj.type == "spawn":
                 if obj.name in ["spawn_player", "object_map", "object_map"]:
                     dico[obj.name]=(x,y)
                 elif obj.name in ["spawn_crab"]:
                     dico[obj.name].append((x,y))
+            
                
     def load_map(self):
         i,z=0,0
@@ -63,25 +70,30 @@ class RenderMap:
                         if ti(gid):
                             self.liste_tile[i+x][z+y]=pygame.transform.scale(ti(gid), (round(ti(gid).get_width()*self.zoom), round(ti(gid).get_height()*self.zoom)))
         
-    def render(self, surface, cam_x, cam_y):
+    def render(self, surface, cam_x, cam_y, scroll_rect):
         """called all tick => blit only the visible tiles (compare to the position of the camera) to 'surface'"""
 
         # computation of the minimal and maximals coordinates that the tiles need to have to be visible
-        y_min = ceil((cam_y-self.screen_height/2)/(self.tm.tileheight*self.zoom))-2
-        y_max = ceil((cam_y+self.screen_height/2)/(self.tm.tileheight*self.zoom))+1
-        x_min = ceil((cam_x-self.screen_width/2)/(self.tm.tilewidth*self.zoom))-2
-        x_max = ceil((cam_x+self.screen_width/2)/(self.tm.tilewidth*self.zoom))+1
-        if y_min<0: y_min=0
-        elif y_min>self.tm.height: y_min=self.tm.height
-        if x_min<0: x_min=0
-        elif x_min>self.tm.width: x_min=self.tm.width
-        #bliting those tiles in the surface in parameter
-        y = y_min
-        x = x_min
-        for ligne in self.liste_tile[y_min:y_max]:
-            for img in ligne[x_min:x_max]:
-                if img != None:
-                    surface.blit(img, (self.screen_width/2 + x*self.tm.tilewidth*self.zoom - cam_x, self.screen_height/2 + y*self.tm.tileheight*self.zoom - cam_y))
-                x+=1
-            x=x_min
-            y += 1
+        # y_min = ceil((cam_y-self.screen_height/2)/(self.tm.tileheight*self.zoom))-2
+        # y_max = ceil((cam_y+self.screen_height/2)/(self.tm.tileheight*self.zoom))+1
+        # x_min = ceil((cam_x-self.screen_width/2)/(self.tm.tilewidth*self.zoom))-2
+        # x_max = ceil((cam_x+self.screen_width/2)/(self.tm.tilewidth*self.zoom))+1
+        # if y_min<0: y_min=0
+        # elif y_min>self.tm.height: y_min=self.tm.height
+        # if x_min<0: x_min=0
+        # elif x_min>self.tm.width: x_min=self.tm.width
+        # #bliting those tiles in the surface in parameter
+        # y = y_min
+        # x = x_min
+        # for ligne in self.liste_tile[y_min:y_max]:
+        #     for img in ligne[x_min:x_max]:
+        #         if img != None:
+        #             surface.blit(img, (self.screen_width/2 + x*self.tm.tilewidth*self.zoom - cam_x, self.screen_height/2 + y*self.tm.tileheight*self.zoom - cam_y))
+        #         x+=1
+        #     x=x_min
+        #     y += 1
+        
+        new_x = surface.get_width()/2 - scroll_rect.x
+        new_y = surface.get_height()/2 - scroll_rect.y
+        
+        surface.blit(self.image_map, (new_x, new_y))

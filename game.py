@@ -205,7 +205,7 @@ class Game:
 
     def update_ecran(self):     
         self.bg.fill((255,155,155))
-        self.render.render(self.bg, self.scroll_rect.x, self.scroll_rect.y)
+        self.render.render(self.bg, self.scroll_rect.x, self.scroll_rect.y, self.scroll_rect)
         self.blit_group(self.bg, self.all_groups)
         self.screen.blit(self.bg, (0,0))
         self.last_player_position=self.player.position.copy()

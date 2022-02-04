@@ -336,8 +336,10 @@ class MOB(pygame.sprite.Sprite):
         # update des coordonees des rect
         self.rect.topleft = self.position
         self.body.midbottom = self.rect.midbottom
-        self.feet.midbottom = (self.rect.midbottom[0], self.rect.midbottom[1]-self.increment_foot)
+        self.feet.midbottom = (self.body.midbottom[0], self.body.midbottom[1]-self.increment_foot)
         self.head.midtop = self.body.midtop
+        self.body_left.midleft=self.body.midleft
+        self.body_right.midright=self.body.midright
         
         # la vitesse de course du joueur ne ralentit pas tant qu'il coure ou chute
         if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump":
