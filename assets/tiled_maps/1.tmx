@@ -39,7 +39,7 @@
   <object id="2" name="ceilling" type="collision" x="0" y="0" width="42.5" height="48"/>
   <object id="6" name="wall" type="collision" x="0" y="406.333" width="48" height="41.6667"/>
   <object id="8" name="ground" type="collision" x="0" y="400" width="42.3333" height="48"/>
-  <object id="10" name="spawn_player" type="spawn" x="336" y="224">
+  <object id="10" name="spawn_player" type="spawn" x="336" y="144">
    <point/>
   </object>
   <object id="13" name="ground" type="collision" x="660.667" y="400" width="43.3333" height="48"/>

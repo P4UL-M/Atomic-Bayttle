@@ -8,13 +8,15 @@ from entities_sprite.particule import Particule
 from mobs.player import Player
 from mobs.mob_functions import *
 from mobs.collision import Collision
+from map.object_map import Object_map
+from physique import *
 
 class Game:
     def __init__(self):
         self.directory = os.path.dirname(os.path.realpath(__file__))
         
         info_screen = pygame.display.Info()
-        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.1),round(info_screen.current_h*0.1)))
+        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.7),round(info_screen.current_h*0.7)))
         self.screen.fill((200,100,100))       
         self.bg = pygame.Surface((self.screen.get_width(), self.screen.get_height()), flags=SRCALPHA)
         self.dt = 1/30
@@ -23,12 +25,17 @@ class Game:
         self.group = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
-        self.all_groups = [self.group_object,self.group, self.group_particle]
+        self.group_object=pygame.sprite.Group()
+        self.all_groups = [self.group_object, self.group_object, self.group, self.group_particle]
         
         self.render=RenderMap(self.screen.get_width(), self.screen.get_height(), self.directory)
         self.map_height=self.render.get_height()
         self.map_width=self.render.get_width()
         player_position = self.render.dico["spawn_player"]
+        
+        coord = self.render.dico["spawn_player"]
+        self.mortier=Object_map(self.render.zoom, "mortier", coord[0], coord[1], self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
+        self.group_object.add(self.mortier)
         
         self.checkpoint=[player_position[0], player_position[1]+1] # the plus one is because the checkpoints are 1 pixel above the ground
         self.player=Player(player_position[0], player_position[1]+1, self.directory, self.render.zoom, "1", self.checkpoint.copy(), Particule)
@@ -109,7 +116,9 @@ class Game:
                 if pressed[control["touches"][6]]:pass     
                 if pressed[control["touches"][7]]:pass                                                 
                 if pressed[control["touches"][8]]: 
-                    pass
+                    id = pressed_interact(control["perso"], self.group_object)
+                    if id !=None:
+                        self.interact_object_map(id)
                 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -131,6 +140,10 @@ class Game:
             # sinon on stop la chute si il y en a une
             if mob.is_falling:
                 mob.fin_chute()
+    
+    def interact_object_map(self, id):
+        if id =="mortier":
+            print("coucou")
     
     def update_particle(self):
         """update les infos concernant les particles, ajoute ou en supprime """
@@ -209,10 +222,50 @@ class Game:
 
         self.running = True
         while self.running:
+            
             self.player.is_mouving_x = False
             self.handle_input()
             self.update()
             self.update_ecran()
+            
+            x0=self.mortier.position[0] + self.mortier.image.get_width()/2
+            h0=self.mortier.position[1] + self.mortier.image.get_width()/2
+            v0=8.2
+            from math import pi
+            a=pi/4
+
+            for t in range(1, 1000):
+                x=get_x(t/10, v0, a)
+                y=get_y(x, v0, a, h0)
+                x=x*v0+x0
+                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                        pygame.draw.circle(self.screen, (255, 0, 0), (new_x, new_y), 3)
+            
+            a=pi/6            
+            for t in range(1, 1000):
+                x=get_x(t/10, v0, a)
+                y=get_y(x, v0, a, h0)
+                x=x*v0+x0
+                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                        pygame.draw.circle(self.screen, (0, 255, 0), (new_x, new_y), 3)
+            
+            
+            a=(2*pi)/6
+            for t in range(1, 1000):
+                x=get_x(t/10, v0, a)
+                y=get_y(x, v0, a, h0)
+                x=x*v0+x0
+                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                        pygame.draw.circle(self.screen, (0, 0, 255), (new_x, new_y), 3)
             
             pygame.display.update()      
             

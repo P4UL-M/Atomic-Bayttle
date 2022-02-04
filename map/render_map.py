@@ -23,7 +23,7 @@ class RenderMap:
                 for _ in range(self.tm.width):
                     line.append(None)
    
-        self.zoom=2
+        self.zoom=1
         
         self.load_map()
         

@@ -20,8 +20,7 @@ class Player(MOB):
             self.actions.append(a)
         self.images={}
         self.directory_assets=f"assets\\TreasureHunters\\CaptainClownNose\\Sprites\\Captain\\Captain_Sword"
-        self.images
-        self._get_images("idle", 5, 5, "09-Idle_Sword", "Idle Sword 0")
+        self._get_images("idle", 5, 6, "09-Idle_Sword", "Idle Sword 0")
         self.origin_compteur_image_run=8
         self._get_images('run', 6, self.origin_compteur_image_run, "Run_Sword","Run Sword 0")
         self.origin_compteur_image_fall = 6

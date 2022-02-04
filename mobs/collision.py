@@ -13,7 +13,7 @@ class Collision:
         
         if not platform_only:
             for ground in self.dico["ground"]:
-                if mob.feet.collidelist(ground) > -1:
+                if mob.feet.collidelist([ground]) > -1:
                     if not mob.is_jumping_edge and not mob.is_jumping:
                         mob.position[1] = ground[0].y - mob.image.get_height() + 1 + mob.increment_foot*2
                         # comme le joueur est sur le sol, il peut de nouveau dash / sauter
