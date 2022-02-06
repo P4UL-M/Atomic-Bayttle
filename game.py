@@ -6,12 +6,15 @@ import menu_main
 pygame.init()
 
 class Game:
-    size = (screeninfo.screeninfo.get_monitors()[0].width,screeninfo.screeninfo.get_monitors()[0].height)
+    size = (pygame.display.Info().current_w,pygame.display.Info().current_h)
     running = True
+    clock = pygame.time.Clock()
+    serialized = 0
 
     def run():
         pygame.display.set_mode(Game.size,pygame.RESIZABLE)
         while Game.running:
+            Game.serialized = 16.7/Game.clock.tick(60)
             # boucle to intercept only the quit event
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

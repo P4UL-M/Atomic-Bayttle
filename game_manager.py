@@ -16,7 +16,7 @@ class Game:
     def __init__(self):
         self.directory = os.path.dirname(os.path.realpath(__file__))
         
-        info_screen = pygame.display.Info()
+        info_screen = pygame.display.Info() #taille de l'écran
         self.screen = pygame.display.set_mode((round(info_screen.current_w*0.8),round(info_screen.current_h*0.8)))
         self.screen.fill((200,100,100))       
         self.bg = pygame.Surface((self.screen.get_width(), self.screen.get_height()), flags=SRCALPHA)
@@ -265,7 +265,7 @@ class Game:
             
             pygame.display.update()      
             
-            self.dt = clock.tick(60)
+            self.dt = clock.tick(60) #faire calcul en % fonction inverse 60/60 is normal factor 60/40 is new factor if 40fps
             for mob in [tuple[0] for tuple in self.all_mobs]:
                 mob.update_tick(self.dt)
 
