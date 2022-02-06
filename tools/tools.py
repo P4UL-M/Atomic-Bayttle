@@ -38,14 +38,15 @@ class Axis:
         self.value = self.bound(self.value,(0,self.sign(self.value)))
 
     def __mul__(self, other):
-        if self.value==0:
-            return 0
-        return self.bound(self.value,(self.deadzone[0]*self.sign(self.value),self.deadzone[1]*self.sign(self.value)))*other
+        return self.get()*other
 
     def get(self):
         if self.value==0:
             return 0    
         return self.bound(self.value,(self.deadzone[0]*self.sign(self.value),self.deadzone[1]*self.sign(self.value)))
+
+    def __call__(self):
+        return self.get()
 
 class sprite_sheet(pygame.Surface):
 
