@@ -1,6 +1,5 @@
 import pygame
-import screeninfo
-import game_main
+import game_manager
 import menu_main
 
 pygame.init()
