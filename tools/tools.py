@@ -80,8 +80,9 @@ class annimation_Manager(object):
         self.frame = 0
         self.incrementor = 1
         self.spritesheets:dict[list[sprite_sheet]] = {}
-        self.surface:sprite_sheet = ...
-        self.__loaded = None
+        self.links:dict[list] = {}
+        self.surface:pygame.Surface = ...
+        self.__loaded:sprite_sheet = None
         self.direct_return = direct_return
 
     def add_annimation(self,name,spritesheet:sprite_sheet,_frame:int):
@@ -117,4 +118,3 @@ class Vector2:
     def __call__(self) -> tuple:
         """return a tuple of the vector"""
         return (self.x,self.y)
-        
