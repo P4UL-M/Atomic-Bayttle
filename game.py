@@ -14,7 +14,7 @@ class Game:
     def run():
         pygame.display.set_mode(Game.size,pygame.RESIZABLE)
         while Game.running:
-            Game.serialized = 16.7/Game.clock.tick()
+            Game.serialized = 16.7/(Game.clock.tick() or 16.7)
             # boucle to intercept only the quit event
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
