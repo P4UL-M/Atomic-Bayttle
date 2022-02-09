@@ -1,4 +1,5 @@
 import pygame
+import json
 
 class Axis:
     value = 0
@@ -118,3 +119,22 @@ class Vector2:
     def __call__(self) -> tuple:
         """return a tuple of the vector"""
         return (self.x,self.y)
+
+class Keyboard:
+    horizontal = (pygame.K_d,pygame.K_q)
+    vertical = (pygame.K_z,pygame.K_s)
+    jump = pygame.K_SPACE
+    interract = pygame.K_e
+    pause = pygame.K_ESCAPE
+    end_turn = pygame.K_RETURN
+
+    @staticmethod
+    def load(path):
+        touche = json.load(open(path / "data" / "settings.json"))
+        for key,val in touche.items():
+            if type(val)!=int:
+                val = tuple(val)
+            setattr(Keyboard,key,val)
+    
+    def save(path):
+        pass

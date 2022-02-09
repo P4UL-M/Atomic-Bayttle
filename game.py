@@ -4,7 +4,8 @@ import menu_main
 
 pygame.init()
 
-class Game:
+# there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
+class Game: 
     size = (pygame.display.Info().current_w,pygame.display.Info().current_h)
     running = True
     clock = pygame.time.Clock()
@@ -20,6 +21,10 @@ class Game:
                     Game.running = False
                 else:
                     pygame.event.post(event)
+                      
             pygame.display.update()
         else:
             raise SystemExit
+
+# class parent now accessible to childs too
+game_manager.GAME = menu_main.GAME = Game

@@ -11,6 +11,7 @@ from physique import *
 
 pygame.init()
 
+GAME = None
 
 class Game:
     def __init__(self):
