@@ -1,6 +1,7 @@
 import pygame
 import game_manager
 import menu_main
+from tools.tools import Keyboard
 
 pygame.init()
 
@@ -21,7 +22,9 @@ class Game:
                     Game.running = False
                 else:
                     pygame.event.post(event)
-                      
+
+            print(Keyboard.up.is_pressed())
+
             pygame.display.update()
         else:
             raise SystemExit

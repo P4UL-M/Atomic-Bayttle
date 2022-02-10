@@ -1,5 +1,6 @@
 import pygame
 import json
+import pathlib
 
 class Axis:
     value = 0
@@ -120,21 +121,45 @@ class Vector2:
         """return a tuple of the vector"""
         return (self.x,self.y)
 
+class Key:
+    def __init__(self,key:int,alias:int=None):
+        self.key = key
+        self.alias = alias
+        self.name = pygame.key.name(key)
+        self.name_alias = pygame.key.name(alias) if alias else None
+
+    def is_pressed(self):
+        state = pygame.key.get_pressed()
+        return state[self.key] or (state[self.alias] if self.alias else False)
+
 class Keyboard:
-    horizontal = (pygame.K_d,pygame.K_q)
-    vertical = (pygame.K_z,pygame.K_s)
-    jump = pygame.K_SPACE
-    interract = pygame.K_e
-    pause = pygame.K_ESCAPE
-    end_turn = pygame.K_RETURN
+    right = Key(pygame.K_d,pygame.K_RIGHT)
+    left = Key(pygame.K_q,pygame.K_LEFT)
+    up = Key(pygame.K_z,pygame.K_UP)
+    down = Key(pygame.K_s,pygame.K_DOWN)
+    jump = Key(pygame.K_SPACE)
+    interract = Key(pygame.K_e)
+    pause = Key(pygame.K_ESCAPE)
+    end_turn = Key(pygame.K_RETURN)
+    inventory = Key(pygame.K_i)
 
     @staticmethod
     def load(path):
         touche = json.load(open(path / "data" / "settings.json"))
-        for key,val in touche.items():
-            if type(val)!=int:
-                val = tuple(val)
-            setattr(Keyboard,key,val)
-    
+        for key,val in touche["keys"].items():
+            if type(val)!=list:
+                open(path / "data" / "log.txt","a").write("Error while loading key from the settings")
+                continue
+            setattr(Keyboard,key,Key(val[0], val[1] if val[1]!=-1 else None))
+   
+    @staticmethod
     def save(path):
-        pass
+        touche = json.load(open(path / "data" / "settings.json"))
+        touche["keys"] = dict()
+        for key,val in Keyboard.__dict__.items():
+            if type(val)==Key:
+                touche["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
+        json.dump(touche,open(path / "data" / "settings.json","w"))
+
+Keyboard.save(pathlib.Path())
+Keyboard.load(pathlib.Path())
