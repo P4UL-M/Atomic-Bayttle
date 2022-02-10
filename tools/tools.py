@@ -1,6 +1,5 @@
 import pygame
 import json
-import pathlib
 
 class Axis:
     value = 0
