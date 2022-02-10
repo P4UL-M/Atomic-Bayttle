@@ -160,6 +160,3 @@ class Keyboard:
             if type(val)==Key:
                 touche["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
         json.dump(touche,open(path / "data" / "settings.json","w"))
-
-Keyboard.save(pathlib.Path())
-Keyboard.load(pathlib.Path())
