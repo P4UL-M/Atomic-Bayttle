@@ -1,11 +1,13 @@
 import pygame
 import json
 
+pygame.init()
+
 class Axis:
     value = 0
     increment = 0.1
     deadzone = (0,1)
-    
+   
     @staticmethod
     def bound(x:int,bounds:tuple):
         if bounds[0]> bounds[1]:
@@ -42,12 +44,18 @@ class Axis:
         return self.get()*other
 
     def get(self):
-        if self.value==0:
-            return 0    
-        return self.bound(self.value,(self.deadzone[0]*self.sign(self.value),self.deadzone[1]*self.sign(self.value)))
+        if self.value==0 or self.value<self.deadzone[0]:
+            return 0
+        return self.value if self.value<self.deadzone[1] else self.deadzone[1]
+
+    def set(self,value:int):
+        self.value = value
 
     def __call__(self):
         return self.get()
+
+    def __abs__(self):
+        return abs(self.get())
 
 class sprite_sheet(pygame.Surface):
 
@@ -142,6 +150,8 @@ class Keyboard:
     end_turn = Key(pygame.K_RETURN)
     inventory = Key(pygame.K_i)
 
+    Manette = True
+
     @staticmethod
     def load(path):
         touche = json.load(open(path / "data" / "settings.json"))
@@ -159,3 +169,37 @@ class Keyboard:
             if type(val)==Key:
                 touche["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
         json.dump(touche,open(path / "data" / "settings.json","w"))
+
+class MixeurAudio:
+    pygame.mixer.set_num_channels(5)
+
+    __musicMixer = pygame.mixer.music
+    __effectMixerCallback = pygame.mixer.Channel(2)
+    volume_musique = 1
+    volume_effect = 1
+
+    @staticmethod
+    def set_musique(path,intro_path=None):
+        MixeurAudio.__musicMixer.set_volume(MixeurAudio.volume_musique)
+        MixeurAudio.__musicMixer.load(intro_path or path)
+        if intro_path: MixeurAudio.__musicMixer.queue(path,loops=-1)
+        MixeurAudio.__musicMixer.play(loops=-1 if not intro_path else 0)
+
+    @staticmethod
+    def play_effect(path,volume=None):
+        mixer = pygame.mixer.find_channel() or MixeurAudio.__effectMixerCallback
+        mixer.set_volume(volume or MixeurAudio.volume_effect)
+        mixer.play(pygame.mixer.Sound(path))
+
+    @staticmethod
+    def play_until_Stop(path,volume=None):
+        mixer = pygame.mixer.find_channel() or MixeurAudio.__effectMixerCallback
+        mixer.set_volume(volume or MixeurAudio.volume_effect)
+        mixer.play(pygame.mixer.Sound(path),loops=-1)
+        func = lambda : mixer.stop()
+        return func
+
+    @staticmethod
+    def stop_all():
+        pygame.mixer.stop()
+        pygame.mixer.music.fadeout(2500)
