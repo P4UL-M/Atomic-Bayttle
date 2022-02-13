@@ -30,7 +30,6 @@ class Game:
                 else:
                     pygame.event.post(event)
                         
-
             pygame.display.update()
         else:
             raise SystemExit
