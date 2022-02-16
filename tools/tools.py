@@ -1,5 +1,6 @@
 import pygame
 import json
+from tools.generate_music import Sounds_buffer,sound_factor
 
 pygame.init()
 
@@ -171,19 +172,27 @@ class Keyboard:
         json.dump(touche,open(path / "data" / "settings.json","w"))
 
 class MixeurAudio:
-    pygame.mixer.set_num_channels(5)
+    pygame.mixer.set_num_channels(6)
 
-    __musicMixer = pygame.mixer.music
+    __musicMixer = pygame.mixer.Channel(1)
     __effectMixerCallback = pygame.mixer.Channel(2)
     volume_musique = 1
     volume_effect = 1
+    music_factor = sound_factor
 
     @staticmethod
-    def set_musique(path,intro_path=None):
+    def set_musique(path,loops=True):
         MixeurAudio.__musicMixer.set_volume(MixeurAudio.volume_musique)
-        MixeurAudio.__musicMixer.load(intro_path or path)
-        if intro_path: MixeurAudio.__musicMixer.queue(path,loops=-1)
-        MixeurAudio.__musicMixer.play(loops=-1 if not intro_path else 0)
+        MixeurAudio.__musicMixer.play(pygame.mixer.Sound(path),-1 if loops else 0)
+
+    @staticmethod
+    def update_musique():
+        if MixeurAudio.__musicMixer.get_queue() == None:
+            _buffer = Sounds_buffer.get()
+            MixeurAudio.__musicMixer.queue(pygame.mixer.Sound(_buffer))
+        elif not MixeurAudio.__musicMixer.get_busy() and not MixeurAudio.__musicMixer.get_queue():
+            _buffer = Sounds_buffer.get()
+            MixeurAudio.__musicMixer.play(pygame.mixer.Sound(_buffer))
 
     @staticmethod
     def play_effect(path,volume=None):
@@ -200,6 +209,7 @@ class MixeurAudio:
         return func
 
     @staticmethod
-    def stop_all():
-        pygame.mixer.stop()
-        pygame.mixer.music.fadeout(2500)
+    def stop(channel:str="all"):
+        """ all / music"""
+        if channel=="all": pygame.mixer.fadeout(2000)
+        if channel=="music": MixeurAudio.__musicMixer.fadeout(2000)

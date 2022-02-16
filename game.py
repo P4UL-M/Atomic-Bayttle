@@ -1,10 +1,11 @@
 import pygame
 pygame.init()
-import game_manager
-import menu_main
-from tools.tools import Keyboard, MixeurAudio
 import pathlib
 
+from tools.tools import MixeurAudio
+import game_manager
+import menu_main
+import test
 
 PATH = pathlib.Path(__file__).parent
 
@@ -14,6 +15,7 @@ class Game:
     running = True
     clock = pygame.time.Clock()
     serialized = 0
+
 
     def run():
         pygame.display.set_mode(Game.size,pygame.RESIZABLE)
@@ -25,11 +27,10 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     Game.running = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-menu.wav")
                 else:
                     pygame.event.post(event)
                         
+            test.loop(PATH)
             pygame.display.update()
         else:
             raise SystemExit
