@@ -85,7 +85,7 @@ class sprite_sheet(pygame.Surface):
     def config(self,size):
         self.render_size = size
 
-class annimation_Manager(object):
+class animation_Manager(object):
     
     def __init__(self,direct_return = False):
         self.frame = 0

@@ -13,4 +13,5 @@ if __name__=="__main__":
         p.start()
         game.run()
     except SystemExit:
+        p.kill()
         print("bye !")
