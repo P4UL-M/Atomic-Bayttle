@@ -86,15 +86,20 @@ class sprite_sheet(pygame.Surface):
         self.render_size = size
 
 class annimation_Manager(object):
+    
     def __init__(self,direct_return = False):
         self.frame = 0
         self.incrementor = 1
         self.spritesheets:dict[list[sprite_sheet]] = {}
         self.links:dict[list] = {}
-        self.surface:pygame.Surface = ...
         self.__loaded:sprite_sheet = None
         self.direct_return = direct_return
 
+    @property
+    def surface(self):
+        self.frame += self.incrementor
+        return self.__loaded[int(self.frame)]      
+    
     def add_annimation(self,name,spritesheet:sprite_sheet,_frame:int):
         _increment = 1/_frame
         self.spritesheets[name or f"animation-{pygame.time.get_ticks()}"] = [spritesheet,_increment]
@@ -106,13 +111,6 @@ class annimation_Manager(object):
             self.incrementor = self.spritesheets[name][1]
         else:
             raise AttributeError
-
-    def __getattribute__(self, __name: str):
-        if __name == "surface":
-            self.frame += self.incrementor
-            return self.__loaded[int(self.frame)]
-        else:
-            return super().__getattribute__(__name)
 
 class Vector2:
     """
@@ -136,6 +134,7 @@ class Key:
         self.name = pygame.key.name(key)
         self.name_alias = pygame.key.name(alias) if alias else None
 
+    @property
     def is_pressed(self):
         state = pygame.key.get_pressed()
         return state[self.key] or (state[self.alias] if self.alias else False)

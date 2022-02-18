@@ -16,7 +16,6 @@ class Game:
     clock = pygame.time.Clock()
     serialized = 0
 
-
     def run():
         pygame.display.set_mode(Game.size,pygame.RESIZABLE)
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")

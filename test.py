@@ -14,7 +14,7 @@ def loop(PATH):
                 music = True
                 MixeurAudio.stop("music")
 
-    y.update(Keyboard.up.is_pressed(),Keyboard.down.is_pressed())
+    y.update(Keyboard.up.is_pressed,Keyboard.down.is_pressed)
     print(y.value)
 
     if music: MixeurAudio.update_musique()

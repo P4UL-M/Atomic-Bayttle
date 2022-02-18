@@ -1,5 +1,6 @@
 from tools.generate_music import p,set_path
 import pathlib
+import pygame_edit
 
 PATH = pathlib.Path(__file__).parent
 
