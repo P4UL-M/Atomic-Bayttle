@@ -1,7 +1,18 @@
 from OpenGL.GL import *
 import pygame
+import time
 
 info = pygame.display.Info()
+
+def timeit(func):
+    def wrap(*arg,**kargs):
+        t1 = time.time()
+        res = func(*arg,**kargs)
+        print(f"function {func.__name__} took :", time.time() - t1)
+        return res
+    
+    return wrap
+
 
 # basic opengl configuration
 def config(info):
@@ -33,7 +44,8 @@ def surfaceToTexture(pygame_surface):
     glGenerateMipmap(GL_TEXTURE_2D)
     glBindTexture(GL_TEXTURE_2D, 0)
 
-def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float) -> tuple[float,float]:
+@timeit
+def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float) -> tuple[float,float,tuple[float,float]]:
     global texID
     x,y = pos
     
@@ -41,13 +53,13 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     screen_ratio = info.current_w/info.current_h # 9/5 -> 1.8
     if surf_ratio > screen_ratio:
         y_zoom = 1
-        x_zoom = pygame_surface.get_width()/info.current_w
+        x_zoom = surf_ratio/screen_ratio
     else:
         x_zoom = 1
-        y_zoom = pygame_surface.get_height()/info.current_h
+        y_zoom = screen_ratio/surf_ratio
 
-    x = max(min((zoom-1)/(zoom*2),x),-(zoom-1)/(zoom*2))
-    y = max(min((zoom-1)/(zoom*2),y),-(zoom-1)/(zoom*2))
+    x = max(min((zoom-1)/(zoom*2)+(x_zoom - 1)/2/zoom,x),-(zoom-1)/(zoom*2)-(x_zoom - 1)/2/zoom)
+    y = max(min((zoom-1)/(zoom*2)+(y_zoom -1)/2/zoom,y),-(zoom-1)/(zoom*2)-(y_zoom -1)/2/zoom)
 
     # draw texture openGL Texture
     surfaceToTexture(pygame_surface)
@@ -59,8 +71,9 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     glTexCoord2f(x+1, y); glVertex2f(zoom*x_zoom, zoom*y_zoom)
     glEnd()
 
-    return x,y
+    return x,y,(x_zoom,y_zoom)
 
+@timeit
 def cleangl():
     # prepare to render the texture-mapped rectangle
     glClear(GL_COLOR_BUFFER_BIT)
