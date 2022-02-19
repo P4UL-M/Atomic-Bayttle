@@ -13,6 +13,9 @@ def loop(PATH):
             GAME.running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                
+                pygame.draw.circle(GAME.surf, (0,0,0,0), pygame.mouse.get_pos(), 50)
+        
                 MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-menu.wav")
                 MixeurAudio.music_factor.value += 0.05
                 if not music:
@@ -32,12 +35,6 @@ def loop(PATH):
         CAMERA.x += 0.05*GAME.serialized/CAMERA.zoom
     if state[pygame.K_q]:
         CAMERA.x -= 0.05*GAME.serialized/CAMERA.zoom
-
-        
-    surf = pygame.Surface((10,10))
-    surf.fill((255,100,0))
-
-    CAMERA._off_screen.blit(surf,pygame.mouse.get_pos())
 
     y.update(Keyboard.up.is_pressed,Keyboard.down.is_pressed)
 

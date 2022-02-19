@@ -13,7 +13,6 @@ def timeit(func):
     
     return wrap
 
-
 # basic opengl configuration
 def config(info):
     glViewport(0, 0, info.current_w, info.current_h)
@@ -31,24 +30,24 @@ def config(info):
     glEnable(GL_BLEND)
 
 texID = glGenTextures(1)
-def surfaceToTexture(pygame_surface):
+@timeit
+def surfaceToTexture(pygame_surface:pygame.Surface,rgba=True):
     global texID
-    rgb_surface = pygame.image.tostring( pygame_surface, 'RGBA')
+    rgb_surface = pygame.image.tostring( pygame_surface, 'RGBA' if rgba else 'RGB')
     glBindTexture(GL_TEXTURE_2D, texID)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
     surface_rect = pygame_surface.get_rect()
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_rect.width, surface_rect.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgb_surface)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA if rgba else GL_RGB, surface_rect.width, surface_rect.height, 0, GL_RGBA if rgba else GL_RGB, GL_UNSIGNED_BYTE, rgb_surface)
     glGenerateMipmap(GL_TEXTURE_2D)
     glBindTexture(GL_TEXTURE_2D, 0)
 
-@timeit
-def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float) -> tuple[float,float,tuple[float,float]]:
+def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,rgba=False) -> tuple[float,float,tuple[float,float]]:
     global texID
     x,y = pos
-    
+
     surf_ratio = pygame_surface.get_width()/pygame_surface.get_height() # 10/5 -> 2
     screen_ratio = info.current_w/info.current_h # 9/5 -> 1.8
     if surf_ratio > screen_ratio:
@@ -62,7 +61,7 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     y = max(min((zoom-1)/(zoom*2)+(y_zoom -1)/2/zoom,y),-(zoom-1)/(zoom*2)-(y_zoom -1)/2/zoom)
 
     # draw texture openGL Texture
-    surfaceToTexture(pygame_surface)
+    surfaceToTexture(pygame_surface, rgba)
     glBindTexture(GL_TEXTURE_2D, texID)
     glBegin(GL_QUADS)
     glTexCoord2f(x, y); glVertex2f(-zoom*x_zoom, zoom*y_zoom)
@@ -73,7 +72,6 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
 
     return x,y,(x_zoom,y_zoom)
 
-@timeit
 def cleangl():
     # prepare to render the texture-mapped rectangle
     glClear(GL_COLOR_BUFFER_BIT)
