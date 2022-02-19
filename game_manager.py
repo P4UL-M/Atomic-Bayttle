@@ -12,6 +12,7 @@ from physique import *
 pygame.init()
 
 GAME = None
+CAMERA = None
 
 class Game:
     def __init__(self):
