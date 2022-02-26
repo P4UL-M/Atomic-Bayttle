@@ -9,11 +9,10 @@ CAMERA = None
 def loop(PATH):
     global music
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            GAME.running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                
+        match event.type:
+            case pygame.QUIT:
+                GAME.running = False    
+            case pygame.MOUSEBUTTONDOWN if event.button == 1:
                 pygame.draw.circle(GAME.surf, (0,0,0,0), pygame.mouse.get_pos(), 50)
         
                 MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-menu.wav")
@@ -21,10 +20,11 @@ def loop(PATH):
                 if not music:
                     music = True
                     MixeurAudio.stop("music")
-        if event.type == pygame.MOUSEWHEEL:
-            CAMERA.zoom += event.y*GAME.serialized*0.05
+            case pygame.MOUSEWHEEL:
+                CAMERA.zoom += event.y*GAME.serialized*0.05
+            case _:
+                print(event)
         
-    
     state = pygame.key.get_pressed()
 
     if state[pygame.K_z]:

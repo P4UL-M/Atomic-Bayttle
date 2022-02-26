@@ -11,7 +11,7 @@ import pathlib
 
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
-import game_manager
+#import game_manager
 import menu_main
 import test
 
@@ -81,5 +81,5 @@ class Camera:
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
 # class parent now accessible to childs too
-game_manager.GAME = menu_main.GAME = test.GAME= Game
-game_manager.CAMERA = menu_main.CAMERA = test.CAMERA = Camera
+menu_main.GAME = test.GAME= Game
+menu_main.CAMERA = test.CAMERA = Camera
