@@ -22,8 +22,6 @@ def loop(PATH):
                     MixeurAudio.stop("music")
             case pygame.MOUSEWHEEL:
                 CAMERA.zoom += event.y*GAME.serialized*0.05
-            case _:
-                print(event)
         
     state = pygame.key.get_pressed()
 
