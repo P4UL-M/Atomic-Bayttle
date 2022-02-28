@@ -1,6 +1,5 @@
 import pygame
 import json
-from tools.generate_music import Sounds_buffer,sound_factor
 
 pygame.init()
 
@@ -177,7 +176,8 @@ class MixeurAudio:
     __effectMixerCallback = pygame.mixer.Channel(2)
     volume_musique = 1
     volume_effect = 1
-    music_factor = sound_factor
+    music_factor = None
+    gn = None
 
     @staticmethod
     def set_musique(path,loops=True):
@@ -187,10 +187,10 @@ class MixeurAudio:
     @staticmethod
     def update_musique():
         if MixeurAudio.__musicMixer.get_queue() == None:
-            _buffer = Sounds_buffer.get()
+            _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__musicMixer.queue(pygame.mixer.Sound(_buffer))
         elif not MixeurAudio.__musicMixer.get_busy() and not MixeurAudio.__musicMixer.get_queue():
-            _buffer = Sounds_buffer.get()
+            _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__musicMixer.play(pygame.mixer.Sound(_buffer))
 
     @staticmethod

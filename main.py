@@ -1,14 +1,16 @@
 # only library that the new process need
-from tools.generate_music import p,set_path
+from tools.generate_music import generator
 import pathlib
 
 PATH = pathlib.Path(__file__).parent
 
-set_path(PATH / "assets" / "music" / "Halloween LOOP.wav")
-
 if __name__=="__main__":
-    # start the process
-    p.start()
+    gn = generator(PATH / "assets" / "music" / "Halloween LOOP.wav")
+    gn.start()
+
+    import tools.tools as tl
+    tl.MixeurAudio.gn = gn
+    tl.MixeurAudio.music_factor = gn.sound_factor
 
     # import the game
     import pygame_edit
@@ -17,5 +19,5 @@ if __name__=="__main__":
     try:
         game.run()
     except SystemExit:
-        p.kill()
+        gn.p.kill()
         print("bye !")

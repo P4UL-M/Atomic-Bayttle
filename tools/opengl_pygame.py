@@ -30,7 +30,6 @@ def config(info):
     glEnable(GL_BLEND)
 
 texID = glGenTextures(1)
-@timeit
 def surfaceToTexture(pygame_surface:pygame.Surface,rgba=True):
     global texID
     rgb_surface = pygame.image.tostring( pygame_surface, 'RGBA' if rgba else 'RGB')

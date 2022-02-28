@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.init()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((INFO.current_w,INFO.current_h), OPENGL|DOUBLEBUF|FULLSCREEN)
+pygame.display.set_mode((INFO.current_w,INFO.current_h), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
 pygame.display.init()
 
 import pathlib
@@ -32,10 +32,11 @@ class Game:
         
         while Game.running:
             Camera._off_screen = Game.surf.copy()
+            
             test.loop(PATH)
 
             Camera.render()
-            print(Game.clock.get_fps())
+            #print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7

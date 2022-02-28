@@ -1,5 +1,6 @@
 import pygame
 from tools.tools import Keyboard, MixeurAudio,Axis
+import tools.generate_music as gn
 
 y = Axis()
 music = False
@@ -20,6 +21,8 @@ def loop(PATH):
                 if not music:
                     music = True
                     MixeurAudio.stop("music")
+            case pygame.MOUSEBUTTONDOWN if event.button ==3:
+                MixeurAudio.gn.reset()
             case pygame.MOUSEWHEEL:
                 CAMERA.zoom += event.y*GAME.serialized*0.05
         
@@ -36,4 +39,5 @@ def loop(PATH):
 
     y.update(Keyboard.up.is_pressed,Keyboard.down.is_pressed)
 
-    if music: MixeurAudio.update_musique()
+    if music:
+        MixeurAudio.update_musique()
