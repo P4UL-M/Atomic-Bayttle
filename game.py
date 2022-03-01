@@ -47,15 +47,14 @@ class Camera:
     zoom = 1
     zoom_offset = (1,1)
     _off_screen:pygame.Surface = pygame.Surface((1600,900),flags=HWSURFACE + HWACCEL)
-    _screen_UI:pygame.Surface = pygame.Surface((448,252),flags=SRCALPHA + HWSURFACE + HWACCEL)
+    _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA + HWSURFACE + HWACCEL)
 
     def render() -> None:
         gl.cleangl()
         Camera.zoom = max(1,Camera.zoom)
         Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
-        gl.surfaceToScreen(Camera._screen_UI,(0,0),1,True)
-        pass
+        gl.surfaceToScreen(Camera._screen_UI,(0,0),1,True) # try to blit only if not null take more time to check than blit it anyway
     
     def to_virtual(x,y) -> tuple[int,int]:
 
