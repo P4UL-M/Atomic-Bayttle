@@ -8,10 +8,8 @@ pygame.display.set_mode((INFO.current_w,INFO.current_h), OPENGL|DOUBLEBUF|FULLSC
 pygame.display.init()
 
 import pathlib
-
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
-#import game_manager
 import menu_main
 import test
 

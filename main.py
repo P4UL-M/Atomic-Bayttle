@@ -19,5 +19,5 @@ if __name__=="__main__":
     try:
         game.run()
     except SystemExit:
-        gn.p.kill()
+        gn.p.terminate()
         print("bye !")
