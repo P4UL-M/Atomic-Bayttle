@@ -5,10 +5,10 @@ def pressed_left(liste_mob, collision):
         mob.save_location()
         bool = collision.joueur_sur_sol(mob)
         if bool:
-            mob.move_left(pieds_sur_sol=True)
+            mob.move_left_right("left", pieds_sur_sol=True)
         # si le joueur ne dash pas et est en lair
         else:
-            mob.move_left()
+            mob.move_left_right("left")
         collision.stop_if_collide("left", mob)
 
 def pressed_right(liste_mob, collision):
@@ -16,10 +16,10 @@ def pressed_right(liste_mob, collision):
         mob.save_location()
         bool = collision.joueur_sur_sol(mob)
         if bool:
-            mob.move_right(pieds_sur_sol=True)
+            mob.move_left_right("right", pieds_sur_sol=True)
         # si le joueur ne dash pas et est en lair
         else:
-            mob.move_right()
+            mob.move_left_right("right")
     
         collision.stop_if_collide("right", mob)
                 

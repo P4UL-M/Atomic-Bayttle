@@ -4,6 +4,20 @@ import pytmx
 import random
 import pygame
 
+class MapSprite(pygame.sprite.Sprite):
+    def __init__(self, x, y, directory):
+        super(MapSprite, self).__init__()
+        self.x=x
+        self.y=y
+        self.image=pygame.image.load(f"{directory}\\assets\\map.png").convert_alpha()
+        transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(transColor)
+        self.image=pygame.transform.scale(self.image, (self.image.get_width()*2, self.image.get_height()*2)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.w=self.rect.w
+        self.h=self.rect.h
+
 class RenderMap:
     def __init__(self, screen_width, screen_height, directory):
         """cf la documentation de pytmx"""
@@ -11,65 +25,26 @@ class RenderMap:
         self.screen_width = screen_width
         self.screen_height = screen_height
         
-        self.image_map=pygame.image.load(f"{directory}\\assets\\map.png")
-        self.image_map=pygame.transform.scale(self.image_map, (self.image_map.get_width()*2, self.image_map.get_height()*2)).convert_alpha()
-        transColor = self.image_map.get_at((0,0))
-        self.image_map.set_colorkey(transColor)
+        # self.image_map=pygame.image.load(f"{directory}\\assets\\map.png")
+        # self.image_map=pygame.transform.scale(self.image_map, (self.image_map.get_width()*2, self.image_map.get_height()*2)).convert_alpha()
+        # transColor = self.image_map.get_at((0,0))
+        # self.image_map.set_colorkey(transColor)
+        # self.mask=pygame.mask.from_surface(self.image_map)
 
-        # informations about 1 map, concaining valides informations for every maps such as the width / tiewidht...
-        self.tm = pytmx.util_pygame.load_pygame(f'{directory}\\assets\\tiled_maps\\1.tmx', pixelalpha=True)
+        self.map=MapSprite(0, 0, directory)
 
-        # list containing the id of all tiles of the map
-        self.liste_tile=[]
-        # the +2 are because we add empty maps around the current map so the player dont see 'nothing' when he is in a border of the map
-        for _ in range(self.tm.height):
-            self.liste_tile.append([])
-        for line in self.liste_tile:
-                for _ in range(self.tm.width):
-                    line.append(None)
-   
         self.zoom=2
-        
-        self.load_map()
-        
-        self.dico={"wall":[], "ground":[], "ceilling":[], "platform":[], "spawn_player":(), "collision":[]}
-        self._load_objects_map(self.dico, self.tm)
     
     def get_height(self):
         """return the height of the map in coordonates"""
         # we remove the 2 empty map that are on the top and on the bot of the map
-        return len(self.liste_tile)*self.zoom*self.tm.tileheight
+        return self.map.image.get_height()
 
     def get_width(self):
         """return the width of the map in coordonates"""
         # we remove the 2 empty map that are on the left and on the right of the map
-        return len(self.liste_tile)*self.zoom*self.tm.tilewidth
-        
-    def _load_objects_map(self, dico, tm):
-        for obj in tm.objects:
-            x=obj.x*self.zoom
-            y=obj.y*self.zoom
-            if obj.type == "collision" and obj.name in ("wall", "ground", "ceilling", "platform"):
-                dico[obj.name].append([pygame.Rect(x  , y , obj.width * self.zoom, obj.height * self.zoom )])  
-                dico["collision"].append([pygame.Rect(x  , y , obj.width * self.zoom, obj.height * self.zoom )])           
-            elif obj.type == "spawn":
-                if obj.name in ["spawn_player", "object_map", "object_map"]:
-                    dico[obj.name]=(x,y)
-                elif obj.name in ["spawn_crab"]:
-                    dico[obj.name].append((x,y))
-            
-               
-    def load_map(self):
-        i,z=0,0
-        tm = pytmx.util_pygame.load_pygame(f'{self.directory}\\assets\\tiled_maps\\1.tmx')
-        ti = tm.get_tile_image_by_gid
-        for a, layer in enumerate(tm.visible_layers):
-            if a == 0:
-                if isinstance(layer, pytmx.TiledTileLayer):
-                    for y, x, gid, in layer:
-                        if ti(gid):
-                            self.liste_tile[i+x][z+y]=pygame.transform.scale(ti(gid), (round(ti(gid).get_width()*self.zoom), round(ti(gid).get_height()*self.zoom)))
-        
+        return self.map.image.get_width()
+ 
     def render(self, surface, cam_x, cam_y, scroll_rect):
         """called all tick => blit only the visible tiles (compare to the position of the camera) to 'surface'"""
 
@@ -96,4 +71,4 @@ class RenderMap:
         new_x = surface.get_width()/2 - scroll_rect.x
         new_y = surface.get_height()/2 - scroll_rect.y
         
-        surface.blit(self.image_map, (new_x, new_y))
+        surface.blit(self.map.image, (new_x, new_y))

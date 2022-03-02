@@ -16,7 +16,7 @@ class Game:
         self.directory = os.path.dirname(os.path.realpath(__file__))
         
         info_screen = pygame.display.Info()
-        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.8),round(info_screen.current_h*0.8)))
+        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.7),round(info_screen.current_h*0.7)))
         self.screen.fill((200,100,100))       
         self.bg = pygame.Surface((self.screen.get_width(), self.screen.get_height()), flags=SRCALPHA)
         self.dt = 1/30
@@ -31,14 +31,11 @@ class Game:
         self.render=RenderMap(self.screen.get_width(), self.screen.get_height(), self.directory)
         self.map_height=self.render.get_height()
         self.map_width=self.render.get_width()
-        player_position = self.render.dico["spawn_player"]
-        
-        coord = self.render.dico["spawn_player"]
-        self.mortier=Object_map(self.render.zoom, "mortier", coord[0], coord[1], self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
+        self.mortier=Object_map(self.render.zoom, "mortier", 500, 500, self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
         self.group_object.add(self.mortier)
         
-        self.checkpoint=[player_position[0], player_position[1]+1] # the plus one is because the checkpoints are 1 pixel above the ground
-        self.player=Player(player_position[0], player_position[1]+1, self.directory, self.render.zoom, "1", self.checkpoint.copy(), Particule)
+        self.checkpoint=[600, -300] # the plus one is because the checkpoints are 1 pixel above the ground
+        self.player=Player(600, -300, self.directory, self.render.zoom, "1", self.checkpoint.copy(), Particule)
         
         self.pressed_up_bool = [False]
         self.last_player_position=self.player.position.copy()
@@ -53,7 +50,7 @@ class Game:
         self.add_mob_to_game(self.player, "solo_clavier")
         self.add_mob_to_game(self.player, "solo_clavier", group="wave")
         
-        self.collision=Collision(self.render.zoom, self.render.dico) 
+        self.collision=Collision(self.render.zoom, self.render.map) 
         
         self.all_controls={}
         self.all_controls["solo_clavier"]={"perso":[],"touches":[pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP,pygame.K_DOWN, pygame.K_q, pygame.K_a, pygame.K_d, pygame.K_z, pygame.K_e, pygame.K_u, pygame.K_i, pygame.K_o]}  
@@ -164,10 +161,12 @@ class Game:
         
         if mob.is_jumping and self.collision.joueur_se_cogne(mob):
             mob.fin_saut()
-            
-        if mob.is_jumping and self.collision.joueur_sur_sol(mob, ground_only=True) and mob.compteur_jump>mob.compteur_jump_min+mob.increment_jump*3:
-            mob.debut_crouch()
+
+        if mob.is_jumping and mob.action_image=="crouch":
             mob.fin_saut()
+        
+        if mob.action_image=="jump" and not mob.is_jumping:
+            mob.change_direction("idle", mob.direction)
 
         # gestion collision avec les murs
         
@@ -210,6 +209,46 @@ class Game:
         self.screen.blit(self.bg, (0,0))
         self.last_player_position=self.player.position.copy()
     
+    def test_parabole(self):
+        x0=self.mortier.position[0] + self.mortier.image.get_width()/2
+        h0=self.mortier.position[1] + self.mortier.image.get_width()/2
+        v0=8.2
+        from math import pi
+        a=pi/4
+
+        for t in range(1, 1000):
+            x=get_x(t/10, v0, a)
+            y=get_y(x, v0, a, h0)
+            x=x*v0+x0
+            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                    pygame.draw.circle(self.screen, (255, 0, 0), (new_x, new_y), 3)
+        
+        a=pi/6            
+        for t in range(1, 1000):
+            x=get_x(t/10, v0, a)
+            y=get_y(x, v0, a, h0)
+            x=x*v0+x0
+            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                    pygame.draw.circle(self.screen, (0, 255, 0), (new_x, new_y), 3)
+        
+        
+        a=(2*pi)/6
+        for t in range(1, 1000):
+            x=get_x(t/10, v0, a)
+            y=get_y(x, v0, a, h0)
+            x=x*v0+x0
+            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
+                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
+                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
+                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
+                    pygame.draw.circle(self.screen, (0, 0, 255), (new_x, new_y), 3)
+
     def run(self):
         """boucle du jeu"""
 
@@ -217,50 +256,13 @@ class Game:
 
         self.running = True
         while self.running:
-            
             self.player.is_mouving_x = False
+            self.collision.joueur_sur_sol(self.player, first=True)
             self.handle_input()
             self.update()
             self.update_ecran()
             
-            x0=self.mortier.position[0] + self.mortier.image.get_width()/2
-            h0=self.mortier.position[1] + self.mortier.image.get_width()/2
-            v0=8.2
-            from math import pi
-            a=pi/4
-
-            for t in range(1, 1000):
-                x=get_x(t/10, v0, a)
-                y=get_y(x, v0, a, h0)
-                x=x*v0+x0
-                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                        pygame.draw.circle(self.screen, (255, 0, 0), (new_x, new_y), 3)
-            
-            a=pi/6            
-            for t in range(1, 1000):
-                x=get_x(t/10, v0, a)
-                y=get_y(x, v0, a, h0)
-                x=x*v0+x0
-                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                        pygame.draw.circle(self.screen, (0, 255, 0), (new_x, new_y), 3)
-            
-            
-            a=(2*pi)/6
-            for t in range(1, 1000):
-                x=get_x(t/10, v0, a)
-                y=get_y(x, v0, a, h0)
-                x=x*v0+x0
-                if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                    self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                        new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                        new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                        pygame.draw.circle(self.screen, (0, 0, 255), (new_x, new_y), 3)
+            self.test_parabole()
             
             pygame.display.update()      
             

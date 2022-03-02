@@ -3,6 +3,17 @@ import pygame
 import time
 from .MOTHER import MOB
 
+class BodyPartSprite(pygame.sprite.Sprite):
+    def __init__(self, rect, directory):
+        super(BodyPartSprite, self).__init__()
+        self.x=0
+        self.y=0
+        self.image=pygame.image.load(f"{directory}\\assets\\particle.png")
+        self.image=pygame.transform.scale(self.image, (rect.w, rect.h)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.w=self.rect.w
+        self.h=self.rect.h
 
 class Player(MOB):
 
@@ -26,13 +37,15 @@ class Player(MOB):
         self.origin_compteur_image_fall = 6
         self._get_images("fall", 1, self.origin_compteur_image_fall, "12-Fall_Sword", "Fall Sword 0")
         self._get_images("jump", 3, 4, "11-Jump_Sword", "Jump Sword 0")  
-        self._get_images("crouch", 2, 1, "13-Ground_Sword", "Ground Sword 0") 
+        self._get_images("crouch", 2, 4, "13-Ground_Sword", "Ground Sword 0") 
         self._get_images("attack1", 3, 3, "15-Attack 1", "Attack 1 0") 
         self._get_images("attack2", 3, 3, "16-Attack 2", "Attack 2 0") 
         self._get_images("hurt", 4, 4, "14-Hit Sword", "Hit Sword 0") 
         self._get_images("dying", 4, 4, "07-Dead Hit", "Dead Hit 0") 
         
         self.image = self.images["idle"]["right"]["1"]
+        transColor = self.image.get_at((0,0))
+        self.image.set_colorkey(transColor)
         
         self.position = [x,y - self.image.get_height()]
         self.position_wave_map=[0,0]
@@ -40,11 +53,17 @@ class Player(MOB):
 
         self.increment_foot=2
         
-        self.body = pygame.Rect(0,0,self.rect.width * 0.4, self.rect.height*0.8)
-        self.feet = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.1)
-        self.head = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.1)
-        self.body_left = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.6)
-        self.body_right = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.6)
+        self.body = pygame.Rect(0,0,self.rect.width * 0.5, self.rect.height*0.8)
+        self.feet = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.3)
+        self.head = pygame.Rect(0,0,self.body.w * 0.5, self.body.h*0.3)
+        self.body_left = pygame.Rect(0,0,self.body.w * 0.4, self.body.h*0.3)
+        self.body_right = pygame.Rect(0,0,self.body.w * 0.4, self.body.h*0.3)
+
+        self.body_mask = BodyPartSprite(self.body, directory)
+        self.feet_mask = BodyPartSprite(self.feet, directory)
+        self.head_mask = BodyPartSprite(self.head, directory)
+        self.body_left_mask = BodyPartSprite(self.body_left, directory)
+        self.body_right_mask = BodyPartSprite(self.body_right, directory)
 
         self.is_mob=False
         
@@ -58,6 +77,5 @@ class Player(MOB):
         }       
   
     def debut_crouch(self):
-        """very simple"""
         self.change_direction("crouch", self.direction)
   

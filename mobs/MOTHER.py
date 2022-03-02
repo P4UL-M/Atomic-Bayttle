@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+from math import sqrt
 
 class MOB(pygame.sprite.Sprite):
 
@@ -34,15 +35,20 @@ class MOB(pygame.sprite.Sprite):
         
         # course
         self.speed_coeff=1 ; self.origin_speed_run = 2.5 ; self.max_speed_run = 4.5 ; self.speed = self.origin_speed_run ; self.is_mouving_x = False
-        
+        self.compteur_image_run = 0
+        self.current_image_run = 1
+
         # ralentissement
         self.cooldown_ralentissement = 0.2 ; self.ralentit_bool = False ; self.doit_ralentir = True ; self.compteur_ralentissement = 0
         
         # chute
-        self.original_speed_gravity = 5 ; self.is_falling = False ; self.max_speed_gravity = 9 ; self.speed_gravity = self.original_speed_gravity
+        self.original_speed_gravity = 6 ; self.is_falling = False ; self.max_speed_gravity = 8 ; self.speed_gravity = self.original_speed_gravity
         self.t1_passage_a_travers_plateforme = 0
         self.cooldown_passage_a_travers_plateforme = 0.2
-        
+        self.coord_debut_chute=[0,0]
+        self.timer_debut_chute=0
+        self.cooldown_action_chute=0.2
+
         # jump
         self.a_sauter = True ; self.is_jumping = False ; self.speed_jump = 0 ; self.increment_jump = 0.25 
         self.compteur_jump_min = -4.5
@@ -68,6 +74,7 @@ class MOB(pygame.sprite.Sprite):
     
     def _get_images(self, action, nbr_image, compteur_image_max, directory_name, image_name, coefficient=1, reverse=False, weapon=""):
         try:
+            coefficient*=0.5
             #pary
             dico={
                 "nbr_image":nbr_image,
@@ -133,7 +140,7 @@ class MOB(pygame.sprite.Sprite):
     def move_left_right(self, dir, pieds_sur_sol=False):
         self.is_mouving_x = True
 
-        x = self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])
+        x = self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])*0.5
          
         if dir=="left": self.position[0] -= x
         else: self.position[0] += x
@@ -147,17 +154,12 @@ class MOB(pygame.sprite.Sprite):
                 self.change_direction(self.action_image,"right",compteur_image=self.compteur_image, current_image=self.current_image)      
             else:
                 self.direction=dir    
-        
-    def move_right(self, pieds_sur_sol = False): 
-        self.move_left_right("right", pieds_sur_sol=pieds_sur_sol)
-
-    def move_left(self, pieds_sur_sol = False): 
-        self.move_left_right("left", pieds_sur_sol=pieds_sur_sol)
   
     def debut_saut(self):
         #penser à bien utiliser .copy() parce que sinon la valeur est la meme que self.position tous le temps
         self.coord_debut_jump = self.position.copy()
         self.timer_cooldown_next_jump = time.time()
+        self.compteur_jump = self.compteur_jump_min  
         self.is_jumping = True
         self.change_direction('jump', self.direction)
 
@@ -167,15 +169,14 @@ class MOB(pygame.sprite.Sprite):
         if not self.is_attacking or self.can_attack_while_jump:
             if self.compteur_jump < self.compteur_jump_max:
                 self.update_speed_jump()
-                self.position[1] -= self.speed_jump
+                self.position[1] -= self.speed_jump*0.6
                 self.compteur_jump += self.increment_jump*self.speed_dt
             else:
                 self.fin_saut()
         
     def fin_saut(self):
         """reinitialisation des vvariables du saut"""
-        self.is_jumping = False
-        self.compteur_jump = self.compteur_jump_min        
+        self.is_jumping = False     
         self.a_sauter = True
         self.coord_debut_jump = [-999,-999]
 
@@ -183,30 +184,48 @@ class MOB(pygame.sprite.Sprite):
         self.speed_jump = (self.compteur_jump**2) * 0.7 *self.zoom * self.speed_dt
     
     def debut_chute(self):
+        self.coord_debut_chute=self.position.copy()
         self.timer_cooldown_able_to_jump = time.time()
         self.is_falling = True
-        self.change_direction('fall', self.direction)
+        #self.change_direction('fall', self.direction)
+        if self.action_image=="jump":
+            self.change_direction("fall", self.direction)
+        self.timer_debut_chute=time.time()
         
     def chute(self):
         self.update_speed_gravity()
-        self.position[1] += self.speed_gravity * self.zoom * self.speed_dt
+        self.position[1] += self.speed_gravity * self.zoom * self.speed_dt*0.8
+        if time.time()-self.timer_debut_chute>self.cooldown_action_chute and self.action_image!="fall":
+            self.change_direction("fall", self.direction)
     
     def fin_chute(self, jump_or_dash = False):
         self.is_falling = False
         self.speed_gravity = self.original_speed_gravity
-        self.debut_crouch()
+        
+        diff_x=self.position[0]-self.coord_debut_chute[0]
+        diff_y=self.position[1]-self.coord_debut_chute[1]
+        if sqrt(diff_x**2 + diff_y**2)>20:
+            self.debut_crouch()
+        # else:
+        #     if self.is_mouving_x:
+        #         self.change_direction("run", self.direction)
+        #     else:
+        #         self.change_direction("idle", self.direction)
+        if self.action_image=="fall":
+            self.change_direction("idle", self.direction)
+        self.coord_debut_chute=[0,0]
     
     def update_speed_gravity(self):
         if self.speed_gravity < self.max_speed_gravity:
             # self.speed_gravity augmente de plus en plus vite au file des ticks 
             self.speed_gravity += self.speed_gravity*0.005 + self.original_speed_gravity*0.005
             # reduction de la vitesse de defilement des images quand la vitesse augmente
-            if self.speed_gravity > 5:
+            if self.speed_gravity > 5 and self.action_image!="idle":
                 self.images[self.action_image]["compteur_image_max"] = 4
-            elif self.speed_gravity > 6.5:
+            elif self.speed_gravity > 6.5 and self.action_image!="idle":
                 self.images[self.action_image]["compteur_image_max"] = 3
         # vitesse maximal du defilement des images
-        elif self.images[self.action_image]["compteur_image_max"] != 2:
+        elif self.images[self.action_image]["compteur_image_max"] != 2 and self.action_image!="idle":
             self.images[self.action_image]["compteur_image_max"] = 2  
 
     def debut_ralentissement(self):
@@ -257,9 +276,12 @@ class MOB(pygame.sprite.Sprite):
     def update_animation(self):
         """change les animations du joueurs, appelé toutes les frames"""
         # changement de l'image tout les X ticks
+        
         if self.compteur_image < self.images[self.action_image]["compteur_image_max"]:
             if self.action_image == "run":
                 self.compteur_image += 1*self.speed_dt * abs(self.motion[0])
+                self.compteur_image_run = self.compteur_image
+                self.current_image_run = self.current_image
             else:
                 self.compteur_image += 1*self.speed_dt
         else:
@@ -322,7 +344,22 @@ class MOB(pygame.sprite.Sprite):
         self.image = self.images[self.action_image][self.direction]["1"]
         transColor = self.image.get_at((0,0))
         self.image.set_colorkey(transColor)
-        
+
+    def update_coord_rect(self):
+        # update des coordonees des rect
+        self.rect.topleft = self.position
+        self.body.midbottom = self.rect.midbottom
+        self.feet.midbottom = (self.body.midbottom[0], self.body.midbottom[1]-self.increment_foot)
+        self.head.midtop = self.body.midtop
+        self.body_left.midleft=self.body.midleft
+        self.body_right.midright=self.body.midright
+
+        self.body_mask.rect.topleft = self.body.topleft
+        self.feet_mask.rect.topleft = self.feet.topleft
+        self.head_mask.rect.topleft = self.head.topleft
+        self.body_left_mask.rect.topleft = self.body_left.topleft
+        self.body_right_mask.rect.topleft = self.body_right.topleft
+
     def update(self):
         """methode appele a chaque tick"""
         if self.speed > self.max_speed_run:
@@ -333,13 +370,7 @@ class MOB(pygame.sprite.Sprite):
             
         self.update_animation()
         
-        # update des coordonees des rect
-        self.rect.topleft = self.position
-        self.body.midbottom = self.rect.midbottom
-        self.feet.midbottom = (self.body.midbottom[0], self.body.midbottom[1]-self.increment_foot)
-        self.head.midtop = self.body.midtop
-        self.body_left.midleft=self.body.midleft
-        self.body_right.midright=self.body.midright
+        self.update_coord_rect()
         
         # la vitesse de course du joueur ne ralentit pas tant qu'il coure ou chute
         if self.action_image == "run" or self.action_image == "fall" or self.action_image == "up_to_fall" or self.action_image == "jump":
@@ -347,11 +378,17 @@ class MOB(pygame.sprite.Sprite):
         
         if self.action_image == "idle" and time.time() - self.time_cooldown_ralentissement > self.cooldown_ralentissement:
             self.speed = self.origin_speed_run
-        
+
     def update_action(self):
         """sometimes actions and actions image are differents :
         when the player dash self.action = 'dash' and self.action_image = 'jump'
         because its has the same image, so we update it here"""
-        if self.action_image in ["run", "idle", "fall","crouch", "dying", "jump"]:
+        if self.action_image in ["fall", "dying", "jump"]:
             self.action = self.action_image
- 
+        else:
+            for i in ["run", "crouch", "idle"]:
+                if i == self.action_image:
+                    if self.is_falling:
+                        self.action="fall"
+                    else:
+                        self.action=i
