@@ -1,17 +1,7 @@
 from OpenGL.GL import *
 import pygame
-import time
 
 info = pygame.display.Info()
-
-def timeit(func):
-    def wrap(*arg,**kargs):
-        t1 = time.time()
-        res = func(*arg,**kargs)
-        print(f"function {func.__name__} took :", time.time() - t1)
-        return res
-    
-    return wrap
 
 # basic opengl configuration
 def config(info):
