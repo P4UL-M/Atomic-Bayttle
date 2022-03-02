@@ -33,18 +33,22 @@ def surfaceToTexture(pygame_surface:pygame.Surface,rgba=True):
     glGenerateMipmap(GL_TEXTURE_2D)
     glBindTexture(GL_TEXTURE_2D, 0)
 
-def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,rgba=False) -> tuple[float,float,tuple[float,float]]:
+def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,rgba=False,maximize=True) -> tuple[float,float,tuple[float,float]]:
     global texID
     x,y = pos
 
     surf_ratio = pygame_surface.get_width()/pygame_surface.get_height() # 10/5 -> 2
     screen_ratio = info.current_w/info.current_h # 9/5 -> 1.8
-    if surf_ratio > screen_ratio:
-        y_zoom = 1
-        x_zoom = surf_ratio/screen_ratio
+    if maximize:
+        if surf_ratio > screen_ratio:
+            y_zoom = 1
+            x_zoom = surf_ratio/screen_ratio
+        else:
+            x_zoom = 1
+            y_zoom = screen_ratio/surf_ratio
     else:
+        y_zoom = 1
         x_zoom = 1
-        y_zoom = screen_ratio/surf_ratio
 
     x = max(min((zoom-1)/(zoom*2)+(x_zoom - 1)/2/zoom,x),-(zoom-1)/(zoom*2)-(x_zoom - 1)/2/zoom)
     y = max(min((zoom-1)/(zoom*2)+(y_zoom -1)/2/zoom,y),-(zoom-1)/(zoom*2)-(y_zoom -1)/2/zoom)
