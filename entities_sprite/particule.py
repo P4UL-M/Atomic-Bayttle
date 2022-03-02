@@ -6,17 +6,16 @@ import math
 
 class LittleParticle(pygame.sprite.Sprite):
     """ class d'une particle qui apparait lors du dash du joueur"""
-    def __init__(self, x, y, nbr, directory, zoom, speed_dt, alpha):
+    def __init__(self, x, y, nbr, directory, speed_dt, alpha):
         super().__init__()
         self.id = f"particule{nbr}"
         
         taille = random.randint(1,5)
         
-        self.zoom = zoom
         self.speed_dt = speed_dt
 
         self.image = pygame.image.load(f'{directory}\\assets\\particle.png')
-        self.image = pygame.transform.scale(self.image, (taille*self.zoom*0.5, taille*self.zoom*0.5))
+        self.image = pygame.transform.scale(self.image, (taille*0.5, taille*0.5))
 
         self.position = [x,y-self.image.get_height()]
         self.rect = self.image.get_rect()
@@ -25,8 +24,8 @@ class LittleParticle(pygame.sprite.Sprite):
         self.t1 = time.time()
         self.cooldown = random.uniform(0.2, 0.8)
         
-        self.speedx = math.cos(alpha)*self.zoom*self.speed_dt
-        self.speedy = math.sin(alpha)*self.zoom*self.speed_dt
+        self.speedx = math.cos(alpha)*self.speed_dt
+        self.speedy = math.sin(alpha)*self.speed_dt
             
     def update(self):
         self.position[0] += self.speedx
@@ -35,8 +34,7 @@ class LittleParticle(pygame.sprite.Sprite):
         
 class Particule:
     """ MAIN CLASS OF THE SCRIPT"""
-    def __init__(self, directory, player, zoom):
-        self.zoom = zoom
+    def __init__(self, directory, player):
         self.dt = 17
         self.speed_dt = round(self.dt/17)
         self.player=player
@@ -68,21 +66,21 @@ class Particule:
         if self.number_particule > 1500:
             self.number_particule = 0
         
-        if self.player.direction=="right":x=self.player.position[0]+15*self.zoom
-        else:x=self.player.position[0]+self.player.rect.w-15*self.zoom
+        if self.player.direction=="right":x=self.player.position[0]+15
+        else:x=self.player.position[0]+self.player.rect.w-15
         y=self.player.position[1]+self.player.rect.h
             
         if action == "run" or action == "crouch":
-            if self.player.direction=="left":self.add_particle_base_mouvement("run", LittleParticle(x, y, self.number_particule, self.directory, self.zoom, self.speed_dt, random.uniform(0, math.pi/4)))
-            elif self.player.direction=="right":self.add_particle_base_mouvement("run", LittleParticle(x, y, self.number_particule, self.directory, self.zoom, self.speed_dt, random.uniform(math.pi, 3*math.pi/4)))
+            if self.player.direction=="left":self.add_particle_base_mouvement("run", LittleParticle(x, y, self.number_particule, self.directory, self.speed_dt, random.uniform(0, math.pi/4)))
+            elif self.player.direction=="right":self.add_particle_base_mouvement("run", LittleParticle(x, y, self.number_particule, self.directory, self.speed_dt, random.uniform(math.pi, 3*math.pi/4)))
             
         elif action == "jump":
             # reajustement de la position des particles
-            if self.player.direction == "right": c = 55*self.zoom
-            elif self.player.direction == "left": c = self.player.rect.w-55*self.zoom
+            if self.player.direction == "right": c = 55
+            elif self.player.direction == "left": c = self.player.rect.w-55
             # apparition de deux particles, une a gauche et une a droite
-            self.add_particle_base_mouvement("jump", LittleParticle(self.player.coord_debut_jump[0]+c, self.player.coord_debut_jump[1]+self.player.rect.h,self.number_particule, self.directory, self.zoom, self.speed_dt, random.uniform(0, math.pi/4)))
-            self.add_particle_base_mouvement("jump", LittleParticle(self.player.coord_debut_jump[0]+c, self.player.coord_debut_jump[1]+self.player.rect.h,self.number_particule, self.directory, self.zoom, self.speed_dt, random.uniform(3*math.pi/4, math.pi)))
+            self.add_particle_base_mouvement("jump", LittleParticle(self.player.coord_debut_jump[0]+c, self.player.coord_debut_jump[1]+self.player.rect.h,self.number_particule, self.directory, self.speed_dt, random.uniform(0, math.pi/4)))
+            self.add_particle_base_mouvement("jump", LittleParticle(self.player.coord_debut_jump[0]+c, self.player.coord_debut_jump[1]+self.player.rect.h,self.number_particule, self.directory, self.speed_dt, random.uniform(3*math.pi/4, math.pi)))
        
       
         

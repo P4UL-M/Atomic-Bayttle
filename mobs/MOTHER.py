@@ -5,7 +5,7 @@ from math import sqrt
 
 class MOB(pygame.sprite.Sprite):
 
-    def __init__(self, zoom, id, checkpoint, Particule, directory, directory_assets):
+    def __init__(self, id, checkpoint, Particule, directory, directory_assets):
         super().__init__()
         self.directory=directory
         self.directory_assets=directory_assets
@@ -19,7 +19,6 @@ class MOB(pygame.sprite.Sprite):
         self.increment_foot=1
         
         self.id = id
-        self.zoom = zoom
         self.dt = 17
         self.speed_dt=17/self.dt
         
@@ -70,12 +69,10 @@ class MOB(pygame.sprite.Sprite):
         
         self.motion=[1,1]
         
-        self.particule=Particule(directory, self, self.zoom)
+        self.particule=Particule(directory, self)
     
     def _get_images(self, action, nbr_image, compteur_image_max, directory_name, image_name, coefficient=1, reverse=False, weapon=""):
         try:
-            coefficient*=0.5
-            #pary
             dico={
                 "nbr_image":nbr_image,
                 "compteur_image_max":compteur_image_max,
@@ -91,7 +88,7 @@ class MOB(pygame.sprite.Sprite):
                 
             for i in range(1,nbr_image+1):
                 d["right"][str(i)] = pygame.image.load(f'{self.directory}\\{self.directory_assets}\\{directory_name}\\{image_name}{i}.png').convert_alpha()
-                d["right"][str(i)] = pygame.transform.scale(d["right"][str(i)], (round(d["right"][str(i)].get_width()*self.zoom*coefficient), round(d["right"][str(i)].get_height()*self.zoom*coefficient))).convert_alpha()
+                d["right"][str(i)] = pygame.transform.scale(d["right"][str(i)], (round(d["right"][str(i)].get_width()*coefficient), round(d["right"][str(i)].get_height()*coefficient))).convert_alpha()
                 d["left"][str(i)] = pygame.transform.flip(d["right"][str(i)], True, False).convert_alpha()
                 if reverse: d["right"][str(i)], d["left"][str(i)] = d["left"][str(i)], d["right"][str(i)]
         except:
@@ -140,7 +137,7 @@ class MOB(pygame.sprite.Sprite):
     def move_left_right(self, dir, pieds_sur_sol=False):
         self.is_mouving_x = True
 
-        x = self.speed_coeff*self.speed * self.zoom * self.speed_dt *abs(self.motion[0])*0.5
+        x = self.speed_coeff*self.speed * self.speed_dt *abs(self.motion[0])
          
         if dir=="left": self.position[0] -= x
         else: self.position[0] += x
@@ -169,7 +166,7 @@ class MOB(pygame.sprite.Sprite):
         if not self.is_attacking or self.can_attack_while_jump:
             if self.compteur_jump < self.compteur_jump_max:
                 self.update_speed_jump()
-                self.position[1] -= self.speed_jump*0.6
+                self.position[1] -= self.speed_jump*1.2
                 self.compteur_jump += self.increment_jump*self.speed_dt
             else:
                 self.fin_saut()
@@ -181,7 +178,7 @@ class MOB(pygame.sprite.Sprite):
         self.coord_debut_jump = [-999,-999]
 
     def update_speed_jump(self):
-        self.speed_jump = (self.compteur_jump**2) * 0.7 *self.zoom * self.speed_dt
+        self.speed_jump = (self.compteur_jump**2) * 0.7 * self.speed_dt
     
     def debut_chute(self):
         self.coord_debut_chute=self.position.copy()
@@ -194,11 +191,11 @@ class MOB(pygame.sprite.Sprite):
         
     def chute(self):
         self.update_speed_gravity()
-        self.position[1] += self.speed_gravity * self.zoom * self.speed_dt*0.8
+        self.position[1] += self.speed_gravity * self.speed_dt
         if time.time()-self.timer_debut_chute>self.cooldown_action_chute and self.action_image!="fall":
             self.change_direction("fall", self.direction)
     
-    def fin_chute(self, jump_or_dash = False):
+    def fin_chute(self):
         self.is_falling = False
         self.speed_gravity = self.original_speed_gravity
         
@@ -206,11 +203,6 @@ class MOB(pygame.sprite.Sprite):
         diff_y=self.position[1]-self.coord_debut_chute[1]
         if sqrt(diff_x**2 + diff_y**2)>20:
             self.debut_crouch()
-        # else:
-        #     if self.is_mouving_x:
-        #         self.change_direction("run", self.direction)
-        #     else:
-        #         self.change_direction("idle", self.direction)
         if self.action_image=="fall":
             self.change_direction("idle", self.direction)
         self.coord_debut_chute=[0,0]
@@ -249,12 +241,12 @@ class MOB(pygame.sprite.Sprite):
             tab = [4, 8]
             if self.compteur_ralentissement in tab:
                 # la vitesse diminue 3 fois tous les 4 frames + on fait avancer le joueur
-                self.speed = self.speed*0.7*self.zoom * self.speed_dt
+                self.speed = self.speed*0.7 * self.speed_dt
                 if self.action_image == "run":
                     if self.direction == "right":
-                        self.position[0] += self.speed  * self.zoom
+                        self.position[0] += self.speed
                     elif self.direction == "left":
-                        self.position[0] -= self.speed  * self.zoom
+                        self.position[0] -= self.speed
                        
             self.compteur_ralentissement += 1
                 

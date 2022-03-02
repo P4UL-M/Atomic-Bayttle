@@ -17,13 +17,13 @@ class BodyPartSprite(pygame.sprite.Sprite):
 
 class Player(MOB):
 
-    def __init__(self, x, y, directory, zoom, id, checkpoint, Particule):
+    def __init__(self, x, y, directory, id, checkpoint, Particule):
         """parametres : 
                 - x : coordonne en x du joueur
                 - y : coordonne en y du joueur
                 - directory : chemin absolu vers le dossier du jeu"""
         # initialisation de la classe mere permettant de faire de cette classe un sprite
-        MOB.__init__(self, zoom, f"player{id}", checkpoint, Particule, directory, "")
+        MOB.__init__(self, f"player{id}", checkpoint, Particule, directory, "")
 
         
         action=["crouch", "attack"]

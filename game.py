@@ -31,11 +31,11 @@ class Game:
         self.render=RenderMap(self.screen.get_width(), self.screen.get_height(), self.directory)
         self.map_height=self.render.get_height()
         self.map_width=self.render.get_width()
-        self.mortier=Object_map(self.render.zoom, "mortier", 500, 500, self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
+        self.mortier=Object_map("mortier", 500, 500, self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
         self.group_object.add(self.mortier)
         
         self.checkpoint=[600, -300] # the plus one is because the checkpoints are 1 pixel above the ground
-        self.player=Player(600, -300, self.directory, self.render.zoom, "1", self.checkpoint.copy(), Particule)
+        self.player=Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
         
         self.pressed_up_bool = [False]
         self.last_player_position=self.player.position.copy()
@@ -50,7 +50,7 @@ class Game:
         self.add_mob_to_game(self.player, "solo_clavier")
         self.add_mob_to_game(self.player, "solo_clavier", group="wave")
         
-        self.collision=Collision(self.render.zoom, self.render.map) 
+        self.collision=Collision(self.render.map) 
         
         self.all_controls={}
         self.all_controls["solo_clavier"]={"perso":[],"touches":[pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP,pygame.K_DOWN, pygame.K_q, pygame.K_a, pygame.K_d, pygame.K_z, pygame.K_e, pygame.K_u, pygame.K_i, pygame.K_o]}  
@@ -66,9 +66,9 @@ class Game:
                         bg.blit(sprite.image, (new_x,new_y))
     
     def update_camera(self, playerx, playery, player_speed_dt):
-        self.scroll[0] = ((playerx - self.scroll_rect.x) // 15)*self.render.zoom*player_speed_dt
+        self.scroll[0] = ((playerx - self.scroll_rect.x) // 15)*player_speed_dt
         self.scroll_rect.x += self.scroll[0] 
-        self.scroll[1] = ((playery - self.scroll_rect.y) // 15)*self.render.zoom*player_speed_dt
+        self.scroll[1] = ((playery - self.scroll_rect.y) // 15)*player_speed_dt
         self.scroll_rect.y += self.scroll[1]
     
     def add_mob_to_game(self, mob, input, group="base"):
@@ -93,7 +93,7 @@ class Game:
                     elif mob[1]=="manette":
                         perso_manette.append(mob[0])
                     elif mob[1]=="bot":
-                        if mob[0].bot.get_distance_target()<750*self.render.zoom:
+                        if mob[0].bot.get_distance_target()<750:
                             mob[0].bot.make_mouvement(self.collision)
                         else:
                             mob[0].reset_actions()
@@ -186,7 +186,7 @@ class Game:
             group.update()
             
         for mob in [tuple[0] for tuple in self.all_mobs]:
-            if mob.bot == None or mob.bot.get_distance_target()<750*self.render.zoom:
+            if mob.bot == None or mob.bot.get_distance_target()<750:
                 mob.update_action()
                 self.handle_action(mob)
                 

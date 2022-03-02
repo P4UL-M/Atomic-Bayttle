@@ -1,10 +1,8 @@
 import pygame
-import time
-import random
 
 class Object_map(pygame.sprite.Sprite):
     
-    def __init__(self, zoom, id, x, y, directory, nbr_image,compteur_image_max, directory_assets, name_image, coefficient, complement_x, complement_y):
+    def __init__(self, id, x, y, directory, nbr_image,compteur_image_max, directory_assets, name_image, coefficient, complement_x, complement_y):
         super().__init__()
         self.id=id
         self.directory=directory
@@ -16,11 +14,11 @@ class Object_map(pygame.sprite.Sprite):
         }
         for i in range(1,nbr_image+1):
             self.images["images"][str(i)] = pygame.image.load(f'{self.directory}\\{directory_assets}\\{name_image}{i}.png').convert_alpha()
-            self.images["images"][str(i)] = pygame.transform.scale(self.images["images"][str(i)], (round(self.images["images"][str(i)].get_width()*zoom*coefficient), round(self.images["images"][str(i)].get_height()*zoom*coefficient))).convert_alpha()
+            self.images["images"][str(i)] = pygame.transform.scale(self.images["images"][str(i)], (round(self.images["images"][str(i)].get_width()*coefficient), round(self.images["images"][str(i)].get_height()*coefficient))).convert_alpha()
         self.image=self.images["images"]["1"]
         transColor = self.image.get_at((0,0))
         self.image.set_colorkey(transColor)
-        self.position=[x-self.image.get_width()/2 +complement_x*zoom, y-self.image.get_height()+1+complement_y*zoom]
+        self.position=[x-self.image.get_width()/2 +complement_x, y-self.image.get_height()+1+complement_y]
         self.dt = 17
         self.speed_dt = 1
         # images
