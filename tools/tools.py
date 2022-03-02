@@ -174,6 +174,7 @@ class MixeurAudio:
 
     __musicMixer = pygame.mixer.Channel(1)
     __effectMixerCallback = pygame.mixer.Channel(2)
+    __listEffectChannel = []
     volume_musique = 1
     volume_effect = 1
     music_factor = None
@@ -204,7 +205,10 @@ class MixeurAudio:
         mixer = pygame.mixer.find_channel() or MixeurAudio.__effectMixerCallback
         mixer.set_volume(volume or MixeurAudio.volume_effect)
         mixer.play(pygame.mixer.Sound(path),loops=-1)
-        func = lambda : mixer.stop()
+        MixeurAudio.__listEffectChannel.append(mixer)
+        def func():
+            mixer.stop()
+            MixeurAudio.__listEffectChannel.remove(mixer)
         return func
 
     @staticmethod
@@ -212,3 +216,9 @@ class MixeurAudio:
         """ all / music"""
         if channel=="all": pygame.mixer.fadeout(2000)
         if channel=="music": MixeurAudio.__musicMixer.fadeout(2000)
+
+    @staticmethod
+    def update_volume():
+        MixeurAudio.__musicMixer.set_volume(MixeurAudio.volume_musique)
+        for mixer in MixeurAudio.__listEffectChannel:
+            mixer.set_volume(MixeurAudio.volume_effect)
