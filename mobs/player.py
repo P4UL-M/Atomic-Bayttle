@@ -76,4 +76,3 @@ class Player(MOB):
   
     def debut_crouch(self):
         self.change_direction("crouch", self.direction)
-  
