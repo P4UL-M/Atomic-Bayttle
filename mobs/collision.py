@@ -23,7 +23,7 @@ class Collision:
             return True
         return False
 
-    def joueur_se_cogne(self, mob):
+    def joueur_se_cogne(self, mob): #! useless
         """renvoie True si la tete du joueur est en collision avec un plafond"""
         if pygame.sprite.collide_mask(self.map, mob.head_mask):
             return True

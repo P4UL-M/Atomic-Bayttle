@@ -1,16 +1,18 @@
 import pygame
 import os
 from pygame.locals import *
-from map.render_map import RenderMap
+from map.render_map import Map
 from entities_sprite.particule import Particule
 from mobs.player import Player
 from mobs.mob_functions import *
 from mobs.collision import Collision
 #from map.object_map import Object_map
 from weapons.physique import *
+import pathlib
 
 GAME = None
 CAMERA = None
+PATH = pathlib.Path(__file__).parent
 
 class Partie:
     def __init__(self,j1,j2):
@@ -26,7 +28,7 @@ class Partie:
         self.group_object=pygame.sprite.Group()
         self.all_groups = [self.group_object, self.group_object, self.group, self.group_particle]
         
-        self.render=RenderMap(self.screen.get_width(), self.screen.get_height(), self.directory)
+        self.render = Map(PATH / "assets" / "")
         self.map_height=self.render.get_height()
         self.map_width=self.render.get_width()
         
@@ -166,7 +168,7 @@ class Partie:
 
         mob.update_action()
         
-    def update(self):
+    def Update(self):
         """ fonction qui update les informations du jeu"""   
                 
         for group in self.all_groups:
