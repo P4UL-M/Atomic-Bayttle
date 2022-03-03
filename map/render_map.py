@@ -2,9 +2,9 @@ from logging import exception
 from math import ceil
 import pygame
 
-class MapSprite(pygame.sprite.Sprite):
+class Map(pygame.sprite.Sprite):
     def __init__(self, x, y, directory):
-        super(MapSprite, self).__init__()
+        super().__init__()
         self.x=x
         self.y=y
         self.image=pygame.image.load(f"{directory}\\assets\\map.png").convert_alpha()
@@ -15,15 +15,19 @@ class MapSprite(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.w=self.rect.w
         self.h=self.rect.h
+    
+    def add_damage(): #pass damage and update mask
+        ... 
 
-class RenderMap:
+
+class RenderMap: #! useless
     def __init__(self, screen_width, screen_height, directory):
         """cf la documentation de pytmx"""
         self.directory=directory
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-        self.map=MapSprite(0, 0, directory)
+        self.map=Map(0, 0, directory)
     
     def get_height(self):
         """return the height of the map in coordonates"""

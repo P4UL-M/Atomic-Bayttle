@@ -89,6 +89,7 @@ class animation_Manager(object):
     def __init__(self,direct_return = False):
         self.frame = 0
         self.incrementor = 1
+        self.annim_speed_factor = 1
         self.spritesheets:dict[list[sprite_sheet]] = {}
         self.links:dict[list] = {}
         self.__loaded:sprite_sheet = None
@@ -96,7 +97,7 @@ class animation_Manager(object):
 
     @property
     def surface(self):
-        self.frame += self.incrementor
+        self.frame += self.incrementor*self.annim_speed_factor
         return self.__loaded[int(self.frame)]      
     
     def add_annimation(self,name,spritesheet:sprite_sheet,_frame:int):
@@ -144,12 +145,12 @@ class Keyboard:
     up = Key(pygame.K_z,pygame.K_UP)
     down = Key(pygame.K_s,pygame.K_DOWN)
     jump = Key(pygame.K_SPACE)
-    interract = Key(pygame.K_e)
+    interact = Key(pygame.K_e)
     pause = Key(pygame.K_ESCAPE)
     end_turn = Key(pygame.K_RETURN)
     inventory = Key(pygame.K_i)
 
-    Manette = True
+    Manette = False
 
     @staticmethod
     def load(path):

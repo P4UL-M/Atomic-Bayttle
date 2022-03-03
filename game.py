@@ -12,6 +12,7 @@ import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
 import menu_main
 import test
+import game_manager
 
 PATH = pathlib.Path(__file__).parent
 INFO = pygame.display.Info()
@@ -27,11 +28,14 @@ class Game:
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
-        
+        partie = game_manager.Partie("craby","pirate")
+
         while Game.running:
             Camera._off_screen = Game.surf.copy()
             
-            test.loop(PATH)
+            partie.update()
+
+            #test.loop(PATH)
 
             Camera.render()
             #print(Game.clock.get_fps())
@@ -82,5 +86,5 @@ class Camera:
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
 # class parent now accessible to childs too
-menu_main.GAME = test.GAME= Game
-menu_main.CAMERA = test.CAMERA = Camera
+game_manager.GAME = menu_main.GAME = test.GAME= Game
+game_manager.CAMERA = menu_main.CAMERA = test.CAMERA = Camera

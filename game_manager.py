@@ -6,17 +6,17 @@ from entities_sprite.particule import Particule
 from mobs.player import Player
 from mobs.mob_functions import *
 from mobs.collision import Collision
-from map.object_map import Object_map
+#from map.object_map import Object_map
 from weapons.physique import *
 
-class Game:
-    def __init__(self):
-        self.directory = os.path.dirname(os.path.realpath(__file__))
+GAME = None
+CAMERA = None
+
+class Partie:
+    def __init__(self,j1,j2):
         
-        info_screen = pygame.display.Info()
-        self.screen = pygame.display.set_mode((round(info_screen.current_w*0.7),round(info_screen.current_h*0.7)))
-        self.screen.fill((200,100,100))       
-        self.bg = pygame.Surface((self.screen.get_width(), self.screen.get_height()), flags=SRCALPHA)
+        self.screen = pygame.Surface((1600,900))    
+        self.bg = pygame.image.load
         self.dt = 1/30
         
         self.all_mobs=[]
@@ -29,86 +29,72 @@ class Game:
         self.render=RenderMap(self.screen.get_width(), self.screen.get_height(), self.directory)
         self.map_height=self.render.get_height()
         self.map_width=self.render.get_width()
-        self.mortier=Object_map("mortier", 500, 500, self.directory, 1, 100, "assets\\TheUltimateWeaponsPack", "mortier", 2, 30, 0)
-        self.group_object.add(self.mortier)
         
         self.checkpoint=[600, -300] # the plus one is because the checkpoints are 1 pixel above the ground
-        self.player=Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
+        self.player= Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
         
-        self.pressed_up_bool = [False]
         self.last_player_position=self.player.position.copy()
         
-        self.scroll=[0,0]
-        self.scroll_rect = Rect(self.player.position[0],self.player.position[1],1,1)
-        
+        """
+        A passer dans keyboard si possible
         pygame.joystick.init()
         self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-        self.motion = [0, 0]
+        self.motion = [0, 0]"""
         
         self.add_mob_to_game(self.player, "solo_clavier")
-        self.add_mob_to_game(self.player, "solo_clavier", group="wave")
         
-        self.collision=Collision(self.render.map) 
-        
-        self.all_controls={}
-        self.all_controls["solo_clavier"]={"perso":[],"touches":[pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP,pygame.K_DOWN, pygame.K_q, pygame.K_a, pygame.K_d, pygame.K_z, pygame.K_e, pygame.K_u, pygame.K_i, pygame.K_o]}  
+        # à revoir
+        self.collision=Collision(self.render.map)
     
     def blit_group(self, bg, all_groups):
         """blit les images des sprites des groupes sur la surface bg"""
         for group in all_groups:
             for sprite in group.sprites():
-                if self.scroll_rect.x - (self.screen.get_width()/2) - sprite.image.get_width() <= sprite.position[0] <= self.scroll_rect.x + (self.screen.get_width()/2)  + sprite.image.get_width() and \
-                    self.scroll_rect.y - (self.screen.get_height()/2) - sprite.image.get_height() <= sprite.position[1] <= self.scroll_rect.y + (self.screen.get_height()/2)  + sprite.image.get_height():
-                        new_x=self.screen.get_width()/2 + sprite.position[0] - self.scroll_rect.x
-                        new_y = self.screen.get_height()/2 + sprite.position[1] - self.scroll_rect.y
-                        bg.blit(sprite.image, (new_x,new_y))
+                    bg.blit(sprite.image, sprite.position)
     
+    """ a faire par le player de preference
     def update_camera(self, playerx, playery, player_speed_dt):
-        self.scroll[0] = ((playerx - self.scroll_rect.x) // 15)*player_speed_dt
-        self.scroll_rect.x += self.scroll[0] 
-        self.scroll[1] = ((playery - self.scroll_rect.y) // 15)*player_speed_dt
-        self.scroll_rect.y += self.scroll[1]
+        CAMERA.x = ((playerx - self.scroll_rect.x) // 15)*player_speed_dt
+        self.scroll_rect.x += self.scroll[0]
+        CAMERA.y= ((playery - CAMERA.y) // 15)*player_speed_dt"""
     
     def add_mob_to_game(self, mob, input, group="base"):
         if group=="base":
-            self.all_mobs.append([mob, input])
+            self.all_mobs.append([mob, input]) #TODO revoir syteme des input, inclu à mob et pas extérieur
             self.group.add(mob)
 
-    def handle_input(self):
+    def handle_input(self): #! Système des action entier a revoir
         """agit en fonction des touches appuye par le joueur"""
              
         pressed = pygame.key.get_pressed()
         self.all_controls["solo_clavier"]["perso"]=[]
         perso_manette=[]
-        if pressed:
+        if pressed: #! condition inutile pressed est un dictionnaire et jamais vide
             for mob in self.all_mobs:
-                if mob[0].action_image!="dying":
+                if mob[0].action_image!="dying": #! need to délier annimation et action
                     #le joueur joue au clavier
                     # elif player[1]=="manette":
                     #     perso_manette.append(player[0])
-                    if mob[1] in self.all_controls.keys():
+                    if mob[1] in self.all_controls.keys(): #? pk mob est un dictionaire et pas une classe c'est pas le joueur
                         self.all_controls[mob[1]]["perso"].append(mob[0])
                     elif mob[1]=="manette":
                         perso_manette.append(mob[0])
-                    elif mob[1]=="bot":
+                    elif mob[1]=="bot": #? ça c'est pour quand t'es un bot c'est ça ? pk tu le range pas dans la classe directement et que y a des array et des dico de partout
                         if mob[0].bot.get_distance_target()<750:
                             mob[0].bot.make_mouvement(self.collision)
                         else:
                             mob[0].reset_actions()
             
             for control in self.all_controls.values():
-                if pressed[control["touches"][0]]: pressed_left(control["perso"], self.collision)
+                if pressed[control["touches"][0]]: pressed_left(control["perso"], self.collision) #! ajouter les action dans le nom des method et pas les touche 
                 elif pressed[control["touches"][1]]: pressed_right(control["perso"], self.collision)
                 if not pressed[control["touches"][0]] and not pressed[control["touches"][1]]:
                     for mob in control["perso"]:
                         handle_input_ralentissement(mob)
                 if pressed[control["touches"][2]]:pressed_up(control["perso"], pressed[control["touches"][3]], pressed[control["touches"][0]], pressed[control["touches"][1]], self.pressed_up_bool, self.collision)
                 if pressed[control["touches"][3]]:pressed_down(control["perso"], self.collision)
-                if pressed[control["touches"][4]]:pass
-                if pressed[control["touches"][5]]:pressed_attack(control["perso"])
-                if pressed[control["touches"][6]]:pass     
-                if pressed[control["touches"][7]]:pass                                                 
-                if pressed[control["touches"][8]]: 
+                if pressed[control["touches"][5]]:pressed_attack(control["perso"])                                             
+                if pressed[control["touches"][8]]: #! pas d'interaction prévu avec des objets sur la map a virer
                     id = pressed_interact(control["perso"], self.group_object)
                     if id !=None:
                         self.interact_object_map(id)
@@ -117,6 +103,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
     
+    """ keske ça fou dans game xd
     def gestion_chute(self, mob):
         # si le j saut ou dash la chute prends fin
         if mob.is_jumping and mob.is_falling:
@@ -129,14 +116,15 @@ class Game:
         else:
             # sinon on stop la chute si il y en a une
             if mob.is_falling:
-                mob.fin_chute()
+                mob.fin_chute()"""
     
+    """pas au role de game
     def interact_object_map(self, id):
         if id =="mortier":
-            print("coucou")
+            print("coucou")"""
     
+    """faire passer les particule par un script tier
     def update_particle(self):
-        """update les infos concernant les particles, ajoute ou en supprime """
         # si l'action du joueur a changer on l'update dans la classe particule
         
         for mob in [i[0] for i in self.all_mobs]:
@@ -154,8 +142,9 @@ class Game:
                         if sprite.id == f"particule{id}":
                             self.group_particle.remove(sprite)
                 mob.particule.remove_particle.clear() 
-    
-    def handle_action(self, mob):
+    """
+
+    def handle_action(self, mob): #! pas le role de game non plus le joueur doit se demerder
         
         if mob.is_jumping and self.collision.joueur_se_cogne(mob):
             mob.fin_saut()
@@ -181,17 +170,17 @@ class Game:
         """ fonction qui update les informations du jeu"""   
                 
         for group in self.all_groups:
-            group.update()
+            group.update() #? appelle le update des mob ?
             
         for mob in [tuple[0] for tuple in self.all_mobs]:
-            if mob.bot == None or mob.bot.get_distance_target()<750:
+            if mob.bot == None or mob.bot.get_distance_target()<750: #? système de bot pk pas mais pas comme ça
                 mob.update_action()
                 self.handle_action(mob)
                 
                 if mob.action in mob.dico_action_functions.keys():
                     mob.dico_action_functions[mob.action]()
                     
-                if mob.is_jumping and mob.action=="run":
+                if mob.is_jumping and mob.action=="run": #? run genre run ou juste marcher ? pk on annule le saut si on marche ? pk on traite les action puis on les annulent après
                     mob.is_jumping=False
             else:
                 mob.reset_actions()
@@ -200,8 +189,7 @@ class Game:
         
         self.update_camera(self.player.position[0], self.player.position[1], self.player.speed_dt)
 
-    def update_ecran(self):     
-        self.bg.fill((255,155,155))
+    def Draw(self):     
         self.render.render(self.bg, self.scroll_rect.x, self.scroll_rect.y, self.scroll_rect)
         self.blit_group(self.bg, self.all_groups)
         self.screen.blit(self.bg, (0,0))
