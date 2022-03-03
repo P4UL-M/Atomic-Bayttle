@@ -33,7 +33,7 @@ class Game:
         while Game.running:
             Camera._off_screen = Game.surf.copy()
             
-            partie.update()
+            partie.Update()
 
             #test.loop(PATH)
 

@@ -154,8 +154,8 @@ class Keyboard:
 
     @staticmethod
     def load(path):
-        touche = json.load(open(path / "data" / "settings.json"))
-        for key,val in touche["keys"].items():
+        settings = json.load(open(path / "data" / "settings.json"))
+        for key,val in settings["keys"].items():
             if type(val)!=list:
                 open(path / "data" / "log.txt","a").write("Error while loading key from the settings")
                 continue
@@ -163,12 +163,12 @@ class Keyboard:
    
     @staticmethod
     def save(path):
-        touche = json.load(open(path / "data" / "settings.json"))
-        touche["keys"] = dict()
+        settings = json.load(open(path / "data" / "settings.json"))
+        settings["keys"] = dict()
         for key,val in Keyboard.__dict__.items():
             if type(val)==Key:
-                touche["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
-        json.dump(touche,open(path / "data" / "settings.json","w"))
+                settings["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
+        json.dump(settings,open(path / "data" / "settings.json","w"))
 
 class MixeurAudio:
     pygame.mixer.set_num_channels(6)

@@ -16,11 +16,11 @@ PATH = pathlib.Path(__file__).parent
 
 class Partie:
     def __init__(self,j1,j2):
-        
-        self.screen = pygame.Surface((1600,900))    
-        self.bg = pygame.image.load
-        self.dt = 1/30
-        
+          
+        self.map = Map(PATH / "assets" / "environnement" / "map.png")  
+        self.bg = pygame.image.load(PATH / "assets" / "environnement" / "bg.gif") # TODO passer avec animation après
+        self.bg = pygame.transform.scale(self.bg,self.map.image.get_size())
+
         self.all_mobs=[]
         self.group = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
@@ -28,14 +28,10 @@ class Partie:
         self.group_object=pygame.sprite.Group()
         self.all_groups = [self.group_object, self.group_object, self.group, self.group_particle]
         
-        self.render = Map(PATH / "assets" / "")
-        self.map_height=self.render.get_height()
-        self.map_width=self.render.get_width()
-        
         self.checkpoint=[600, -300] # the plus one is because the checkpoints are 1 pixel above the ground
-        self.player= Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
+        #self.player= Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
         
-        self.last_player_position=self.player.position.copy()
+        #self.last_player_position=self.player.position.copy()
         
         """
         A passer dans keyboard si possible
@@ -43,10 +39,10 @@ class Partie:
         self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
         self.motion = [0, 0]"""
         
-        self.add_mob_to_game(self.player, "solo_clavier")
+        #self.add_mob_to_game(self.player, "solo_clavier")
         
         # à revoir
-        self.collision=Collision(self.render.map)
+        #self.collision=Collision(self.render.map)
     
     def blit_group(self, bg, all_groups):
         """blit les images des sprites des groupes sur la surface bg"""
@@ -170,7 +166,17 @@ class Partie:
         
     def Update(self):
         """ fonction qui update les informations du jeu"""   
-                
+
+        pygame.event.pump()
+
+        _surf = self.bg.copy()
+        _surf.blit(self.map.image,(0,0))
+        print(self.map.image.get_size(),self.bg.get_size())
+
+        CAMERA._off_screen = _surf
+
+        return
+
         for group in self.all_groups:
             group.update() #? appelle le update des mob ?
             
