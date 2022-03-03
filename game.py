@@ -9,7 +9,7 @@ from mobs.player import Player
 from mobs.mob_functions import *
 from mobs.collision import Collision
 from map.object_map import Object_map
-from physique import *
+from weapons.physique import *
 
 class Game:
     def __init__(self):
@@ -122,7 +122,7 @@ class Game:
     def gestion_chute(self, mob):
         # si le j saut ou dash la chute prends fin
         if mob.is_jumping and mob.is_falling:
-            mob.fin_chute(jump_or_dash = True) 
+            mob.fin_chute() 
         
         # si le joueur n'est pas sur un sol et ne chute pas on commence la chute
         if not self.collision.joueur_sur_sol(mob):
