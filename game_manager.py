@@ -15,40 +15,18 @@ CAMERA = None
 PATH = pathlib.Path(__file__).parent
 
 class Partie:
-    def __init__(self,j1,j2):
-          
+    def __init__(self):
         self.map = Map(PATH / "assets" / "environnement" / "map.png")  
-        self.bg = pygame.image.load(PATH / "assets" / "environnement" / "bg.gif") # TODO passer avec animation après
+        self.bg = pygame.image.load(PATH / "assets" / "environnement" / "bg.png").convert() # TODO passer avec animation après
         self.bg = pygame.transform.scale(self.bg,self.map.image.get_size())
 
         self.all_mobs=[]
         self.group = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
-        self.group_object=pygame.sprite.Group()
-        self.all_groups = [self.group_object, self.group_object, self.group, self.group_particle]
+        self.all_groups = [self.group_object, self.group, self.group_particle]
         
-        self.checkpoint=[600, -300] # the plus one is because the checkpoints are 1 pixel above the ground
-        #self.player= Player(600, -300, self.directory, "1", self.checkpoint.copy(), Particule)
-        
-        #self.last_player_position=self.player.position.copy()
-        
-        """
-        A passer dans keyboard si possible
-        pygame.joystick.init()
-        self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-        self.motion = [0, 0]"""
-        
-        #self.add_mob_to_game(self.player, "solo_clavier")
-        
-        # à revoir
-        #self.collision=Collision(self.render.map)
-    
-    def blit_group(self, bg, all_groups):
-        """blit les images des sprites des groupes sur la surface bg"""
-        for group in all_groups:
-            for sprite in group.sprites():
-                    bg.blit(sprite.image, sprite.position)
+        self.checkpoint=[600, -300] # the swpan point à remplacer après par le system
     
     """ a faire par le player de preference
     def update_camera(self, playerx, playery, player_speed_dt):
@@ -56,10 +34,9 @@ class Partie:
         self.scroll_rect.x += self.scroll[0]
         CAMERA.y= ((playery - CAMERA.y) // 15)*player_speed_dt"""
     
-    def add_mob_to_game(self, mob, input, group="base"):
-        if group=="base":
-            self.all_mobs.append([mob, input]) #TODO revoir syteme des input, inclu à mob et pas extérieur
-            self.group.add(mob)
+    def add_player(self, team):
+        player = Player(*self.checkpoint)
+        self.group.add(player)
 
     def handle_input(self): #! Système des action entier a revoir
         """agit en fonction des touches appuye par le joueur"""
@@ -167,41 +144,25 @@ class Partie:
     def Update(self):
         """ fonction qui update les informations du jeu"""   
 
-        pygame.event.pump()
-
-        _surf = self.bg.copy()
-        _surf.blit(self.map.image,(0,0))
-        print(self.map.image.get_size(),self.bg.get_size())
-
-        CAMERA._off_screen = _surf
+        # event 
+        for event in pygame.event.get():
+            match event.type:
+                case pygame.QUIT:
+                    raise SystemExit
+                case _:
+                    self.group.update(event)
+        # render
+        self.Draw()
 
         return
 
-        for group in self.all_groups:
-            group.update() #? appelle le update des mob ?
-            
-        for mob in [tuple[0] for tuple in self.all_mobs]:
-            if mob.bot == None or mob.bot.get_distance_target()<750: #? système de bot pk pas mais pas comme ça
-                mob.update_action()
-                self.handle_action(mob)
-                
-                if mob.action in mob.dico_action_functions.keys():
-                    mob.dico_action_functions[mob.action]()
-                    
-                if mob.is_jumping and mob.action=="run": #? run genre run ou juste marcher ? pk on annule le saut si on marche ? pk on traite les action puis on les annulent après
-                    mob.is_jumping=False
-            else:
-                mob.reset_actions()
-        
-        self.update_particle()      
-        
-        self.update_camera(self.player.position[0], self.player.position[1], self.player.speed_dt)
-
-    def Draw(self):     
-        self.render.render(self.bg, self.scroll_rect.x, self.scroll_rect.y, self.scroll_rect)
-        self.blit_group(self.bg, self.all_groups)
-        self.screen.blit(self.bg, (0,0))
-        self.last_player_position=self.player.position.copy()
+    def Draw(self):
+        _surf = self.bg.copy()
+        _surf.blit(self.map.image,(0,0)) 
+        self.group.draw(_surf)
+        self.group_object.draw(_surf)
+        self.group_particle.draw(_surf)
+        CAMERA._off_screen = _surf
     
     def test_parabole(self):
         x0=self.mortier.position[0] + self.mortier.image.get_width()/2
@@ -242,26 +203,3 @@ class Partie:
                     new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
                     new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
                     pygame.draw.circle(self.screen, (0, 0, 255), (new_x, new_y), 3)
-
-    def run(self):
-        """boucle du jeu"""
-
-        clock = pygame.time.Clock()
-
-        self.running = True
-        while self.running:
-            self.player.is_mouving_x = False
-            self.collision.joueur_sur_sol(self.player, first=True)
-            self.handle_input()
-            self.update()
-            self.update_ecran()
-            
-            self.test_parabole()
-            
-            pygame.display.update()      
-            
-            self.dt = clock.tick(60)
-            for mob in [tuple[0] for tuple in self.all_mobs]:
-                mob.update_tick(self.dt)
-
-        pygame.quit()

@@ -4,7 +4,7 @@ from pygame.locals import *
 class Map(pygame.sprite.Sprite):
     def __init__(self, path):
         super().__init__()
-        self.image = pygame.image.load(path).convert(32,HWSURFACE + HWACCEL)
+        self.image = pygame.image.load(path).convert_alpha()
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
     

@@ -35,8 +35,6 @@ class Game:
             
             partie.Update()
 
-            #test.loop(PATH)
-
             Camera.render()
             #print(Game.clock.get_fps())
             pygame.display.flip()
