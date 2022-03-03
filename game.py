@@ -1,9 +1,7 @@
 import pygame
 import os
-import time
 from pygame.locals import *
 from map.render_map import RenderMap
-from entities_sprite.dash_images import Dash_images
 from entities_sprite.particule import Particule
 from mobs.player import Player
 from mobs.mob_functions import *

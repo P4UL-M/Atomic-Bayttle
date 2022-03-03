@@ -1,6 +1,5 @@
 import pygame
 import time
-import random
 from math import sqrt
 
 class MOB(pygame.sprite.Sprite):

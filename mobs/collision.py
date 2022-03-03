@@ -1,5 +1,4 @@
 import pygame
-import time
 
 class Collision:
     def __init__(self, map):

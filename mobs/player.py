@@ -1,6 +1,4 @@
-from turtle import position
 import pygame
-import time
 from .MOTHER import MOB
 
 class BodyPartSprite(pygame.sprite.Sprite):
