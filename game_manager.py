@@ -28,71 +28,10 @@ class Partie:
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         self.camera_target:pygame.sprite.Sprite = None
 
-    """ a faire par le player de preference
-    def update_camera(self, playerx, playery, player_speed_dt):
-        CAMERA.x = ((playerx - self.scroll_rect.x) // 15)*player_speed_dt
-        self.scroll_rect.x += self.scroll[0]
-        CAMERA.y= ((playery - CAMERA.y) // 15)*player_speed_dt"""
-    
     def add_player(self, team):
         player = Player("j1",self.checkpoint,(32,32),"craby",self.mobs)
         self.mobs.add(player)
-
-    def handle_input(self): #! Système des action entier a revoir
-        """agit en fonction des touches appuye par le joueur"""
-             
-        pressed = pygame.key.get_pressed()
-        self.all_controls["solo_clavier"]["perso"]=[]
-        perso_manette=[]
-        if pressed: #! condition inutile pressed est un dictionnaire et jamais vide
-            for mob in self.all_mobs:
-                if mob[0].action_image!="dying": #! need to délier annimation et action
-                    #le joueur joue au clavier
-                    # elif player[1]=="manette":
-                    #     perso_manette.append(player[0])
-                    if mob[1] in self.all_controls.keys(): #? pk mob est un dictionaire et pas une classe c'est pas le joueur
-                        self.all_controls[mob[1]]["perso"].append(mob[0])
-                    elif mob[1]=="manette":
-                        perso_manette.append(mob[0])
-                    elif mob[1]=="bot": #? ça c'est pour quand t'es un bot c'est ça ? pk tu le range pas dans la classe directement et que y a des array et des dico de partout
-                        if mob[0].bot.get_distance_target()<750:
-                            mob[0].bot.make_mouvement(self.collision)
-                        else:
-                            mob[0].reset_actions()
-            
-            for control in self.all_controls.values():
-                if pressed[control["touches"][0]]: pressed_left(control["perso"], self.collision) #! ajouter les action dans le nom des method et pas les touche 
-                elif pressed[control["touches"][1]]: pressed_right(control["perso"], self.collision)
-                if not pressed[control["touches"][0]] and not pressed[control["touches"][1]]:
-                    for mob in control["perso"]:
-                        handle_input_ralentissement(mob)
-                if pressed[control["touches"][2]]:pressed_up(control["perso"], pressed[control["touches"][3]], pressed[control["touches"][0]], pressed[control["touches"][1]], self.pressed_up_bool, self.collision)
-                if pressed[control["touches"][3]]:pressed_down(control["perso"], self.collision)
-                if pressed[control["touches"][5]]:pressed_attack(control["perso"])                                             
-                if pressed[control["touches"][8]]: #! pas d'interaction prévu avec des objets sur la map a virer
-                    id = pressed_interact(control["perso"], self.group_object)
-                    if id !=None:
-                        self.interact_object_map(id)
-                
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-    
-    """ keske ça fou dans game xd
-    def gestion_chute(self, mob):
-        # si le j saut ou dash la chute prends fin
-        if mob.is_jumping and mob.is_falling:
-            mob.fin_chute() 
-        
-        # si le joueur n'est pas sur un sol et ne chute pas on commence la chute
-        if not self.collision.joueur_sur_sol(mob):
-            if not mob.is_falling and not mob.is_jumping:
-                mob.debut_chute()
-        else:
-            # sinon on stop la chute si il y en a une
-            if mob.is_falling:
-                mob.fin_chute()"""
-    
+ 
     """pas au role de game
     def interact_object_map(self, id):
         if id =="mortier":
@@ -118,29 +57,7 @@ class Partie:
                             self.group_particle.remove(sprite)
                 mob.particule.remove_particle.clear() 
     """
-
-    def handle_action(self, mob): #! pas le role de game non plus le joueur doit se demerder
-        
-        if mob.is_jumping and self.collision.joueur_se_cogne(mob):
-            mob.fin_saut()
-
-        if mob.is_jumping and mob.action_image=="crouch":
-            mob.fin_saut()
-        
-        if mob.action_image=="jump" and not mob.is_jumping:
-            mob.change_direction("idle", mob.direction)
-
-        # gestion collision avec les murs
-        
-        mob.save_location()    
-        
-        if mob.position[1] > self.map_height + 100:
-            mob.position = [mob.checkpoint[0], mob.checkpoint[1]-mob.image.get_height()]
-        
-        self.gestion_chute(mob) 
-
-        mob.update_action()
-        
+     
     def Update(self):
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(tl.GRAVITY,{"serialized":GAME.serialized}))
@@ -167,7 +84,7 @@ class Partie:
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf
-    
+
     def test_parabole(self):
         x0=self.mortier.position[0] + self.mortier.image.get_width()/2
         h0=self.mortier.position[1] + self.mortier.image.get_width()/2
