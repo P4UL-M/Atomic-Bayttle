@@ -25,9 +25,9 @@ class Partie:
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
         
-        self.checkpoint=(600, 600) # the swpan point à remplacer après par le system
+        self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
+        self.camera_target:pygame.sprite.Sprite = None
 
-    
     """ a faire par le player de preference
     def update_camera(self, playerx, playery, player_speed_dt):
         CAMERA.x = ((playerx - self.scroll_rect.x) // 15)*player_speed_dt
@@ -35,7 +35,7 @@ class Partie:
         CAMERA.y= ((playery - CAMERA.y) // 15)*player_speed_dt"""
     
     def add_player(self, team):
-        player = Player("j1",self.checkpoint,(50,50),"craby",self.mobs)
+        player = Player("j1",self.checkpoint,(32,32),"craby",self.mobs)
         self.mobs.add(player)
 
     def handle_input(self): #! Système des action entier a revoir
@@ -142,8 +142,7 @@ class Partie:
         mob.update_action()
         
     def Update(self):
-        """ fonction qui update les informations du jeu"""   
-
+        """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(tl.GRAVITY,{"serialized":GAME.serialized}))
         # event 
         for event in pygame.event.get():
@@ -153,8 +152,9 @@ class Partie:
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)
-                    
-        self.mobs.update(self.map,GAME.serialized)
+  
+        self.mobs.update(self.map,GAME.serialized,CAMERA)
+
         # render
         self.Draw()
 

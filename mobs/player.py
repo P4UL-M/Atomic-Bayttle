@@ -4,6 +4,7 @@ import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard
 
 PATH = pathlib.Path(__file__).parent
+INFO = pygame.display.Info()
 
 class Player(MOB):
 
@@ -22,6 +23,8 @@ class Player(MOB):
         self.image.fill((255,0,0)) #! tempo add animation manager after
         self.increment_foot=2
 
+        self.jump_force = 10
+
         # for action
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
@@ -37,13 +40,14 @@ class Player(MOB):
                 ... #* put here the future of the game like charging up or impact
         super().handle(event)
 
-    def update(self,map,serialized):
+    def update(self,map,serialized,CAMERA):
         # update with 
         self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
         if not self.lock:
             if Keyboard.jump.is_pressed:
-                self.inertia.y += 15
-                self.grounded = False
+                if self.grounded:
+                    self.inertia.y = -self.jump_force
+                    self.grounded = False
             if Keyboard.down.is_pressed:
                 ...
             if Keyboard.up.is_pressed:
@@ -61,4 +65,14 @@ class Player(MOB):
             if Keyboard.end_turn.is_pressed:
                 self.lock = True
                 ...
-        super().update(map,serialized)
+                
+            #* CAMERA Update of the player
+            x,y = CAMERA.to_virtual(INFO.current_w/2,INFO.current_h/2 )
+            _x,_y = (self.rect.left,self.rect.top)
+            CAMERA.x += (_x - x)*0.0001
+            CAMERA.y += (_y - y)*0.0001
+            #* Effect of dezoom relatif to speed
+            zoom_target = 4*(1/(self.actual_speed*0.1 + 1))
+            CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
+            
+            super().update(map,serialized)

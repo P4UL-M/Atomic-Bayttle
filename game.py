@@ -30,6 +30,8 @@ class Game:
         gl.config(INFO)
         partie = game_manager.Partie()
         partie.add_player("aaaa")
+        partie.camera_target = partie.mobs.sprites()[0]
+        Camera.zoom = 3
 
         while Game.running:
             Camera._off_screen = Game.surf.copy()
