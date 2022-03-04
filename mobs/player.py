@@ -1,40 +1,64 @@
 import pygame
 from .MOTHER import MOB
 import pathlib
-from tools.tools import animation_Manager, sprite_sheet
+from tools.tools import animation_Manager, sprite_sheet,Keyboard
 
 PATH = pathlib.Path(__file__).parent
 
-class BodyPartSprite(pygame.mask.Mask):
-    def __init__(self, pos,size):
-        super().__init__(size,True)
-        self.x, self.y = pos[0],pos[1]
-    
-    def collide(): ...
-
 class Player(MOB):
 
-    def __init__(self,name, pos, size,team):
-        """parametres : 
-                - x : coordonne en x du joueur
-                - y : coordonne en y du joueur
-                - directory : chemin absolu vers le dossier du jeu"""
+    def __init__(self,name, pos, size,team,group):
+        """parametres :
+            - pos : les position de base
+            - size : la taille du sprite
+            - team : la team d'image à charger
+            - group : le group de sprite a ajouter le sprite
+        """
         # initialisation de la classe mere permettant de faire de cette classe un sprite
-        super().__init__()
-        
-        self.image = animation_Manager()
-        self.rect = pygame.Rect(*pos,*size)
+        super().__init__(pos,size,group)
+        self.name = name
+
+        self.image = pygame.Surface(size)
+        self.image.fill((255,0,0)) #! tempo add animation manager after
         self.increment_foot=2
 
         # for action
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
-        
-        # body part with position relative to the player position
-        self.body_mask = BodyPartSprite(self.rect.width * 0.25,self.rect.height * 0.1,self.rect.width * 0.5, self.rect.height*0.8)
-        self.feet_mask = BodyPartSprite(self.rect.width * 0.25,self.rect.height * 0.7,self.body.w * 0.5, self.body.h*0.3)
-        self.head_mask = BodyPartSprite(self.rect.width * 0.25,0,self.body.w * 0.5, self.body.h*0.3)
-        self.body_left_mask = BodyPartSprite(0,self.rect.height * 0.4,self.body.w * 0.4, self.body.h*0.3)
-        self.body_right_mask = BodyPartSprite(self.rect.width * 0.6,self.rect.height * 0.4,self.body.w * 0.4, self.body.h*0.3)    
-  
+
+        self.load_team(team)
+
     def load_team(self,team): ... # load all annimation in annimation manager
+
+    def handle(self, event: pygame.event.Event):
+        """methode appele a chaque event"""
+        match event.type:
+            case _:
+                ... #* put here the future of the game like charging up or impact
+        super().handle(event)
+
+    def update(self,map,serialized):
+        # update with 
+        self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
+        if not self.lock:
+            if Keyboard.jump.is_pressed:
+                self.inertia.y += 15
+                self.grounded = False
+            if Keyboard.down.is_pressed:
+                ...
+            if Keyboard.up.is_pressed:
+                ...
+            if Keyboard.left.is_pressed:
+                ...
+            if Keyboard.right.is_pressed:
+                ...
+            if Keyboard.interact.is_pressed:
+                ...
+            if Keyboard.inventory.is_pressed:
+                ...
+            if Keyboard.pause.is_pressed:
+                ...
+            if Keyboard.end_turn.is_pressed:
+                self.lock = True
+                ...
+        super().update(map,serialized)

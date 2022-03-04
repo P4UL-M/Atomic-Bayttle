@@ -7,6 +7,7 @@ from mobs.player import Player
 from mobs.mob_functions import *
 from mobs.collision import Collision
 #from map.object_map import Object_map
+import tools.constant as tl
 from weapons.physique import *
 import pathlib
 
@@ -20,13 +21,12 @@ class Partie:
         self.bg = pygame.image.load(PATH / "assets" / "environnement" / "bg.png").convert() # TODO passer avec animation après
         self.bg = pygame.transform.scale(self.bg,self.map.image.get_size())
 
-        self.all_mobs=[]
-        self.group = pygame.sprite.Group()
+        self.mobs = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
-        self.all_groups = [self.group_object, self.group, self.group_particle]
         
-        self.checkpoint=[600, -300] # the swpan point à remplacer après par le system
+        self.checkpoint=(600, 600) # the swpan point à remplacer après par le system
+
     
     """ a faire par le player de preference
     def update_camera(self, playerx, playery, player_speed_dt):
@@ -35,8 +35,8 @@ class Partie:
         CAMERA.y= ((playery - CAMERA.y) // 15)*player_speed_dt"""
     
     def add_player(self, team):
-        player = Player(*self.checkpoint)
-        self.group.add(player)
+        player = Player("j1",self.checkpoint,(50,50),"craby",self.mobs)
+        self.mobs.add(player)
 
     def handle_input(self): #! Système des action entier a revoir
         """agit en fonction des touches appuye par le joueur"""
@@ -144,13 +144,17 @@ class Partie:
     def Update(self):
         """ fonction qui update les informations du jeu"""   
 
+        pygame.event.post(pygame.event.Event(tl.GRAVITY,{"serialized":GAME.serialized}))
         # event 
         for event in pygame.event.get():
             match event.type:
                 case pygame.QUIT:
                     raise SystemExit
                 case _:
-                    self.group.update(event)
+                    for mob in self.mobs:
+                        mob.handle(event)
+                    
+        self.mobs.update(self.map,GAME.serialized)
         # render
         self.Draw()
 
@@ -159,7 +163,7 @@ class Partie:
     def Draw(self):
         _surf = self.bg.copy()
         _surf.blit(self.map.image,(0,0)) 
-        self.group.draw(_surf)
+        self.mobs.draw(_surf)
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf

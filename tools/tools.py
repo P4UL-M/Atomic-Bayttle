@@ -44,9 +44,9 @@ class Axis:
         return self.get()*other
 
     def get(self):
-        if self.value==0 or self.value<self.deadzone[0]:
+        if self.value==0 or abs(self.value)<self.deadzone[0]:
             return 0
-        return self.value if self.value<self.deadzone[1] else self.deadzone[1]
+        return self.value if abs(self.value)<self.deadzone[1] else self.deadzone[1]*self.sign(self.value)
 
     def set(self,value:int):
         self.value = value

@@ -28,7 +28,8 @@ class Game:
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
-        partie = game_manager.Partie("craby","pirate")
+        partie = game_manager.Partie()
+        partie.add_player("aaaa")
 
         while Game.running:
             Camera._off_screen = Game.surf.copy()
