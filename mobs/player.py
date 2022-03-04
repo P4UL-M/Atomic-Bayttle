@@ -72,7 +72,7 @@ class Player(MOB):
             CAMERA.x += (_x - x)*0.0001
             CAMERA.y += (_y - y)*0.0001
             #* Effect of dezoom relatif to speed
-            zoom_target = 4*(1/(self.actual_speed*0.1 + 1))
+            zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
             
             super().update(map,serialized)
