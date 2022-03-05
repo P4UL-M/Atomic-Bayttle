@@ -93,11 +93,15 @@ class animation_Manager(object):
         self.spritesheets:dict[list[sprite_sheet]] = {}
         self.links:dict[list] = {}
         self.__loaded:sprite_sheet = None
-        self.__loaded_name:str = None
+        self._loaded_name:str = None
 
     @property
     def surface(self):
         self.frame += self.incrementor*self.annim_speed_factor
+        if self.__loaded.x_nb*self.__loaded.y_nb < self.frame:
+            self.frame %= self.__loaded.x_nb*self.__loaded.y_nb
+            if self._loaded_name in self.links.keys():
+                self.load(self.links[self._loaded_name])
         return self.__loaded[int(self.frame)]
     
     @property
@@ -110,13 +114,16 @@ class animation_Manager(object):
 
     def load(self,name):
         if name in self.spritesheets.keys():
-            if name!=self.__loaded_name:
+            if name!=self._loaded_name:
                 self.__loaded = self.spritesheets[name][0]
-                self.__loaded_name = name
+                self._loaded_name = name
                 self.frame = 0
                 self.incrementor = self.spritesheets[name][1]
         else:
             raise AttributeError
+
+    def add_link(self,origin:str,to:str):
+        self.links[origin] = to
 
 class Vector2:
     """

@@ -45,10 +45,18 @@ class Player(MOB):
             return pygame.transform.flip(surf,True,False) #! if too much loss of perf we will stock both
 
     def load_team(self,team):
-        idle = sprite_sheet(PATH / "idle.png",(24,28)) # load all annimation in annimation manager
-        run = sprite_sheet(PATH / "run.png",(25,30)) # load all annimation in annimation manager
+        idle = sprite_sheet(PATH / "assets" / "perso"/ team / "idle.png",(24,28)) # load all annimation in annimation manager
+        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",(25,30)) # load all annimation in annimation manager
+        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",(25,30)) # load all annimation in annimation manager
+        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",(25,28)) # load all annimation in annimation manager
+        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",(26,28)) # load all annimation in annimation manager
         self.manager.add_annimation("idle",idle,10)
         self.manager.add_annimation("run",run,10)
+        self.manager.add_annimation("jump",jump,5)
+        self.manager.add_annimation("fall",fall,10)
+        self.manager.add_annimation("ground",ground,15)
+        self.manager.add_link("jump","fall")
+        self.manager.add_link("ground","idle")
         self.manager.load("run")
 
     def handle(self, event: pygame.event.Event):
@@ -67,6 +75,7 @@ class Player(MOB):
                     self.inertia.y = -self.jump_force
                     self.grounded = False
                     self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
+                    self.manager.load("jump")
                     for i in range(5):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
             if Keyboard.down.is_pressed:
@@ -92,11 +101,22 @@ class Player(MOB):
             elif self.x_axis.value<0:
                 self.rigth_direction = False
 
-            if self.actual_speed>1:
-                self.manager.load("run")
-                self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
-            else:
-                self.manager.load("idle")
+            if self.manager._loaded_name not in ["jump","ground"]:
+                if self.actual_speed>1:
+                    if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
+                        self.manager.load("fall")
+                    elif self.manager._loaded_name == "fall":
+                        self.manager.load("ground")
+                    else:
+                        self.manager.load("run")
+                        self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
+                elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
+                    if self.manager._loaded_name == "fall":
+                        self.manager.load("ground")
+                    else:
+                        self.manager.load("idle")
+
+            print(self.manager._loaded_name)
 
             #* walking particle here
             if self.grounded:

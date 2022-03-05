@@ -29,7 +29,7 @@ class Game:
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
         partie = game_manager.Partie()
-        partie.add_player("aaaa")
+        partie.add_player("perso_1")
         partie.camera_target = partie.mobs.sprites()[0]
         Camera.zoom = 3
 
