@@ -36,27 +36,6 @@ class Partie:
         if id =="mortier":
             print("coucou")"""
 
-    """faire passer les particule par un script tier
-    def update_particle(self):
-        # si l'action du joueur a changer on l'update dans la classe particule
-        
-        for mob in [i[0] for i in self.all_mobs]:
-            mob.particule.update()
-                
-            # transmition de donnee a travers des tableau de lobjet de la classe particle vers la clsse game    
-            if mob.particule.new_particle != []:
-                for i in mob.particule.new_particle:
-                    self.group_particle.add(i)
-                mob.particule.new_particle.clear()
-                
-            if mob.particule.remove_particle != []:
-                for id in mob.particule.remove_particle:
-                    for sprite in self.group_particle.sprites():
-                        if sprite.id == f"particule{id}":
-                            self.group_particle.remove(sprite)
-                mob.particule.remove_particle.clear() 
-    """
-
     def Update(self):
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(tl.GRAVITY,{"serialized":GAME.serialized}))

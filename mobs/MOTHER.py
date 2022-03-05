@@ -3,9 +3,6 @@ from math import sqrt,ceil
 from tools.tools import Keyboard,Vector2,Axis
 import tools.constant as tl
 
-SCREEN = None
-ft = pygame.font.SysFont("arial",32)
-
 class BodyPartSprite(pygame.mask.Mask):
     def __init__(self, pos:tuple,size:tuple):
         super().__init__(size,True)
@@ -60,7 +57,6 @@ class MOB(pygame.sprite.Sprite):
             raise AttributeError("MOB must have a rect to move")
 
         #* if mobs clip in the surface
-        pygame.draw.rect(SCREEN,(0,0,0,0),pygame.Rect(0,0,1280,720))
         __dy,__dx = 0,0
         _pos = Vector2(self.rect.left,self.rect.top)
         if self.body_mask.collide(_pos(),target):
