@@ -28,7 +28,7 @@ class Partie:
         pygame.mouse.set_visible(False)
 
     def add_player(self, team):
-        player = Player("j1",self.checkpoint,(32,32),"craby",self.mobs)
+        player = Player("j1",self.checkpoint,(24,28),"craby",self.mobs)
         self.mobs.add(player)
 
     """pas au role de game

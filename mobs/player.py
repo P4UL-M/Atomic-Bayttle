@@ -20,9 +20,10 @@ class Player(MOB):
         super().__init__(pos,size,group)
         self.name = name
 
-        self.image = pygame.Surface(size)
-        self.image.fill((255,0,0)) #! tempo add animation manager after
+        self.manager:animation_Manager = animation_Manager()
+        #self.image.fill((255,0,0)) #! tempo add animation manager after
         self.increment_foot=2
+        self.rigth_direction = True
 
         self.jump_force = 8
         self.double_jump = 0
@@ -35,7 +36,20 @@ class Player(MOB):
 
         self.load_team(team)
 
-    def load_team(self,team): ... # load all annimation in annimation manager
+    @property
+    def image(self) -> pygame.Surface:
+        surf = self.manager.surface
+        if self.rigth_direction:
+            return surf
+        else:
+            return pygame.transform.flip(surf,True,False) #! if too much loss of perf we will stock both
+
+    def load_team(self,team):
+        idle = sprite_sheet(PATH / "idle.png",(24,28)) # load all annimation in annimation manager
+        run = sprite_sheet(PATH / "run.png",(25,30)) # load all annimation in annimation manager
+        self.manager.add_annimation("idle",idle,10)
+        self.manager.add_annimation("run",run,10)
+        self.manager.load("run")
 
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
@@ -72,6 +86,17 @@ class Player(MOB):
             if Keyboard.end_turn.is_pressed:
                 self.lock = True
                 ...
+
+            if self.x_axis.value>0:
+                self.rigth_direction = True
+            elif self.x_axis.value<0:
+                self.rigth_direction = False
+
+            if self.actual_speed>1:
+                self.manager.load("run")
+                self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
+            else:
+                self.manager.load("idle")
 
             #* walking particle here
             if self.grounded:

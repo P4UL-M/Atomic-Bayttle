@@ -86,19 +86,23 @@ class sprite_sheet(pygame.Surface):
 
 class animation_Manager(object):
     
-    def __init__(self,direct_return = False):
+    def __init__(self):
         self.frame = 0
         self.incrementor = 1
         self.annim_speed_factor = 1
         self.spritesheets:dict[list[sprite_sheet]] = {}
         self.links:dict[list] = {}
         self.__loaded:sprite_sheet = None
-        self.direct_return = direct_return
+        self.__loaded_name:str = None
 
     @property
     def surface(self):
         self.frame += self.incrementor*self.annim_speed_factor
-        return self.__loaded[int(self.frame)]      
+        return self.__loaded[int(self.frame)]
+    
+    @property
+    def actual_surface(self):
+        return self.__loaded[int(self.frame)]
     
     def add_annimation(self,name,spritesheet:sprite_sheet,_frame:int):
         _increment = 1/_frame
@@ -106,9 +110,11 @@ class animation_Manager(object):
 
     def load(self,name):
         if name in self.spritesheets.keys():
-            self.__loaded = self.spritesheets[name][0]
-            self.frame = 0
-            self.incrementor = self.spritesheets[name][1]
+            if name!=self.__loaded_name:
+                self.__loaded = self.spritesheets[name][0]
+                self.__loaded_name = name
+                self.frame = 0
+                self.incrementor = self.spritesheets[name][1]
         else:
             raise AttributeError
 
