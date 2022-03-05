@@ -4,8 +4,6 @@ from pygame.locals import *
 from map.render_map import Map
 from entities_sprite.particule import Particule
 from mobs.player import Player
-from mobs.mob_functions import *
-from mobs.collision import Collision
 #from map.object_map import Object_map
 import tools.constant as tl
 from weapons.physique import *
@@ -27,6 +25,7 @@ class Partie:
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         self.camera_target:pygame.sprite.Sprite = None
+        pygame.mouse.set_visible(False)
 
     def add_player(self, team):
         player = Player("j1",self.checkpoint,(32,32),"craby",self.mobs)
@@ -70,7 +69,8 @@ class Partie:
                     for mob in self.mobs:
                         mob.handle(event)
   
-        self.mobs.update(self.map,GAME.serialized,CAMERA)
+        self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
+        self.group_particle.update(GAME.serialized)
 
         # render
         self.Draw()

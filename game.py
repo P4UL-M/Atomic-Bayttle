@@ -39,7 +39,7 @@ class Game:
             partie.Update()
 
             Camera.render()
-            #print(Game.clock.get_fps())
+            print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -52,7 +52,7 @@ class Camera:
     zoom = 1
     zoom_offset = (1,1)
     maximise = True
-    HUD = False
+    HUD = True
     _off_screen:pygame.Surface = pygame.Surface((1600,900),flags=HWSURFACE + HWACCEL)
     _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA + HWSURFACE + HWACCEL)
 
@@ -89,3 +89,8 @@ class Camera:
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME = test.GAME= Game
 game_manager.CAMERA = menu_main.CAMERA = test.CAMERA = Camera
+
+
+import mobs.MOTHER
+
+mobs.MOTHER.SCREEN = Camera._screen_UI

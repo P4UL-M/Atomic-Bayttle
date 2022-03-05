@@ -3,14 +3,15 @@ from math import sqrt,ceil
 from tools.tools import Keyboard,Vector2,Axis
 import tools.constant as tl
 
-GAME = None
+SCREEN = None
+ft = pygame.font.SysFont("arial",32)
 
 class BodyPartSprite(pygame.mask.Mask):
     def __init__(self, pos:tuple,size:tuple):
         super().__init__(size,True)
         self.pos = Vector2(*[ceil(i) for i in pos])
     
-    def collide(self,pos:tuple,target:pygame.sprite.Sprite): 
+    def collide(self,pos:tuple,target:pygame.sprite.Sprite) -> bool: 
         try:
             target.__getattribute__("rect")
         except:
@@ -19,6 +20,13 @@ class BodyPartSprite(pygame.mask.Mask):
         x_off = target.rect.left - (pos[0]+self.pos.x)
         y_off = target.rect.top- (pos[1]+self.pos.y)
         return self.overlap(target.mask,(x_off,y_off))!=None
+
+    def collide_normal(self,pos:tuple,target:pygame.sprite.Sprite) -> Vector2:
+        x = target.rect.left - (pos[0]+self.pos.x)
+        y = target.rect.top- (pos[1]+self.pos.y)
+        dx = self.overlap_area(target.mask, (x + 1, y)) - self.overlap_area(target.mask, (x - 1, y))
+        dy = self.overlap_area(target.mask, (x, y + 1)) - self.overlap_area(target.mask, (x, y - 1))
+        return Vector2(dx,dy)
 
 class MOB(pygame.sprite.Sprite):
 
@@ -31,7 +39,7 @@ class MOB(pygame.sprite.Sprite):
         self.x_axis = Axis()
         self.y_axis = Axis()
 
-        self.speed = 10
+        self.speed = 5
         self.actual_speed = 0
         self.gravity = 0.05
 
@@ -51,9 +59,21 @@ class MOB(pygame.sprite.Sprite):
         except:
             raise AttributeError("MOB must have a rect to move")
 
-        #* Y calculation
+        #* if mobs clip in the surface
+        pygame.draw.rect(SCREEN,(0,0,0,0),pygame.Rect(0,0,1280,720))
+        __dy,__dx = 0,0
+        _pos = Vector2(self.rect.left,self.rect.top)
+        if self.body_mask.collide(_pos(),target):
+            _normal = self.body_mask.collide_normal(_pos(),target)
+            self.inertia.x +=  _normal.x*0.025*self.speed; self.inertia.y += _normal.y*0.025*self.speed
+
+        
         _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
-        _pos = Vector2(self.rect.left,self.rect.top + _dy)
+        _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
+
+        _pos = Vector2(self.rect.left + __dx ,self.rect.top + __dy)
+        #* Y calculation
+        _pos = Vector2(self.rect.left + __dx,self.rect.top + _dy + __dy)
         if self.body_mask.collide(_pos(),target):
             if self.head_mask.collide(_pos(),target) and _dy < 0:
                 __ipos_l = Vector2(self.rect.left - _dy,self.rect.top + _dy)
@@ -84,8 +104,7 @@ class MOB(pygame.sprite.Sprite):
             self.grounded = False
 
         #* X calculation
-        _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
-        _pos = Vector2(self.rect.left + _dx,self.rect.top + _dy)
+        _pos = Vector2(self.rect.left + _dx + __dx,self.rect.top + _dy + __dy)
         if self.body_mask.collide(_pos(),target):
             if self.body_left_mask.collide(_pos(),target) and _dx < 0: # collision on left
                 __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy - abs(_dx))
@@ -115,7 +134,7 @@ class MOB(pygame.sprite.Sprite):
                 _dx = 0
         
         self.actual_speed = sqrt(_dx**2 + _dy**2)
-        self.rect.move_ip(_dx,_dy)
+        self.rect.move_ip(_dx + __dx,_dy + __dy)
 
     def handle(self,event:pygame.event.Event): 
         """methode appele a chaque event"""
