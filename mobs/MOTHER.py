@@ -66,6 +66,8 @@ class MOB(pygame.sprite.Sprite):
         if self.body_mask.collide(_pos(),target):
             _normal = self.body_mask.collide_normal(_pos(),target)
             self.inertia.x +=  _normal.x*0.025*self.speed; self.inertia.y += _normal.y*0.025*self.speed
+            self.x_axis.value = 0
+            self.y_axis.value = 0
 
         
         _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)

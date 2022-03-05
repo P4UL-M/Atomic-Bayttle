@@ -30,12 +30,12 @@ class Partie:
     def add_player(self, team):
         player = Player("j1",self.checkpoint,(32,32),"craby",self.mobs)
         self.mobs.add(player)
- 
+
     """pas au role de game
     def interact_object_map(self, id):
         if id =="mortier":
             print("coucou")"""
-    
+
     """faire passer les particule par un script tier
     def update_particle(self):
         # si l'action du joueur a changer on l'update dans la classe particule
@@ -56,7 +56,7 @@ class Partie:
                             self.group_particle.remove(sprite)
                 mob.particule.remove_particle.clear() 
     """
-     
+
     def Update(self):
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(tl.GRAVITY,{"serialized":GAME.serialized}))
