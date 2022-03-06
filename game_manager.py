@@ -37,7 +37,7 @@ class Partie:
         return self.manager.surface
 
     def add_player(self, team):
-        player = Player("j1",self.checkpoint,(24,28),team,self.mobs)
+        player = Player("j1",self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         self.mobs.add(player)
 
     """pas au role de game

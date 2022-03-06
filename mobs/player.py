@@ -2,10 +2,15 @@ import pygame
 from .MOTHER import MOB
 import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
+from tools.constant import TEAM
 from entities_sprite.particule import Particule
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
+SCREEN = None
+
+ft = pygame.font.SysFont("arial",32)
+teeeaaam = False
 
 class Player(MOB):
 
@@ -45,13 +50,13 @@ class Player(MOB):
             return pygame.transform.flip(surf,True,False) #! if too much loss of perf we will stock both
 
     def load_team(self,team):
-        idle = sprite_sheet(PATH / "assets" / "perso"/ team / "idle.png",(24,28)) # load all annimation in annimation manager
-        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",(25,30)) # load all annimation in annimation manager
-        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",(25,30)) # load all annimation in annimation manager
-        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",(25,28)) # load all annimation in annimation manager
-        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",(26,28)) # load all annimation in annimation manager
-        self.manager.add_annimation("idle",idle,10)
-        self.manager.add_annimation("run",run,10)
+        idle = sprite_sheet(PATH / "assets" / "perso"/ team / "idle.png",TEAM[team]["idle"]) # load all annimation in annimation manager
+        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",TEAM[team]["run"]) # load all annimation in annimation manager
+        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",TEAM[team]["jump"]) # load all annimation in annimation manager
+        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",TEAM[team]["fall"]) # load all annimation in annimation manager
+        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",TEAM[team]["ground"]) # load all annimation in annimation manager
+        self.manager.add_annimation("idle",idle,10*TEAM[team]["speed_factor"])
+        self.manager.add_annimation("run",run,10*TEAM[team]["speed_factor"])
         self.manager.add_annimation("jump",jump,5)
         self.manager.add_annimation("fall",fall,10)
         self.manager.add_annimation("ground",ground,15)
@@ -89,7 +94,10 @@ class Player(MOB):
             if Keyboard.interact.is_pressed:
                 map.add_damage(Vector2(self.rect.left,self.rect.top),50)
             if Keyboard.inventory.is_pressed:
-                ...
+                global teeeaaam
+                self.load_team(f"perso_{int(teeeaaam) + 1}")
+                super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
+                teeeaaam = not teeeaaam
             if Keyboard.pause.is_pressed:
                 ...
             if Keyboard.end_turn.is_pressed:
@@ -116,7 +124,8 @@ class Player(MOB):
                     else:
                         self.manager.load("idle")
 
-            print(self.manager._loaded_name)
+            pygame.draw.rect(SCREEN,(0,0,0,0),pygame.Rect(0,0,1280,720))
+            SCREEN.blit(ft.render(self.manager._loaded_name,1,(0,0,0)),(800,40))
 
             #* walking particle here
             if self.grounded:
