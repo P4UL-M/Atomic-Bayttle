@@ -77,12 +77,13 @@ class sprite_sheet(pygame.Surface):
 
         _surf.blit(self,(0,0),pygame.Rect(x,y,*self.tile_size))
 
-        _surf = pygame.transform.scale(_surf,self.render_size)
-
+        _surf = pygame.transform.scale(_surf,self.render_size) #* resize seems more perf than stocking a bigger spritesheet
+        
         return _surf
 
     def config(self,size):
         self.render_size = size
+        
 
 class animation_Manager(object):
     

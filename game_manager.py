@@ -16,7 +16,7 @@ PATH = pathlib.Path(__file__).parent
 
 class Partie:
     def __init__(self):
-        self.map = Map(PATH / "assets" / "environnement" / "map.png")
+        self.map = Map(PATH)
 
         self.manager = animation_Manager()
         _animation = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png",(448,252))
@@ -36,8 +36,8 @@ class Partie:
     def bg(self):
         return self.manager.surface
 
-    def add_player(self, team):
-        player = Player("j1",self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
+    def add_player(self, name,team):
+        player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         self.mobs.add(player)
 
     """pas au role de game
@@ -60,6 +60,12 @@ class Partie:
         self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
         self.group_particle.update(GAME.serialized)
 
+        if self.map.water_target < self.map.water_level:
+            self.map.water_level -= 0.1*GAME.serialized
+            self.map.water_manager.load("agitated")
+        else:
+            self.map.water_manager.load("idle")
+
         # render
         self.Draw()
 
@@ -67,7 +73,8 @@ class Partie:
 
     def Draw(self):
         _surf = self.bg.copy()
-        _surf.blit(self.map.image,(0,0)) 
+        _surf.blit(self.map.image,(0,0))
+        _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
         self.mobs.draw(_surf)
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)

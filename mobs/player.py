@@ -7,9 +7,6 @@ from entities_sprite.particule import Particule
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
-SCREEN = None
-
-ft = pygame.font.SysFont("arial",32)
 teeeaaam = False
 
 class Player(MOB):
@@ -124,9 +121,6 @@ class Player(MOB):
                     else:
                         self.manager.load("idle")
 
-            pygame.draw.rect(SCREEN,(0,0,0,0),pygame.Rect(0,0,1280,720))
-            SCREEN.blit(ft.render(self.manager._loaded_name,1,(0,0,0)),(800,40))
-
             #* walking particle here
             if self.grounded:
                 self.double_jump = True
@@ -142,7 +136,7 @@ class Player(MOB):
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
         
-        if self.rect.top > map.water_level:
+        if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
         super().update(map,serialized)
