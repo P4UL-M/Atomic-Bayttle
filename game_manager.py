@@ -6,6 +6,7 @@ from entities_sprite.particule import Particule
 from mobs.player import Player
 #from map.object_map import Object_map
 import tools.constant as tl
+from tools.tools import sprite_sheet,animation_Manager
 from weapons.physique import *
 import pathlib
 
@@ -15,9 +16,13 @@ PATH = pathlib.Path(__file__).parent
 
 class Partie:
     def __init__(self):
-        self.map = Map(PATH / "assets" / "environnement" / "map.png")  
-        self.bg = pygame.image.load(PATH / "assets" / "environnement" / "bg.png").convert() # TODO passer avec animation après
-        self.bg = pygame.transform.scale(self.bg,self.map.image.get_size())
+        self.map = Map(PATH / "assets" / "environnement" / "map.png")
+
+        self.manager = animation_Manager()
+        _animation = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png",(448,252))
+        _animation.config(self.map.image.get_size())
+        self.manager.add_annimation("main",_animation,10)
+        self.manager.load("main")
 
         self.mobs = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
@@ -26,6 +31,10 @@ class Partie:
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         self.camera_target:pygame.sprite.Sprite = None
         pygame.mouse.set_visible(False)
+    
+    @property
+    def bg(self):
+        return self.manager.surface
 
     def add_player(self, team):
         player = Player("j1",self.checkpoint,(24,28),team,self.mobs)

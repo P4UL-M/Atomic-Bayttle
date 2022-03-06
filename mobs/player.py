@@ -87,7 +87,7 @@ class Player(MOB):
             if Keyboard.right.is_pressed:
                 ...
             if Keyboard.interact.is_pressed:
-                ...
+                map.add_damage(Vector2(self.rect.left,self.rect.top),50)
             if Keyboard.inventory.is_pressed:
                 ...
             if Keyboard.pause.is_pressed:
@@ -133,5 +133,7 @@ class Player(MOB):
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
         
+        if self.rect.top > map.water_level:
+            self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
         super().update(map,serialized)
