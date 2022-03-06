@@ -7,7 +7,7 @@ from entities_sprite.particule import Particule
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
-teeeaaam = False
+teeeaaam = 1
 
 class Player(MOB):
 
@@ -48,18 +48,21 @@ class Player(MOB):
 
     def load_team(self,team):
         idle = sprite_sheet(PATH / "assets" / "perso"/ team / "idle.png",TEAM[team]["idle"]) # load all annimation in annimation manager
-        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",TEAM[team]["run"]) # load all annimation in annimation manager
-        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",TEAM[team]["jump"]) # load all annimation in annimation manager
-        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",TEAM[team]["fall"]) # load all annimation in annimation manager
-        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",TEAM[team]["ground"]) # load all annimation in annimation manager
+        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",TEAM[team]["run"]) 
+        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",TEAM[team]["jump"]) 
+        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",TEAM[team]["fall"]) 
+        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",TEAM[team]["ground"]) 
+        emote = sprite_sheet(PATH / "assets" / "perso"/ team /  "emote.png",TEAM[team]["emote"]) 
         self.manager.add_annimation("idle",idle,10*TEAM[team]["speed_factor"])
         self.manager.add_annimation("run",run,10*TEAM[team]["speed_factor"])
-        self.manager.add_annimation("jump",jump,5)
+        self.manager.add_annimation("jump",jump,10)
         self.manager.add_annimation("fall",fall,10)
         self.manager.add_annimation("ground",ground,15)
+        self.manager.add_annimation("emote",emote,7)
         self.manager.add_link("jump","fall")
         self.manager.add_link("ground","idle")
-        self.manager.load("run")
+        self.manager.add_link("emote","idle")
+        self.manager.load("idle")
 
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
@@ -90,11 +93,12 @@ class Player(MOB):
                 ...
             if Keyboard.interact.is_pressed:
                 map.add_damage(Vector2(self.rect.left,self.rect.top),50)
+                self.manager.load("emote")
             if Keyboard.inventory.is_pressed:
                 global teeeaaam
                 self.load_team(f"perso_{int(teeeaaam) + 1}")
                 super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
-                teeeaaam = not teeeaaam
+                teeeaaam = (teeeaaam+1)%4
             if Keyboard.pause.is_pressed:
                 ...
             if Keyboard.end_turn.is_pressed:
@@ -106,7 +110,7 @@ class Player(MOB):
             elif self.x_axis.value<0:
                 self.rigth_direction = False
 
-            if self.manager._loaded_name not in ["jump","ground"]:
+            if self.manager._loaded_name not in ["jump","ground","emote"]:
                 if self.actual_speed>1:
                     if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
                         self.manager.load("fall")

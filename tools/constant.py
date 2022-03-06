@@ -22,5 +22,22 @@ TEAM = {
         "fall":(40,29),
         "ground":(40,29),
         "speed_factor":0.75
+    },
+    "perso_3":{
+        "idle":(24,28),
+        "run":(25,28),
+        "fall":(24,28),
+        "jump":(27,28),
+        "ground":(26,28),
+        "speed_factor":1.25
+    },
+    "perso_4":{
+        "idle":(31,28),
+        "run":(27,28),
+        "fall":(27,28),
+        "jump":(29,28),
+        "ground":(29,28),
+        "emote":(29,28),
+        "speed_factor":0.9
     }
 }

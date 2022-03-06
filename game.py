@@ -11,7 +11,7 @@ import pathlib
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
 import menu_main
-import test
+#import test
 import game_manager
 
 PATH = pathlib.Path(__file__).parent
@@ -29,7 +29,7 @@ class Game:
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
         partie = game_manager.Partie()
-        partie.add_player("j1","perso_2")
+        partie.add_player("j1","perso_4")
         partie.camera_target = partie.mobs.sprites()[0]
         Camera.zoom = 3
 
@@ -52,7 +52,7 @@ class Camera:
     zoom = 1
     zoom_offset = (1,1)
     maximise = True
-    HUD = False
+    HUD = True
     _off_screen:pygame.Surface = pygame.Surface((1600,900),flags=HWSURFACE + HWACCEL)
     _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA + HWSURFACE + HWACCEL)
 
@@ -87,10 +87,5 @@ class Camera:
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
 # class parent now accessible to childs too
-game_manager.GAME = menu_main.GAME = test.GAME= Game
-game_manager.CAMERA = menu_main.CAMERA = test.CAMERA = Camera
-
-
-import mobs.player
-
-mobs.player.SCREEN = Camera._screen_UI
+game_manager.GAME = menu_main.GAME= Game
+game_manager.CAMERA = menu_main.CAMERA = Camera

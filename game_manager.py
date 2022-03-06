@@ -31,7 +31,7 @@ class Partie:
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         self.camera_target:pygame.sprite.Sprite = None
         pygame.mouse.set_visible(False)
-    
+
     @property
     def bg(self):
         return self.manager.surface
@@ -80,7 +80,7 @@ class Partie:
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf
 
-    def test_parabole(self):
+    def test_parabole(self): #! a réécrire sans le zoom
         x0=self.mortier.position[0] + self.mortier.image.get_width()/2
         h0=self.mortier.position[1] + self.mortier.image.get_width()/2
         v0=8.2
