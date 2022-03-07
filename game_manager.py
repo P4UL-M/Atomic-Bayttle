@@ -78,7 +78,7 @@ class Partie:
         self.mobs.draw(_surf)
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)
-        CAMERA._off_screen = _surf
+        CAMERA._off_screen = _surf.convert()
 
     def test_parabole(self): #! a réécrire sans le zoom
         x0=self.mortier.position[0] + self.mortier.image.get_width()/2
