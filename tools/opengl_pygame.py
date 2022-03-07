@@ -20,10 +20,11 @@ def config(info):
     glEnable(GL_BLEND)
 
 texID = glGenTextures(1)
+texUI = glGenTextures(1)
 def surfaceToTexture(pygame_surface:pygame.Surface,rgba=False):
     global texID
     rgb_surface = pygame.image.tostring( pygame_surface, 'RGBA' if rgba else 'RGB')
-    glBindTexture(GL_TEXTURE_2D, texID)
+    glBindTexture(GL_TEXTURE_2D, texID if rgba else texUI)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)

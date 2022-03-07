@@ -22,7 +22,6 @@ class Game:
     running = True
     clock = pygame.time.Clock()
     serialized = 0
-    surf = pygame.image.load(PATH / "assets" / "environnement" / "map.png").convert(32,HWSURFACE + HWACCEL)
 
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
@@ -34,8 +33,6 @@ class Game:
         Camera.zoom = 3
 
         while Game.running:
-            Camera._off_screen = Game.surf.copy()
-            
             partie.Update()
 
             Camera.render()
@@ -52,9 +49,9 @@ class Camera:
     zoom = 1
     zoom_offset = (1,1)
     maximise = True
-    HUD = True
-    _off_screen:pygame.Surface = pygame.Surface((1600,900),flags=HWSURFACE + HWACCEL)
-    _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA + HWSURFACE + HWACCEL)
+    HUD = False
+    _off_screen:pygame.Surface = pygame.Surface((1280,720))
+    _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA)
 
     def render() -> None:
         gl.cleangl()
