@@ -10,9 +10,10 @@ TEAM = {
     "perso_1":{
         "idle":(24,28),
         "run":(25,30),
-        "jump":(25,30),
+        "jump":(26,30),
         "fall":(25,28),
         "ground":(26,28),
+        "emote":(42,31),
         "speed_factor":1
     },
     "perso_2":{
@@ -21,6 +22,7 @@ TEAM = {
         "jump":(40,29),
         "fall":(40,29),
         "ground":(40,29),
+        "emote":(40,29),
         "speed_factor":0.75
     },
     "perso_3":{
@@ -29,6 +31,7 @@ TEAM = {
         "fall":(24,28),
         "jump":(27,28),
         "ground":(26,28),
+        "emote":(31,28),
         "speed_factor":1.25
     },
     "perso_4":{
