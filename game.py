@@ -31,6 +31,7 @@ class Game:
         partie.add_player("j1","perso_4")
         partie.camera_target = partie.mobs.sprites()[0]
         Camera.zoom = 3
+        Camera._screen_UI = pygame.Surface((1280,720),flags=SRCALPHA)
 
         while Game.running:
             partie.Update()
@@ -52,6 +53,7 @@ class Camera:
     HUD = True
     _off_screen:pygame.Surface = pygame.Surface((1536,864))
     _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA)
+    cache = False
 
     def render() -> None:
         gl.cleangl()
@@ -59,8 +61,9 @@ class Camera:
         Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom,maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
-            gl.uiToScreen(Camera._screen_UI) # try to blit only if not null take more time to check than blit it anyway
-    
+            gl.uiToScreen(Camera._screen_UI if not Camera.cache else None) # try to blit only if not null take more time to check than blit it anyway
+            Camera.cache = False
+
     def to_virtual(x,y) -> tuple[int,int]:
 
         x_zoom = Camera.zoom*Camera.zoom_offset[0]
@@ -82,6 +85,11 @@ class Camera:
         _y = (y/Camera._off_screen.get_height() -0.5 - Camera.y) * y_zoom + 0.5
 
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
+
+    def __setattr__(self, __name: str, __value) -> None:
+        if __name == "_screen_UI":
+            Camera.cache = True
+        setattr(Camera.cache,__name,__value)
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
