@@ -30,15 +30,17 @@ class Game:
         partie = game_manager.Partie()
         partie.add_player("j1","perso_4")
         partie.camera_target = partie.mobs.sprites()[0]
-        Camera.zoom = 3
-        Camera._screen_UI = pygame.Surface((1280,720),flags=SRCALPHA)
+
+        menu_main.setup_manager()
+        Camera.maximise = False
 
         while Game.running:
-            partie.Update()
+            #partie.Update()
 
+            menu_main.game.Update()
             Camera.render()
-            print(Game.clock.get_fps())
-
+            
+            #print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -88,9 +90,9 @@ class Camera:
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
     def __setattr__(self, __name: str, __value) -> None:
-        if __name == "_screen_UI":
-            Camera.cache = True
-        setattr(Camera.cache,__name,__value)
+            if __name == "_screen_UI":
+                Camera.cache = True
+            setattr(Camera.cache,__name,__value)
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
