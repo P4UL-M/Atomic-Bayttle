@@ -139,6 +139,30 @@ class Vector2:
     def __call__(self) -> tuple:
         """return a tuple of the vector"""
         return (self.x,self.y)
+    
+    def copy(self):
+        return Vector2(self.x,self.y)
+
+class cycle:
+    def __init__(self,*args:str,index=0) -> None:
+        self.list = [*args]
+        self.__i = index
+    
+    def __str__(self) -> str:
+        return self.list[self.__i]
+    
+    def __int__(self) -> int:
+        return self.__i
+
+    def __iadd__(self,other):
+        self.__i += other
+        self.__i %= len(self.list)
+        return self
+    
+    def __isub__(self,other):
+        self.__i -= other
+        self.__i %= len(self.list)
+        return self
 
 class Key:
     def __init__(self,key:int,alias:int=None):
@@ -169,7 +193,6 @@ class Keyboard:
     def load(path):
         settings = json.load(open(path / "data" / "settings.json"))
         for key,val in settings["keys"].items():
-
             if type(val)!=list:
                 open(path / "data" / "log.txt","a").write("Error while loading key from the settings")
                 continue
@@ -184,17 +207,38 @@ class Keyboard:
                 settings["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
         json.dump(settings,open(path / "data" / "settings.json","w"))
 
-
 class MixeurAudio:
     pygame.mixer.set_num_channels(6)
 
     __musicMixer = pygame.mixer.Channel(1)
     __effectMixerCallback = pygame.mixer.Channel(2)
     __listEffectChannel = []
-    volume_musique = 1
-    volume_effect = 1
+    volume_musique = 0
+    volume_effect = 0
     music_factor = None
     gn = None
+
+    @staticmethod
+    def load(path):
+        settings = json.load(open(path / "data" / "settings.json"))
+        if settings["volume_musique"]>1 or settings["volume_musique"]<0:
+            MixeurAudio.volume_musique = 1
+        else:
+            MixeurAudio.volume_musique = settings["volume_musique"]
+            
+        if settings["volume_effect"]>1 or settings["volume_effect"]<0:
+            MixeurAudio.volume_effect = 1
+        else:
+            MixeurAudio.volume_effect = settings["volume_effect"]
+        MixeurAudio.save(path)
+        MixeurAudio.update_volume()
+
+    @staticmethod
+    def save(path):
+        settings = json.load(open(path / "data" / "settings.json"))
+        settings["volume_effect"] = MixeurAudio.volume_effect
+        settings["volume_musique"] = MixeurAudio.volume_musique
+        json.dump(settings, open(path / "data" / "settings.json", "w"))
 
     @staticmethod
     def set_musique(path,loops=True):
