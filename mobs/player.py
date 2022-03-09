@@ -1,60 +1,146 @@
-from turtle import position
 import pygame
-import time
 from .MOTHER import MOB
+import pathlib
+from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
+from tools.constant import TEAM
+from entities_sprite.particule import Particule
 
+PATH = pathlib.Path(__file__).parent.parent
+INFO = pygame.display.Info()
+teeeaaam = 1
 
 class Player(MOB):
 
-    def __init__(self, x, y, directory, zoom, id, checkpoint, Particule):
-        """parametres : 
-                - x : coordonne en x du joueur
-                - y : coordonne en y du joueur
-                - directory : chemin absolu vers le dossier du jeu"""
+    def __init__(self,name, pos, size,team,group):
+        """parametres :
+            - pos : les position de base
+            - size : la taille du sprite
+            - team : la team d'image à charger
+            - group : le group de sprite a ajouter le sprite
+        """
         # initialisation de la classe mere permettant de faire de cette classe un sprite
-        MOB.__init__(self, zoom, f"player{id}", checkpoint, Particule, directory, "")
+        super().__init__(pos,size,group)
+        self.name = name
 
-        
-        action=["crouch", "attack"]
-        for a in action:
-            self.actions.append(a)
-        self.images={}
-        self.directory_assets=f"assets\\TreasureHunters\\CaptainClownNose\\Sprites\\Captain\\Captain_Sword"
-        self._get_images("idle", 5, 6, "09-Idle_Sword", "Idle Sword 0")
-        self.origin_compteur_image_run=8
-        self._get_images('run', 6, self.origin_compteur_image_run, "Run_Sword","Run Sword 0")
-        self.origin_compteur_image_fall = 6
-        self._get_images("fall", 1, self.origin_compteur_image_fall, "12-Fall_Sword", "Fall Sword 0")
-        self._get_images("jump", 3, 4, "11-Jump_Sword", "Jump Sword 0")  
-        self._get_images("crouch", 2, 1, "13-Ground_Sword", "Ground Sword 0") 
-        self._get_images("attack1", 3, 3, "15-Attack 1", "Attack 1 0") 
-        self._get_images("attack2", 3, 3, "16-Attack 2", "Attack 2 0") 
-        self._get_images("hurt", 4, 4, "14-Hit Sword", "Hit Sword 0") 
-        self._get_images("dying", 4, 4, "07-Dead Hit", "Dead Hit 0") 
-        
-        self.image = self.images["idle"]["right"]["1"]
-        
-        self.position = [x,y - self.image.get_height()]
-        self.position_wave_map=[0,0]
-        self.rect = self.image.get_rect()
-
+        self.manager:animation_Manager = animation_Manager()
+        #self.image.fill((255,0,0)) #! tempo add animation manager after
         self.increment_foot=2
-        self.feet = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.1)
-        self.head = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.1)
-        self.body = pygame.Rect(0,0,self.rect.width * 0.2, self.rect.height*0.8)
+        self.rigth_direction = True
 
-        self.is_mob=False
+        self.jump_force = 8
+        self.double_jump = 0
+        self.jump_cooldown = 0
+        self.cooldown_double_jump = 400
+
+        # for action
+        self.lock = False
+        self.weapon_manager = None # mettre travail de Joseph ici
+
+        self.load_team(team)
+
+    @property
+    def image(self) -> pygame.Surface:
+        surf = self.manager.surface
+        if self.rigth_direction:
+            return surf
+        else:
+            return pygame.transform.flip(surf,True,False) #! if too much loss of perf we will stock both
+
+    def load_team(self,team):
+        idle = sprite_sheet(PATH / "assets" / "perso"/ team / "idle.png",TEAM[team]["idle"]) # load all annimation in annimation manager
+        run = sprite_sheet(PATH / "assets" / "perso"/ team /  "run.png",TEAM[team]["run"]) 
+        jump = sprite_sheet(PATH / "assets" / "perso"/ team /  "jump.png",TEAM[team]["jump"]) 
+        fall = sprite_sheet(PATH / "assets" / "perso"/ team /  "fall.png",TEAM[team]["fall"]) 
+        ground = sprite_sheet(PATH / "assets" / "perso"/ team /  "ground.png",TEAM[team]["ground"]) 
+        emote = sprite_sheet(PATH / "assets" / "perso"/ team /  "emote.png",TEAM[team]["emote"]) 
+        self.manager.add_annimation("idle",idle,10*TEAM[team]["speed_factor"])
+        self.manager.add_annimation("run",run,10*TEAM[team]["speed_factor"])
+        self.manager.add_annimation("jump",jump,10)
+        self.manager.add_annimation("fall",fall,10)
+        self.manager.add_annimation("ground",ground,15)
+        self.manager.add_annimation("emote",emote,7)
+        self.manager.add_link("jump","fall")
+        self.manager.add_link("ground","idle")
+        self.manager.add_link("emote","idle")
+        self.manager.load("idle")
+
+    def handle(self, event: pygame.event.Event):
+        """methode appele a chaque event"""
+        match event.type:
+            case _:
+                ... #* put here the future of the game like charging up or impact
+        super().handle(event)
+
+    def update(self,map,serialized,CAMERA,particle_group):
+        if not self.lock:
+            self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
+            if Keyboard.jump.is_pressed:
+                if self.grounded or (self.jump_cooldown< pygame.time.get_ticks() and self.double_jump):
+                    self.double_jump = (self.inertia.y < 1 and self.inertia.y > 0) or self.grounded # this is like grounded but constant because sometime we are on the ground but not colliding because gravity too weak
+                    self.inertia.y = -self.jump_force
+                    self.grounded = False
+                    self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
+                    self.manager.load("jump")
+                    for i in range(5):
+                        particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
+            if Keyboard.down.is_pressed:
+                ...
+            if Keyboard.up.is_pressed:
+                ...
+            if Keyboard.left.is_pressed:
+                ...
+            if Keyboard.right.is_pressed:
+                ...
+            if Keyboard.interact.is_pressed:
+                map.add_damage(Vector2(self.rect.left,self.rect.top),50)
+                self.manager.load("emote")
+            if Keyboard.inventory.is_pressed:
+                global teeeaaam
+                self.load_team(f"perso_{int(teeeaaam) + 1}")
+                super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
+                teeeaaam = (teeeaaam+1)%4
+            if Keyboard.pause.is_pressed:
+                ...
+            if Keyboard.end_turn.is_pressed:
+                self.lock = True
+                ...
+
+            if self.x_axis.value>0:
+                self.rigth_direction = True
+            elif self.x_axis.value<0:
+                self.rigth_direction = False
+
+            if self.manager._loaded_name not in ["jump","ground","emote"]:
+                if self.actual_speed>1:
+                    if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
+                        self.manager.load("fall")
+                    elif self.manager._loaded_name == "fall":
+                        self.manager.load("ground")
+                    else:
+                        self.manager.load("run")
+                        self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
+                elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
+                    if self.manager._loaded_name == "fall":
+                        self.manager.load("ground")
+                    else:
+                        self.manager.load("idle")
+
+            #* walking particle here
+            if self.grounded:
+                self.double_jump = True
+                if self.actual_speed > 1:
+                    particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,True))
+
+            #* CAMERA Update of the player
+            x,y = CAMERA.to_virtual(INFO.current_w/2,INFO.current_h/2 )
+            _x,_y = (self.rect.left,self.rect.top)
+            CAMERA.x += (_x - x)*0.0001
+            CAMERA.y += (_y - y)*0.0001
+            #* Effect of dezoom relatif to speed
+            zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
+            CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
         
-        # enregistrement de l'ancienne position pour que si on entre en collision avec un element du terrain la position soit permutte avec l'anciene
-        self.old_position = self.position.copy()
-        self.can_attack_while_jump=True
-        
-        self.dico_action_functions = {
-            "fall":self.chute,
-            "jump":self.saut
-        }       
-  
-    def debut_crouch(self):
-        """very simple"""
-        self.change_direction("crouch", self.direction)
-  
+        if self.rect.bottom > map.water_level:
+            self.rect.topleft = (100, 50)
+        #* inertia and still update if inactive
+        super().update(map,serialized)

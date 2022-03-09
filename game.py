@@ -11,7 +11,8 @@ import pathlib
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
 import menu_main
-import test
+#import test
+import game_manager
 
 PATH = pathlib.Path(__file__).parent
 INFO = pygame.display.Info()
@@ -21,20 +22,23 @@ class Game:
     running = True
     clock = pygame.time.Clock()
     serialized = 0
-    surf = pygame.image.load(PATH / "assets" / "mapalternate.png").convert(32,HWSURFACE + HWACCEL)
 
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
-        
+        partie = game_manager.Partie()
+        partie.add_player("j1","perso_4")
+        partie.camera_target = partie.mobs.sprites()[0]
+        Camera.zoom = 3
+        Camera._screen_UI = pygame.Surface((1280,720),flags=SRCALPHA)
+
         while Game.running:
-            Camera._off_screen = Game.surf.copy()
-            
-            test.loop(PATH)
+            partie.Update()
 
             Camera.render()
-            #print(Game.clock.get_fps())
+            print(Game.clock.get_fps())
+
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -47,9 +51,10 @@ class Camera:
     zoom = 1
     zoom_offset = (1,1)
     maximise = True
-    HUD = False
-    _off_screen:pygame.Surface = pygame.Surface((1600,900),flags=HWSURFACE + HWACCEL)
-    _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA + HWSURFACE + HWACCEL)
+    HUD = True
+    _off_screen:pygame.Surface = pygame.Surface((1536,864))
+    _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA)
+    cache = False
 
     def render() -> None:
         gl.cleangl()
@@ -57,8 +62,9 @@ class Camera:
         Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom,maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
-            gl.surfaceToScreen(Camera._screen_UI,(0,0),1,True) # try to blit only if not null take more time to check than blit it anyway
-    
+            gl.uiToScreen(Camera._screen_UI if not Camera.cache else None) # try to blit only if not null take more time to check than blit it anyway
+            Camera.cache = False
+
     def to_virtual(x,y) -> tuple[int,int]:
 
         x_zoom = Camera.zoom*Camera.zoom_offset[0]
@@ -81,6 +87,12 @@ class Camera:
 
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
+    def __setattr__(self, __name: str, __value) -> None:
+        if __name == "_screen_UI":
+            Camera.cache = True
+        setattr(Camera.cache,__name,__value)
+
 # class parent now accessible to childs too
-menu_main.GAME = test.GAME= Game
-menu_main.CAMERA = test.CAMERA = Camera
+game_manager.GAME = menu_main.GAME= Game
+game_manager.CAMERA = menu_main.CAMERA = Camera
+

@@ -20,10 +20,11 @@ def config(info):
     glEnable(GL_BLEND)
 
 texID = glGenTextures(1)
-def surfaceToTexture(pygame_surface:pygame.Surface,rgba=True):
+texUI = glGenTextures(1)
+def surfaceToTexture(pygame_surface:pygame.Surface,rgba=False):
     global texID
     rgb_surface = pygame.image.tostring( pygame_surface, 'RGBA' if rgba else 'RGB')
-    glBindTexture(GL_TEXTURE_2D, texID)
+    glBindTexture(GL_TEXTURE_2D, texID if not rgba else texUI)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
@@ -33,7 +34,7 @@ def surfaceToTexture(pygame_surface:pygame.Surface,rgba=True):
     glGenerateMipmap(GL_TEXTURE_2D)
     glBindTexture(GL_TEXTURE_2D, 0)
 
-def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,rgba=False,maximize=True) -> tuple[float,float,tuple[float,float]]:
+def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,maximize=True) -> tuple[float,float,tuple[float,float]]:
     global texID
     x,y = pos
 
@@ -54,7 +55,8 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     y = max(min((zoom-1)/(zoom*2)+(y_zoom -1)/2/zoom,y),-(zoom-1)/(zoom*2)-(y_zoom -1)/2/zoom)
 
     # draw texture openGL Texture
-    surfaceToTexture(pygame_surface, rgba)
+    surfaceToTexture(pygame_surface, False)
+
     glBindTexture(GL_TEXTURE_2D, texID)
     glBegin(GL_QUADS)
     glTexCoord2f(x, y); glVertex2f(-zoom*x_zoom, zoom*y_zoom)
@@ -64,6 +66,19 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     glEnd()
 
     return x,y,(x_zoom,y_zoom)
+
+def uiToScreen(pygame_surface:pygame.Surface):
+    global texUI
+    if pygame_surface:
+        surfaceToTexture(pygame_surface, True)
+
+    glBindTexture(GL_TEXTURE_2D, texUI)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0, 0); glVertex2f(-1, 1)
+    glTexCoord2f(0, 1); glVertex2f(-1, -1)
+    glTexCoord2f(1, 1); glVertex2f(1, -1)
+    glTexCoord2f(1, 0); glVertex2f(1, 1)
+    glEnd()
 
 def cleangl():
     # prepare to render the texture-mapped rectangle

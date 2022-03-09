@@ -44,9 +44,9 @@ class Axis:
         return self.get()*other
 
     def get(self):
-        if self.value==0 or self.value<self.deadzone[0]:
+        if self.value==0 or abs(self.value)<self.deadzone[0]:
             return 0
-        return self.value if self.value<self.deadzone[1] else self.deadzone[1]
+        return self.value if abs(self.value)<self.deadzone[1] else self.deadzone[1]*self.sign(self.value)
 
     def set(self,value:int):
         self.value = value
@@ -77,8 +77,8 @@ class sprite_sheet(pygame.Surface):
 
         _surf.blit(self,(0,0),pygame.Rect(x,y,*self.tile_size))
 
-        _surf = pygame.transform.scale(_surf,self.render_size)
-
+        _surf = pygame.transform.scale(_surf,self.render_size) #* resize seems more perf than stocking a bigger spritesheet
+ 
         return _surf
 
     def config(self,size):
@@ -86,18 +86,27 @@ class sprite_sheet(pygame.Surface):
 
 class animation_Manager(object):
     
-    def __init__(self,direct_return = False):
+    def __init__(self):
         self.frame = 0
         self.incrementor = 1
+        self.annim_speed_factor = 1
         self.spritesheets:dict[list[sprite_sheet]] = {}
         self.links:dict[list] = {}
         self.__loaded:sprite_sheet = None
-        self.direct_return = direct_return
+        self._loaded_name:str = None
 
     @property
     def surface(self):
-        self.frame += self.incrementor
-        return self.__loaded[int(self.frame)]      
+        self.frame += self.incrementor*self.annim_speed_factor
+        if self.__loaded.x_nb*self.__loaded.y_nb < self.frame:
+            self.frame %= self.__loaded.x_nb*self.__loaded.y_nb
+            if self._loaded_name in self.links.keys():
+                self.load(self.links[self._loaded_name])
+        return self.__loaded[int(self.frame)]
+    
+    @property
+    def actual_surface(self):
+        return self.__loaded[int(self.frame)]
     
     def add_annimation(self,name,spritesheet:sprite_sheet,_frame:int):
         _increment = 1/_frame
@@ -105,11 +114,16 @@ class animation_Manager(object):
 
     def load(self,name):
         if name in self.spritesheets.keys():
-            self.__loaded = self.spritesheets[name][0]
-            self.frame = 0
-            self.incrementor = self.spritesheets[name][1]
+            if name!=self._loaded_name:
+                self.__loaded = self.spritesheets[name][0]
+                self._loaded_name = name
+                self.frame = 0
+                self.incrementor = self.spritesheets[name][1]
         else:
             raise AttributeError
+
+    def add_link(self,origin:str,to:str):
+        self.links[origin] = to
 
 class Vector2:
     """
@@ -144,17 +158,18 @@ class Keyboard:
     up = Key(pygame.K_z,pygame.K_UP)
     down = Key(pygame.K_s,pygame.K_DOWN)
     jump = Key(pygame.K_SPACE)
-    interract = Key(pygame.K_e)
+    interact = Key(pygame.K_e)
     pause = Key(pygame.K_ESCAPE)
     end_turn = Key(pygame.K_RETURN)
     inventory = Key(pygame.K_i)
 
-    Manette = True
+    Manette = False
 
     @staticmethod
     def load(path):
-        touche = json.load(open(path / "data" / "settings.json"))
-        for key,val in touche["keys"].items():
+        settings = json.load(open(path / "data" / "settings.json"))
+        for key,val in settings["keys"].items():
+
             if type(val)!=list:
                 open(path / "data" / "log.txt","a").write("Error while loading key from the settings")
                 continue
@@ -162,12 +177,13 @@ class Keyboard:
    
     @staticmethod
     def save(path):
-        touche = json.load(open(path / "data" / "settings.json"))
-        touche["keys"] = dict()
+        settings = json.load(open(path / "data" / "settings.json"))
+        settings["keys"] = dict()
         for key,val in Keyboard.__dict__.items():
             if type(val)==Key:
-                touche["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
-        json.dump(touche,open(path / "data" / "settings.json","w"))
+                settings["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
+        json.dump(settings,open(path / "data" / "settings.json","w"))
+
 
 class MixeurAudio:
     pygame.mixer.set_num_channels(6)
