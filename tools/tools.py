@@ -78,12 +78,11 @@ class sprite_sheet(pygame.Surface):
         _surf.blit(self,(0,0),pygame.Rect(x,y,*self.tile_size))
 
         _surf = pygame.transform.scale(_surf,self.render_size) #* resize seems more perf than stocking a bigger spritesheet
-        
+ 
         return _surf
 
     def config(self,size):
         self.render_size = size
-        
 
 class animation_Manager(object):
     
@@ -170,6 +169,7 @@ class Keyboard:
     def load(path):
         settings = json.load(open(path / "data" / "settings.json"))
         for key,val in settings["keys"].items():
+
             if type(val)!=list:
                 open(path / "data" / "log.txt","a").write("Error while loading key from the settings")
                 continue
@@ -183,6 +183,7 @@ class Keyboard:
             if type(val)==Key:
                 settings["keys"][key] = [getattr(Keyboard,key).key,getattr(Keyboard,key).alias or -1]
         json.dump(settings,open(path / "data" / "settings.json","w"))
+
 
 class MixeurAudio:
     pygame.mixer.set_num_channels(6)

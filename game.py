@@ -38,6 +38,7 @@ class Game:
 
             Camera.render()
             print(Game.clock.get_fps())
+
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -94,3 +95,4 @@ class Camera:
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
 game_manager.CAMERA = menu_main.CAMERA = Camera
+

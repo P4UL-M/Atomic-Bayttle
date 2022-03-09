@@ -1,16 +1,7 @@
 from OpenGL.GL import *
 import pygame
-import time
 
 info = pygame.display.Info()
-def timeit(func):
-    def wrap(*arg,**kargs):
-        t1 = time.time()
-        res = func(*arg,**kargs)
-        print(f"function {func.__name__} took :", time.time() - t1)
-        return res
-    
-    return wrap
 
 # basic opengl configuration
 def config(info):
@@ -20,7 +11,7 @@ def config(info):
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     glShadeModel(GL_SMOOTH)
-    glClearColor(0, 0, 0, 0)
+    glClearColor(0.0, 0.0, 0.0, 0.0)
     glClearDepth(1.0)
     glDisable(GL_DEPTH_TEST)
     glDisable(GL_LIGHTING)
@@ -43,7 +34,6 @@ def surfaceToTexture(pygame_surface:pygame.Surface,rgba=False):
     glGenerateMipmap(GL_TEXTURE_2D)
     glBindTexture(GL_TEXTURE_2D, 0)
 
-@timeit
 def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,maximize=True) -> tuple[float,float,tuple[float,float]]:
     global texID
     x,y = pos
@@ -66,6 +56,7 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
 
     # draw texture openGL Texture
     surfaceToTexture(pygame_surface, False)
+
     glBindTexture(GL_TEXTURE_2D, texID)
     glBegin(GL_QUADS)
     glTexCoord2f(x, y); glVertex2f(-zoom*x_zoom, zoom*y_zoom)
@@ -76,7 +67,6 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
 
     return x,y,(x_zoom,y_zoom)
 
-@timeit
 def uiToScreen(pygame_surface:pygame.Surface):
     global texUI
     if pygame_surface:

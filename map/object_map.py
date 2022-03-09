@@ -3,6 +3,7 @@ import pygame
 class Object_map(pygame.sprite.Sprite):
     
     def __init__(self, id, x, y, directory, nbr_image,compteur_image_max, directory_assets, name_image, coefficient, complement_x, complement_y):
+
         super().__init__()
         self.id=id
         self.directory=directory
@@ -19,6 +20,7 @@ class Object_map(pygame.sprite.Sprite):
         transColor = self.image.get_at((0,0))
         self.image.set_colorkey(transColor)
         self.position=[x-self.image.get_width()/2 +complement_x, y-self.image.get_height()+1+complement_y]
+
         self.dt = 17
         self.speed_dt = 1
         # images
