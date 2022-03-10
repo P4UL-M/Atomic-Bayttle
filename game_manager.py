@@ -72,10 +72,12 @@ class Partie:
 
         return
 
-    def Draw(self):
+    def Draw(self): 
+        t1=pygame.time.get_ticks()
         _surf = self.bg.copy()
         _surf.blit(self.map.image,(0,0))
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
+        print(pygame.time.get_ticks()-t1)
         self.mobs.draw(_surf)
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)

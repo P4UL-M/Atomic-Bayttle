@@ -77,7 +77,7 @@ class Camera:
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
             gl.uiToScreen(Camera._screen_UI if not Camera.cache else None) # try to blit only if not null take more time to check than blit it anyway
-            Camera.cache = False
+            Camera.cache = True
 
     def to_virtual(x,y) -> tuple[int,int]:
 
