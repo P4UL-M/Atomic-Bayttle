@@ -55,7 +55,6 @@ class Game:
     def start_partie(j1):
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1",j1)
-        Camera.zoom = 3
         Camera.HUD = True
         Camera.maximise = True
         MixeurAudio.stop("music")

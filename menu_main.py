@@ -955,7 +955,7 @@ def setup_manager():
             )
 
         _sprite.set_position(Vector2(0.5,0.18))
-        _sprite.set_scale(Vector2(0.7,0.7))
+        _sprite.set_scale(Vector2(3.0,3.0))
 
         return _sprite
 
@@ -967,7 +967,20 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.38,0.08))
+        _sprite.set_position(Vector2(0.33,0.05))
+        _sprite.set_scale(Vector2(2.0,2.0))
+
+        return _sprite
+
+    @play_menu.add_sprite
+    def chain2():
+        _sprite=sprite(
+            name="chain2",
+            path=PATH / "assets" / "menu" / "play" / "chain.png",
+            manager=game
+            )
+
+        _sprite.set_position(Vector2(0.67,0.05))
         _sprite.set_scale(Vector2(2.0,2.0))
 
         return _sprite
