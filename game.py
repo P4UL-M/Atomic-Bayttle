@@ -43,9 +43,7 @@ class Game:
             else:
                 menu_main.game.Update()
 
-            t1=pygame.time.get_ticks()
             Camera.render()
-            print(pygame.time.get_ticks()-t1)
             
             print(Game.clock.get_fps())
             pygame.display.flip()
