@@ -68,8 +68,11 @@ class sprite_sheet(pygame.Surface):
         self.render_size = size
         self.x_nb = (self.get_width()//self.tile_size[0])
         self.y_nb = (self.get_height()//self.tile_size[1])
+        self.images = list()
+        for i in range(self.x_nb*self.y_nb):
+            self.images.append(self.get(i))
 
-    def __getitem__(self, key):
+    def get(self, key):
         x = (key%self.x_nb)*self.tile_size[0]
         y = ((key//self.x_nb)%self.y_nb)*self.tile_size[1]
 
@@ -81,8 +84,14 @@ class sprite_sheet(pygame.Surface):
  
         return _surf
 
+    def __getitem__(self, key: str):
+        return self.images[key%self.x_nb*self.y_nb]
+
     def config(self,size):
         self.render_size = size
+        self.images = list()
+        for i in range(self.x_nb*self.y_nb):
+            self.images.append(self.get(i))
 
 class animation_Manager(object):
     
