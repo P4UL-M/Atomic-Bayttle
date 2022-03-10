@@ -40,6 +40,10 @@ def setup_manager():
     global game
     CAMERA._off_screen = pygame.Surface((1920,1080),flags=HWSURFACE + HWACCEL)
     CAMERA.HUD = False
+    CAMERA.zoom = 1
+    CAMERA.maximise = False
+    pygame.mouse.set_visible(True)
+
     game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")
     game.play_effect = MixeurAudio.play_effect
     game.running = True
@@ -960,6 +964,11 @@ def setup_manager():
         @_button.Event(None)
         def change_name1():
             _button.image = _button.spritesheet[int(_button.cycle)]
+
+        @_button.Event(pygame.KEYDOWN)
+        def start(event):
+            if event.key == pygame.K_RETURN:
+                GAME.start_partie(str(_button.cycle))
 
         return _button
 

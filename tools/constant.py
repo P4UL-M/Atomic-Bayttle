@@ -44,3 +44,5 @@ TEAM = {
         "speed_factor":0.9
     }
 }
+
+class EndPartie(Exception): ...

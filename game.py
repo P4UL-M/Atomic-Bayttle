@@ -10,6 +10,7 @@ pygame.display.init()
 import pathlib
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
+from tools.constant import EndPartie
 import menu_main
 #import test
 import game_manager
@@ -22,30 +23,41 @@ class Game:
     running = True
     clock = pygame.time.Clock()
     serialized = 0
+    partie = None
 
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav",volume=0.35)
         gl.config(INFO)
-        partie = game_manager.Partie()
-        partie.add_player("j1","perso_4")
-        partie.camera_target = partie.mobs.sprites()[0]
-
+        
         menu_main.setup_manager()
         Camera.maximise = False
 
         while Game.running:
-            #partie.Update()
+            if Game.partie:
+                try:
+                    Game.partie.Update()
+                except EndPartie:
+                    Game.partie = None
+                    menu_main.setup_manager()
+            else:
+                menu_main.game.Update()
 
-            menu_main.game.Update()
             Camera.render()
             
-            #print(Game.clock.get_fps())
+            print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
         else:
             raise SystemExit
+
+    def start_partie(j1):
+        Game.partie = game_manager.Partie()
+        Game.partie.add_player("j1",j1)
+        Camera.zoom = 3
+        Camera.HUD = True
+        Camera.maximise = True
 
 class Camera:
     x = 0

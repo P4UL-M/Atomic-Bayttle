@@ -2,7 +2,7 @@ import pygame
 from .MOTHER import MOB
 import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
-from tools.constant import TEAM
+from tools.constant import TEAM,EndPartie
 from entities_sprite.particule import Particule
 
 PATH = pathlib.Path(__file__).parent.parent
@@ -100,9 +100,9 @@ class Player(MOB):
                 super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
                 teeeaaam = (teeeaaam+1)%4
             if Keyboard.pause.is_pressed:
+                raise EndPartie
                 ...
             if Keyboard.end_turn.is_pressed:
-                self.lock = True
                 ...
 
             if self.x_axis.value>0:
@@ -139,7 +139,7 @@ class Player(MOB):
             #* Effect of dezoom relatif to speed
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
-        
+
         if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive

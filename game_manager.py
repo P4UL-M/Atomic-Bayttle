@@ -29,7 +29,6 @@ class Partie:
         self.group_object=pygame.sprite.Group()
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
-        self.camera_target:pygame.sprite.Sprite = None
         pygame.mouse.set_visible(False)
 
     @property
@@ -56,7 +55,7 @@ class Partie:
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)
-  
+        
         self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
         self.group_particle.update(GAME.serialized)
 
