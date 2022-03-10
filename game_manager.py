@@ -6,7 +6,7 @@ from entities_sprite.particule import Particule
 from mobs.player import Player
 #from map.object_map import Object_map
 import tools.constant as tl
-from tools.tools import sprite_sheet,animation_Manager
+from tools.tools import sprite_sheet,animation_Manager,MixeurAudio
 from weapons.physique import *
 import pathlib
 
@@ -39,7 +39,7 @@ class Partie:
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         self.mobs.add(player)
 
-    """pas au role de game
+    """pas au role de game, integrer au joueur plus tard
     def interact_object_map(self, id):
         if id =="mortier":
             print("coucou")"""
@@ -58,6 +58,8 @@ class Partie:
         
         self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
         self.group_particle.update(GAME.serialized)
+
+        MixeurAudio.update_musique()
 
         if self.map.water_target < self.map.water_level:
             self.map.water_level -= 0.1*GAME.serialized

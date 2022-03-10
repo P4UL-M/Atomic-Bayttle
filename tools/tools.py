@@ -274,8 +274,8 @@ class MixeurAudio:
     @staticmethod
     def stop(channel:str="all"):
         """ all / music"""
-        if channel=="all": pygame.mixer.fadeout(2000)
-        if channel=="music": MixeurAudio.__musicMixer.fadeout(2000)
+        if channel=="all": pygame.mixer.stop()
+        if channel=="music": MixeurAudio.__musicMixer.stop()
 
     @staticmethod
     def update_volume():

@@ -42,6 +42,7 @@ def setup_manager():
     CAMERA.HUD = False
     CAMERA.zoom = 1
     CAMERA.maximise = False
+    MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
     pygame.mouse.set_visible(True)
 
     game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")

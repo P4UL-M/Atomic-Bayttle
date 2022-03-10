@@ -23,7 +23,6 @@ class Player(MOB):
         self.name = name
 
         self.manager:animation_Manager = animation_Manager()
-        #self.image.fill((255,0,0)) #! tempo add animation manager after
         self.increment_foot=2
         self.rigth_direction = True
 

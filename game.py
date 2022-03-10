@@ -58,6 +58,7 @@ class Game:
         Camera.zoom = 3
         Camera.HUD = True
         Camera.maximise = True
+        MixeurAudio.stop("music")
 
 class Camera:
     x = 0
