@@ -947,6 +947,49 @@ def setup_manager():
         return _button
 
     @play_menu.add_sprite
+    def title():
+        _sprite=sprite(
+            name="title",
+            path=PATH / "assets" / "menu" / "play" / "team-choice.png",
+            manager=game
+            )
+
+        _sprite.set_position(Vector2(0.5,0.18))
+        _sprite.set_scale(Vector2(0.7,0.7))
+
+        return _sprite
+
+    @play_menu.add_sprite
+    def chain1():
+        _sprite=sprite(
+            name="chain1",
+            path=PATH / "assets" / "menu" / "play" / "chain.png",
+            manager=game
+            )
+
+        _sprite.set_position(Vector2(0.38,0.08))
+        _sprite.set_scale(Vector2(2.0,2.0))
+
+        return _sprite
+
+    @play_menu.add_sprite
+    def play_button():
+        _button=Button(
+            name="playbutton",
+            path=PATH / "assets" / "menu" / "play" / "playbutton.png",
+            manager=game
+            )
+        
+        _button.set_position(Vector2(0.5, 0.5))
+        _button.set_scale(Vector2(3.0,3.0))
+
+        @_button.on_click()
+        def start():
+            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle))
+
+        return _button
+
+    @play_menu.add_sprite
     def plateform1():
         _button=Button(
             name="plateform1",
@@ -965,11 +1008,6 @@ def setup_manager():
         @_button.Event(None)
         def change_name1():
             _button.image = _button.spritesheet[int(_button.cycle)]
-
-        @_button.Event(pygame.KEYDOWN)
-        def start(event):
-            if event.key == pygame.K_RETURN:
-                GAME.start_partie(str(_button.cycle))
 
         return _button
 
