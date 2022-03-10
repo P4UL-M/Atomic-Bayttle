@@ -14,16 +14,3 @@ def get_pos(func):
     return wrap
 
 pygame.mouse.get_pos = get_pos(pygame.mouse.get_pos)
-
-# rewite directly the class because we can't setattr on C based class
-# allow us to pass a animation_Manager to blit
-class mySurf(pygame.surface.Surface):
-
-    def blit(self,source:Union[pygame.Surface,animation_Manager],dest,*arg,**kargs) -> pygame.Rect:
-        if type(self)==pygame.Surface:
-            return super().blit(source,dest,*arg,**kargs)
-        elif type(self)==animation_Manager:
-            return super().blit(source.surface,dest,*arg,**kargs)
-
-pygame.Surface = mySurf
-pygame.surface.Surface = mySurf
