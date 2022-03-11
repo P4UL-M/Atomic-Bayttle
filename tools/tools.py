@@ -1,5 +1,6 @@
 import pygame
 import json
+from typing import Any
 
 pygame.init()
 
@@ -58,6 +59,7 @@ class Axis:
         return abs(self.get())
 
 class sprite_sheet(pygame.Surface):
+    dico = dict()
 
     def __init__(self,path,size:tuple[int]):
         _img = pygame.image.load(path)
@@ -85,6 +87,10 @@ class sprite_sheet(pygame.Surface):
         return _surf
 
     def __getitem__(self, key: str):
+        if key in self.dico.keys():
+            key = self.dico[key]
+        elif type(key)!=int:
+            raise AttributeError("You must pass an integer or define a dictionary")
         return self.images[key%self.x_nb*self.y_nb]
 
     def config(self,size):
