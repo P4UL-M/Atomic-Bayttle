@@ -2,9 +2,10 @@ import pygame
 
 CHARGING = pygame.USEREVENT + 1
 ISPLAYING = pygame.USEREVENT + 2
-ISLOCKED = pygame.USEREVENT + 3
+IMPACT = pygame.USEREVENT + 3
 ENDTURN = pygame.USEREVENT + 4
 GRAVITY = pygame.USEREVENT + 4
+INTERACT = pygame.USEREVENT + 5
 
 TEAM = {
     "perso_1":{

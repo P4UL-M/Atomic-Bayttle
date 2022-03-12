@@ -2,7 +2,7 @@ import pygame
 from .MOTHER import MOB
 import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
-from tools.constant import TEAM,EndPartie
+from tools.constant import TEAM,EndPartie,IMPACT,INTERACT
 from entities_sprite.particule import Particule
 
 PATH = pathlib.Path(__file__).parent.parent
@@ -66,6 +66,13 @@ class Player(MOB):
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
         match event.type:
+            case pygame.KEYDOWN:
+                if event.key == pygame.K_t:
+                    global teeeaaam
+                    self.load_team(f"perso_{int(teeeaaam) + 1}")
+                    super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
+                    teeeaaam = (teeeaaam+1)%4
+                    self.manager.load("fall")
             case _:
                 ... #* put here the future of the game like charging up or impact
         super().handle(event)
@@ -74,7 +81,7 @@ class Player(MOB):
         if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
             if Keyboard.jump.is_pressed:
-                if self.grounded or (self.jump_cooldown< pygame.time.get_ticks() and self.double_jump):
+                if self.jump_cooldown< pygame.time.get_ticks() and (self.grounded or self.double_jump):
                     self.double_jump = (self.inertia.y < 1 and self.inertia.y > 0) or self.grounded # this is like grounded but constant because sometime we are on the ground but not colliding because gravity too weak
                     self.inertia.y = -self.jump_force
                     self.grounded = False
@@ -91,13 +98,12 @@ class Player(MOB):
             if Keyboard.right.is_pressed:
                 ...
             if Keyboard.interact.is_pressed:
-                map.add_damage(Vector2(self.rect.left,self.rect.top),50)
+                #map.add_damage(Vector2(self.rect.left,self.rect.top),50)
+                ev = pygame.event.Event(INTERACT,{'rect':self.rect})
+                pygame.event.post(ev)
                 self.manager.load("emote")
             if Keyboard.inventory.is_pressed:
-                global teeeaaam
-                self.load_team(f"perso_{int(teeeaaam) + 1}")
-                super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
-                teeeaaam = (teeeaaam+1)%4
+                ...
             if Keyboard.pause.is_pressed:
                 raise EndPartie
                 ...

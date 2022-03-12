@@ -45,7 +45,7 @@ class Game:
 
             Camera.render()
             
-            print(Game.clock.get_fps())
+            #print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -55,6 +55,7 @@ class Game:
     def start_partie(j1):
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1",j1)
+        Game.partie.add_object("test",(400,200))
         Camera.HUD = True
         Camera.maximise = True
         MixeurAudio.stop("music")

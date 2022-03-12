@@ -4,7 +4,7 @@ from pygame.locals import *
 from map.render_map import Map
 from entities_sprite.particule import Particule
 from mobs.player import Player
-#from map.object_map import Object_map
+from map.object_map import Object_map
 import tools.constant as tl
 from tools.tools import sprite_sheet,animation_Manager,MixeurAudio
 from weapons.physique import *
@@ -39,10 +39,8 @@ class Partie:
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         self.mobs.add(player)
 
-    """pas au role de game, integrer au joueur plus tard
-    def interact_object_map(self, id):
-        if id =="mortier":
-            print("coucou")"""
+    def add_object(self,name,pos):
+        self.group_object.add(Object_map(name,pos,PATH / "assets" / "weapons" / "mortier1.png"))
 
     def Update(self):
         """ fonction qui update les informations du jeu"""
@@ -55,6 +53,8 @@ class Partie:
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)
+                    for obj in self.group_object:
+                        obj.handle(event)
         
         self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
         self.group_particle.update(GAME.serialized)
