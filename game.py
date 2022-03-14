@@ -104,10 +104,13 @@ class Camera:
 
     def __setattr__(self, __name: str, __value) -> None:
             if __name == "_screen_UI":
-                Camera.cache = True
+                Camera.cache = False
             setattr(Camera.cache,__name,__value)
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
 game_manager.CAMERA = menu_main.CAMERA = Camera
 
+import mobs.MOTHER as mom
+
+mom.CAMERA = Camera

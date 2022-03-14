@@ -1,6 +1,7 @@
 import pygame
 import json
 from typing import Any
+from math import sqrt, atan,pi
 
 pygame.init()
 
@@ -148,6 +149,26 @@ class Vector2:
         self.x = x
         self.y = y
 
+    @property
+    def lenght(self):
+        return sqrt(self.x**2 + self.y**2)
+
+    @property
+    def unity(self):
+        return Vector2(self.x/self.lenght,self.y/self.lenght) if self.lenght > 0 else None
+
+    @property
+    def arg(self):
+        if self.x > 0:
+            return atan(self.y/self.x)
+        elif self.x < 0 and self.y >= 0:
+            return atan(self.y/self.x) + pi
+        elif self.x < 0 and self.y < 0:
+            return atan(self.y/self.x) - pi
+        elif self.x==0 and self.y < 0: return -pi/2
+        elif self.x ==0 and self.y > 0: return pi/2
+        else: return None
+
     def __str__(self) -> str:
         return f'({self.x},{self.y})'
 
@@ -157,6 +178,20 @@ class Vector2:
     
     def copy(self):
         return Vector2(self.x,self.y)
+
+    def __iter__(self):
+        return iter((self.x, self.y))
+
+    def __add__(self,other):
+        if type(other)==Vector2:
+            return Vector2(self.x + other.x, self.y + other.y)
+        if type(other)==tuple:
+            return Vector2(self.x + other[0], self.y + other[1])
+        else:
+            raise TypeError("You can just add Vector2 between them but you pass :", type(other))
+
+    def __iadd__(self,other):
+        return self.__add__(other)
 
 class cycle:
     def __init__(self,*args:str,index=0) -> None:
