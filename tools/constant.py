@@ -4,8 +4,8 @@ CHARGING = pygame.USEREVENT + 1
 ISPLAYING = pygame.USEREVENT + 2
 IMPACT = pygame.USEREVENT + 3
 ENDTURN = pygame.USEREVENT + 4
-GRAVITY = pygame.USEREVENT + 4
-INTERACT = pygame.USEREVENT + 5
+GRAVITY = pygame.USEREVENT + 5
+INTERACT = pygame.USEREVENT + 6
 
 TEAM = {
     "perso_1":{

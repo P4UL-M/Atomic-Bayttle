@@ -193,6 +193,17 @@ class Vector2:
     def __iadd__(self,other):
         return self.__add__(other)
 
+    def __sub__(self,other):
+        if type(other)==Vector2:
+            return Vector2(self.x - other.x, self.y - other.y)
+        if type(other)==tuple:
+            return Vector2(self.x - other[0], self.y - other[1])
+        else:
+            raise TypeError("You can just substract Vector2 between them but you pass :", type(other))
+
+    def __isub__(self,other):
+        return self.__min__(other)
+
     def __mul__(self,other):
         if type(other)==int or type(other)==float:
             return Vector2(self.x*other,self.y*other)

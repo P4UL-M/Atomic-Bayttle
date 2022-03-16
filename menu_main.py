@@ -1021,7 +1021,7 @@ def setup_manager():
 
         @_button.on_click()
         def start():
-            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle))
+            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
 
         return _button
 

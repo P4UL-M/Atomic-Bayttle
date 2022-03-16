@@ -1,12 +1,11 @@
 import pygame
-import os
 from pygame.locals import *
 from map.render_map import Map
 from entities_sprite.particule import Particule
 from mobs.player import Player
 from map.object_map import Object_map
 import tools.constant as tl
-from tools.tools import sprite_sheet,animation_Manager,MixeurAudio,Vector2
+from tools.tools import sprite_sheet,animation_Manager,MixeurAudio,Vector2,cycle
 from weapons.physique import *
 import pathlib
 import time
@@ -34,15 +33,17 @@ class Partie:
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
         self.nbr_player=1
-        self.cooldown_tour=10
-        self.timer_tour=0
+        self.cooldown_tour=5000
+        self.timer_tour=pygame.time.get_ticks()
 
     @property
     def bg(self):
         return self.manager.surface
 
-    def add_player(self, name,team):
+    def add_player(self, name,team,lock=False):
         player = Player(name,(0, 0),tl.TEAM[team]["idle"],team,self.mobs)
+        player.lock = lock
+        self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
         self.mobs.add(player)
 
     def place_player(self):
@@ -74,14 +75,6 @@ class Partie:
                     if p.name!=player.name:
                         if sqrt((player.rect.x-p.rect.x)**2 + (player.rect.y-p.rect.y)**2)<100:
                             continuer=True
-  
-    def add_playerList_into_players(self):
-        
-        for sprite in self.mobs.sprites():
-            sprite.list_others=[]
-            for sprite2 in self.mobs.sprites():
-                if sprite2.name!=sprite.name:
-                    sprite.list_others.append(sprite2)
 
     def add_object(self,name,pos, path):
         self.group_object.add(Object_map(name,pos, path))
@@ -94,21 +87,28 @@ class Partie:
             match event.type:
                 case pygame.QUIT:
                     raise SystemExit
+                case tl.ENDTURN:
+                    self.timer_tour = pygame.time.get_ticks()
+                    self.actual_player += 1
+                    for mob in self.mobs.sprites():
+                        if mob.name == str(self.actual_player):
+                            mob.lock = False
+                        else:
+                            mob.lock = True
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)
                     for obj in self.group_object:
                         obj.handle(event)
-        if time.time()-self.timer_tour>self.cooldown_tour:
-            self.timer_tour=time.time()
-            self.nbr_player+=1
-            if self.nbr_player>len(self.mobs.sprites()):
-                self.nbr_player=1
 
-        self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle, self.nbr_player)
+        self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()
+
+        if self.timer_tour + self.cooldown_tour < pygame.time.get_ticks():
+            ev = pygame.event.Event(tl.ENDTURN)
+            pygame.event.post(ev)
 
         if self.map.water_target < self.map.water_level:
             self.map.water_level -= 0.1*GAME.serialized
@@ -125,8 +125,9 @@ class Partie:
         _surf = self.bg.copy()
         _surf.blit(self.map.image,(0,0))
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
-        self.group_object.draw(_surf)
+        _surf.blit(self.map.cave_bg.image,self.map.cave_bg.rect.topleft)
         self.mobs.draw(_surf) 
+        self.group_object.draw(_surf)
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf.convert()
 

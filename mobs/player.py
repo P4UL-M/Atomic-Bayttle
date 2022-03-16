@@ -4,11 +4,10 @@ import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from tools.constant import TEAM,EndPartie,IMPACT,INTERACT
 from entities_sprite.particule import Particule
-import time
+from math import pi
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
-teeeaaam = 1
 
 class Player(MOB):
 
@@ -75,19 +74,12 @@ class Player(MOB):
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
         match event.type:
-            case pygame.KEYDOWN:
-                if event.key == pygame.K_t:
-                    global teeeaaam
-                    self.load_team(f"perso_{int(teeeaaam) + 1}")
-                    super().__init__((self.rect.left,self.rect.top),TEAM[f"perso_{int(teeeaaam) + 1}"]["idle"],self.groups())
-                    teeeaaam = (teeeaaam+1)%4
-                    self.manager.load("fall")
             case _:
                 ... #* put here the future of the game like charging up or impact
         super().handle(event)
 
-    def update(self,map,serialized,CAMERA,particle_group, nbr_player):
-        if not self.lock and str(nbr_player) in self.name and time.time()-self.timer_push_back>self.cooldown_pushback:
+    def update(self,map,players,serialized,CAMERA,particle_group):
+        if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown< pygame.time.get_ticks() and (self.grounded or self.double_jump):
@@ -119,11 +111,12 @@ class Player(MOB):
             if Keyboard.end_turn.is_pressed:
                 ...
 
-            if self.x_axis.value>0:
+            if self.x_axis.value>0: # tempo variable so keep in cache until real changement of direction
                 self.rigth_direction = True
             elif self.x_axis.value<0:
                 self.rigth_direction = False
 
+            #* annimation
             if self.manager._loaded_name not in ["jump","ground","emote"]:
                 if self.actual_speed>1:
                     if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
@@ -153,9 +146,21 @@ class Player(MOB):
             #* Effect of dezoom relatif to speed
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
+
+            #* other player repels
+            for player in players:
+                if self.body_mask.collide(self.rect.topleft,player):
+                    _n = self.body_mask.collide_normal(self.rect.topleft,player)
+                    if _n.lenght != 0:
+                        if _n.arg < -pi/2:
+                            _n = Vector2(-1,-0.5)
+                        else:
+                            _n = Vector2(1,-0.5)
+                        self.inertia += _n*serialized*self.speed*0.5
+   
         else:
             self.x_axis.update()
         if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
-        super().update(map,serialized, nbr_player)
+        super().update(map,serialized)
