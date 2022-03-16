@@ -17,5 +17,3 @@ t1 = time.time()
 pygame.image.tostring(a, 'P')
 print(time.time() - t1)
 
-
-# test 

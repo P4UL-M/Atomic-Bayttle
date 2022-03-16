@@ -8,8 +8,8 @@ class Map(pygame.sprite.Sprite):
         self.image = pygame.image.load(PATH / "assets" / "environnement" / "map.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.water_level = self.image.get_height() - 100
-        self.water_target = self.image.get_height() - 100
+        self.water_level = self.image.get_height() - 30
+        self.water_target = self.image.get_height() - 30
 
         self.water_manager = animation_Manager()
         _water_idle = sprite_sheet(PATH / "assets" / "environnement" / "water_idle.png",(448,252))

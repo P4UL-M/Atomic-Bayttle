@@ -2,9 +2,8 @@ import pygame
 from math import sqrt,ceil,pi,sin,cos
 from tools.tools import Keyboard,Vector2,Axis
 import tools.constant as tl
-
-CAMERA = None
-font = pygame.font.SysFont("arial",20)
+import time
+import random
 
 class BodyPartSprite(pygame.mask.Mask):
     def __init__(self, pos:tuple,size:tuple):
@@ -51,17 +50,24 @@ class MOB(pygame.sprite.Sprite):
         self.height_mask = BodyPartSprite((self.rect.width*0.15,0),(self.rect.width*0.7, self.rect.height*1.2))
         self.side_mask = BodyPartSprite((0,self.rect.width*0.3),(self.rect.width, self.rect.height*0.4))
 
-    def move(self,target,serialized):
+    def move(self,target,serialized, nbr_player):
         try:
             self.__getattribute__("rect")
         except:
             raise AttributeError("MOB must have a rect to move")
-        
+
+        #* if mobs clip in the surface
+        __dy,__dx = 0,0
+        _pos = Vector2(self.rect.left,self.rect.top)
+        if self.body_mask.collide(_pos(),target):
+            _normal = self.body_mask.collide_normal(_pos(),target)
+            self.inertia.x +=  _normal.x*0.025*self.speed; self.inertia.y += _normal.y*0.025*self.speed
+            self.x_axis.value = 0
+            self.y_axis.value = 0
+            
         _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
         _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
         _d = Vector2(_dx,_dy)
-        pygame.draw.rect(CAMERA._screen_UI,(0,0,0,0),pygame.Rect(0,0,1200,1000))
-        pygame.draw.line(CAMERA._screen_UI,(0,255,0),(800,200),(800 - _d.x*3,200 - _d.y*3))
         self.actual_speed = _d.lenght
 
         _movements = [self.rect.width // 4 for i in range(int(self.actual_speed/(self.rect.width // 4)))] + [self.actual_speed%(self.rect.width // 4)]
@@ -111,7 +117,6 @@ class MOB(pygame.sprite.Sprite):
             else:
                 if _n.arg < 0 and _n.arg > -pi:
                     __d.x += (1 if _n.x > 0 else -1)*i
-                    pygame.draw.rect(CAMERA._screen_UI,(255,0,0),pygame.Rect(800,350,10,10))
                 while self.body_mask.collide((__d + self.rect.topleft)(),target) and abs(__d.lenght) < i:
                     __d.x += 1 if _n.x > 0 else -1
         else:
@@ -132,5 +137,5 @@ class MOB(pygame.sprite.Sprite):
             case _:
                 ...
 
-    def update(self,map,serialized):
-        self.move(map,serialized)
+    def update(self,map,serialized, nbr_player):
+        self.move(map,serialized, nbr_player)

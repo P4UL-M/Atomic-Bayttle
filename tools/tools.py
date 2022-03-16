@@ -1,7 +1,7 @@
 import pygame
 import json
 from typing import Any
-from math import sqrt, atan,pi
+from math import atan,sqrt,pi
 
 pygame.init()
 

@@ -36,6 +36,13 @@ class animated_sprite(sprite): # class without surface set and annimated
 
     def set_scale(self, sca: Vector2, center=True): ...
 
+sprite_sheet.dico = {pygame.K_a:0, pygame.K_b:1, pygame.K_c:2, pygame.K_d:3, pygame.K_e:4, pygame.K_f:5, pygame.K_g:6, pygame.K_h:7, pygame.K_i:8, pygame.K_j:9,
+pygame.K_k:10, pygame.K_l:11, pygame.K_m:12, pygame.K_n:13, pygame.K_o:14, pygame.K_p:15, pygame.K_q:16, pygame.K_r:17, pygame.K_s:18, pygame.K_t:19, pygame.K_u:20,
+pygame.K_v:21, pygame.K_w:22, pygame.K_x:23, pygame.K_y:24, pygame.K_z:25, pygame.K_0:26, pygame.K_1:27, pygame.K_2:28, pygame.K_3:29, pygame.K_4:30, pygame.K_5:31,
+pygame.K_6:32, pygame.K_7:33, pygame.K_8:34, pygame.K_9:35, pygame.K_EXCLAIM:36, pygame.K_COMMA:37, pygame.K_SEMICOLON:38, pygame.K_LALT:39, pygame.K_BACKSPACE:40,
+pygame.K_LCTRL:41, pygame.K_COLON:42, pygame.K_RETURN:43, pygame.K_ESCAPE:44, pygame.K_LSHIFT:45, pygame.K_SPACE:46, pygame.K_TAB:47, pygame.K_DOWN:48, pygame.K_LEFT:49,
+pygame.K_RIGHT:50, pygame.K_UP:51}
+
 def setup_manager():
     global game
     CAMERA._off_screen = pygame.Surface((1920,1080),flags=HWSURFACE + HWACCEL)
@@ -915,14 +922,30 @@ def setup_manager():
 
     @keybind_menu.add_sprite
     def movebutton():
-        _button=Button(
+        _sprite=sprite(
             name="movebutton",
             path=PATH / "assets" / "menu" / "keybinds" / "move.png",
             manager=game
             )
 
-        _button.set_position(Vector2(0.5,0.18))
+        _sprite.set_position(Vector2(0.4,0.18))
+        _sprite.set_scale(Vector2(4.0,4.0))
+
+        return _sprite
+
+    @keybind_menu.add_sprite
+    def movekey():
+        _button=Button(
+            name="movekey",
+            path=PATH / "assets" / "menu" / "keybinds" / "keybinds.png",
+            manager=game
+            )
+
+        _button.set_position(Vector2(0.6,0.18))
         _button.set_scale(Vector2(4.0,4.0))
+
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
+        _button.spritesheet.config(_button.image.get_size())
 
         return _button
 
