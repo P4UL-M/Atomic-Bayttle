@@ -74,9 +74,7 @@ class Partie:
                     if p.name!=player.name:
                         if sqrt((player.rect.x-p.rect.x)**2 + (player.rect.y-p.rect.y)**2)<100:
                             continuer=True
-
-
-    
+  
     def add_playerList_into_players(self):
         
         for sprite in self.mobs.sprites():
