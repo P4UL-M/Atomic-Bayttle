@@ -15,7 +15,7 @@ if __name__=="__main__":
     # import the game
     import pygame_edit
     from game import Game as game
-
+    
     try:
         game.run()
     except SystemExit:

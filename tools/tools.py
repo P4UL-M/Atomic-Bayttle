@@ -155,7 +155,7 @@ class Vector2:
 
     @property
     def unity(self):
-        return Vector2(self.x/self.lenght,self.y/self.lenght) if self.lenght > 0 else None
+        return Vector2(self.x/self.lenght,self.y/self.lenght) if self.lenght > 0 else Vector2(0,0)
 
     @property
     def arg(self):
@@ -192,6 +192,10 @@ class Vector2:
 
     def __iadd__(self,other):
         return self.__add__(other)
+
+    def __mul__(self,other):
+        if type(other)==int or type(other)==float:
+            return Vector2(self.x*other,self.y*other)
 
 class cycle:
     def __init__(self,*args:str,index=0) -> None:

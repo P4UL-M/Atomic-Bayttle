@@ -90,7 +90,7 @@ class Player(MOB):
                     for i in range(5):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
             if Keyboard.down.is_pressed:
-                ...
+                map.add_damage(Vector2(*self.rect.center),50)
             if Keyboard.up.is_pressed:
                 ...
             if Keyboard.left.is_pressed:
@@ -133,7 +133,7 @@ class Player(MOB):
             #* walking particle here
             if self.grounded:
                 self.double_jump = True
-                if self.actual_speed > 1:
+                if self.actual_speed > 1 and pygame.time.get_ticks()%7==0:
                     particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,True))
 
             #* CAMERA Update of the player
@@ -144,7 +144,8 @@ class Player(MOB):
             #* Effect of dezoom relatif to speed
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
-
+        else:
+            self.x_axis.update()
         if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
