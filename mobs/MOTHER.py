@@ -51,6 +51,7 @@ class MOB(pygame.sprite.Sprite):
         self.head_mask = BodyPartSprite((0,0),(self.rect.width, self.rect.height*0.3))
         self.body_left_mask = BodyPartSprite((0,0),(self.rect.width * 0.4, self.rect.height))
         self.body_right_mask = BodyPartSprite((self.rect.width * 0.6,0),(self.rect.width * 0.4, self.rect.height))
+        self.mask=self.body_mask
 
     def move(self,target,serialized, nbr_player):
         try:
@@ -66,61 +67,31 @@ class MOB(pygame.sprite.Sprite):
             self.inertia.x +=  _normal.x*0.025*self.speed; self.inertia.y += _normal.y*0.025*self.speed
             self.x_axis.value = 0
             self.y_axis.value = 0
-
-        bool=False
-        for p in self.list_others:
-            self.dir_push_back=(self.last_coords[0]-self.rect.x,self.last_coords[1]-self.rect.y )
-            self.last_coords=(self.rect.x, self.rect.y )
-            dist=(self.rect.x-p.rect.x, self.rect.y-p.rect.y)
-            is_longer=[False, False]
-            is_longer[0]=dist[0]>self.last_dist[0]
-            is_longer[1]=dist[1]>self.last_dist[1]
-
-            if (is_longer[0]!=self.was_longer[0] or is_longer[1]!=self.was_longer[1]) or sqrt(dist[0]**2 + dist[1]**2) < 15:
-                self.start_pushback=False
-
-            if sqrt(dist[0]**2 + dist[1]**2) < 25 and not self.start_pushback and str(nbr_player) in self.name:
-                self.timer_push_back=time.time()
-                self.start_pushback=True
-                self.last_dist=dist
-                self.was_longer[0]=is_longer[0]
-                self.was_longer[1]=is_longer[1]
-                if dist[0]!=0:
-                    self.inertia.x+=(dist[0]/abs(dist[0]))*10
-                if dist[1]!=0:
-                    self.inertia.y+=-abs((dist[1]/abs(dist[1]))*0.5)
-                if self.inertia.x<0.5 and self.inertia.y<1:
-                    self.inertia.y-=1*0.5
-                    self.inertia.x+=random.choice([-1, 1])*0.2
-                _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
-                _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
-                bool=True
-        
-        if not bool:
-            _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
-            _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
+            
+        _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
+        _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
 
         _pos = Vector2(self.rect.left + __dx ,self.rect.top + __dy)
         #* Y calculation
         _pos = Vector2(self.rect.left + __dx,self.rect.top + _dy + __dy)
-        if self.body_mask.collide(_pos(),target):
-            if self.head_mask.collide(_pos(),target) and _dy < 0:
+        if self.body_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.body_mask.collide(_pos(),p)]:
+            if (self.head_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.head_mask.collide(_pos(),p)] ) and _dy < 0:
                 __ipos_l = Vector2(self.rect.left - _dy,self.rect.top + _dy)
                 __ipos_r = Vector2(self.rect.left + _dy,self.rect.top + _dy)
-                if not self.body_mask.collide(__ipos_l(),target) or not self.body_mask.collide(__ipos_r(),target):
-                    if not self.body_mask.collide(__ipos_l(),target):
+                if not (self.body_mask.collide(__ipos_l(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos_l(),p)] ) or not (self.body_mask.collide(__ipos_r(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos_r(),p)] ):
+                    if not (self.body_mask.collide(__ipos_l(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos_l(),p)]):
                         self.inertia.x -= _dy
-                    if not self.body_mask.collide(__ipos_r(),target):
+                    if not (self.body_mask.collide(__ipos_r(),target)  or True in [True for p in self.list_others if self.body_mask.collide(__ipos_r(),p)]):
                         self.inertia.x += _dy
                 else:
                     _dy = 0
                     self.inertia.y = 0
-            elif self.feet_mask.collide(_pos(),target) and _dy > 0:
+            elif (self.feet_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.feet_mask.collide(_pos(),p)]) and _dy > 0:
                 _dy = 0
                 self.grounded = True
                 self.inertia.y = 0
                 __ipos = Vector2(self.rect.left,self.rect.top + _dy)
-                while not self.body_mask.collide(__ipos(),target):
+                while not (self.body_mask.collide(__ipos(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos(),p)]):
                     _dy += 1
                     __ipos = Vector2(self.rect.left,self.rect.top + _dy)
                 else:
@@ -134,27 +105,27 @@ class MOB(pygame.sprite.Sprite):
 
         #* X calculation
         _pos = Vector2(self.rect.left + _dx + __dx,self.rect.top + _dy + __dy)
-        if self.body_mask.collide(_pos(),target):
-            if self.body_left_mask.collide(_pos(),target) and _dx < 0: # collision on left
+        if self.body_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.body_mask.collide(_pos(),p)]:
+            if (self.body_left_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.body_left_mask.collide(_pos(),p)]) and _dx < 0: # collision on left
                 __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy - abs(_dx))
-                if not self.body_mask.collide(__ipos(),target) and self.grounded:
+                if not (self.body_mask.collide(__ipos(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos(),p)]) and self.grounded:
                     _dy -= abs(_dx)
                 else:
                     _dx = 0
                     __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy)
-                    while not self.body_mask.collide(__ipos(),target):
+                    while not (self.body_mask.collide(__ipos(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos(),p)]):
                         _dx -= 1
                         __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy)
                     else:
                         _dx += 1
-            elif self.body_right_mask.collide(_pos(),target) and _dx > 0: # collision on right
+            elif (self.body_right_mask.collide(_pos(),target) or True in [True for p in self.list_others if self.body_right_mask.collide(_pos(),p)]) and _dx > 0: # collision on right
                 __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy - abs(_dx))
-                if not self.body_mask.collide(__ipos(),target) and self.grounded:
+                if not (self.body_mask.collide(__ipos(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos(),p)]) and self.grounded:
                     _dy -= abs(_dx)
                 else:
                     _dx = 0
                     __ipos = Vector2(self.rect.left + _dx,self.rect.top + _dy)
-                    while not self.body_mask.collide(__ipos(),target):
+                    while not (self.body_mask.collide(__ipos(),target) or True in [True for p in self.list_others if self.body_mask.collide(__ipos(),p)]):
                         _dx += 1
                         __ipos.x += 1
                     else:
