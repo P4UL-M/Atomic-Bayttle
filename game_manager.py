@@ -32,7 +32,6 @@ class Partie:
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
-        self.nbr_player=1
         self.cooldown_tour=5000
         self.timer_tour=pygame.time.get_ticks()
 
@@ -41,40 +40,10 @@ class Partie:
         return self.manager.surface
 
     def add_player(self, name,team,lock=False):
-        player = Player(name,(0, 0),tl.TEAM[team]["idle"],team,self.mobs)
+        player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         player.lock = lock
         self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
         self.mobs.add(player)
-
-    def place_player(self):
-        w=self.map.image.get_width()
-        h=self.map.image.get_height()
-        for player in self.mobs.sprites():
-            continuer=True
-            while continuer:
-                player.rect.x=random.randint(0, w)
-                player.rect.y=random.randint(0, h)
-                _pos = Vector2(player.rect.left,player.rect.top)
-                if player.body_mask.collide(_pos(),self.map):
-                    while player.rect.y>0 and player.body_mask.collide(_pos(),self.map):
-                        player.rect.y-=1
-                        _pos = Vector2(player.rect.left,player.rect.top)
-                    if player.rect.y>0:
-                        continuer=False
-                    else:
-                        continue
-                else:
-                    while player.rect.y<h and not player.body_mask.collide(_pos(),self.map):
-                        player.rect.y+=1
-                        _pos = Vector2(player.rect.left,player.rect.top)
-                    if player.rect.y<h:
-                        continuer=False
-                    else:
-                        continue
-                for p in self.mobs.sprites():
-                    if p.name!=player.name:
-                        if sqrt((player.rect.x-p.rect.x)**2 + (player.rect.y-p.rect.y)**2)<100:
-                            continuer=True
 
     def add_object(self,name,pos, path):
         self.group_object.add(Object_map(name,pos, path))

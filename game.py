@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.init()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((int(INFO.current_w*1),int(INFO.current_h*1)), OPENGL|DOUBLEBUF,depth=16)
+pygame.display.set_mode((int(INFO.current_w),int(INFO.current_h)), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
 pygame.display.init()
 
 import pathlib
@@ -56,8 +56,9 @@ class Game:
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1.1",j1)
         Game.partie.add_player("j2.1",j2,True)
-        #Game.partie.add_player("j1.2",j1,True)
+        #Game.partie.add_player("j1.2",j1,True) # ajouter avec respawn pour éviter le bordel
         #Game.partie.add_player("j2.3",j2,True)
+        MixeurAudio.gn.reset()
         Game.partie.add_object("test",(400,200), PATH / "assets" / "weapons" / "mortier1.png")
         Camera.HUD = True
         Camera.maximise = True
