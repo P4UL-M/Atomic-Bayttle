@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from pygame_easy_menu import *
 from pygame_easy_menu.tools import *
-from tools.tools import MixeurAudio, animation_Manager, sprite_sheet, cycle
+from tools.tools import *
 import pathlib
 
 GAME = None
@@ -66,6 +66,7 @@ def setup_manager():
     @principal.set_setup
     def princ_setup():
         MixeurAudio.load(PATH)
+        Keyboard.load(PATH)
 
     @principal.add_sprite
     def exit_button():
@@ -934,10 +935,10 @@ def setup_manager():
         return _sprite
 
     @keybind_menu.add_sprite
-    def movekey():
+    def movekeyleft():
         _button=Button(
-            name="movekey",
-            path=PATH / "assets" / "menu" / "keybinds" / "keybinds.png",
+            name="movekeyleft",
+            path=PATH / "assets" / "menu" / "keybinds" / "button_keybind.png",
             manager=game
             )
 
@@ -946,6 +947,26 @@ def setup_manager():
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.image = _button.spritesheet[int(sprite_sheet.dico[Keyboard.left.key])]
+        _button.active = False
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def keyleft():
+            Keyboard.left.key=-1
+            _button.image = _button.spritesheet[-1]
+            _button.active = True
+
+        @_button.Event(None)
+        def changeleft():
+            if _button.active:
+                for keys in sprite_sheet.dico.keys():
+                    if pygame.key.get_pressed()[keys]:
+                        keypressed=keys
+                        if not Keyboard.key_used(keypressed):
+                            _button.active = False
+                            Keyboard.left.key = keypressed
+                            _button.image = _button.spritesheet[int(sprite_sheet.dico[Keyboard.left.key])]
+                            Keyboard.save(PATH)
 
         return _button
 

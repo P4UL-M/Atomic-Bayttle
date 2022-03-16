@@ -255,6 +255,15 @@ class Keyboard:
     Manette = False
 
     @staticmethod
+    def key_used(key:int):
+        for val in Keyboard.__dict__.values():
+            if type(val)==Key:
+                if val.key == key or val.alias == key:
+                    return True
+        else:
+            return False
+
+    @staticmethod
     def load(path):
         settings = json.load(open(path / "data" / "settings.json"))
         for key,val in settings["keys"].items():
