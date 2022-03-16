@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.init()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((INFO.current_w,INFO.current_h), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
+pygame.display.set_mode((int(INFO.current_w*0.7),int(INFO.current_h*0.7)), OPENGL|DOUBLEBUF,depth=16)
 pygame.display.init()
 
 import pathlib
@@ -55,6 +55,9 @@ class Game:
     def start_partie(j1):
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1",j1)
+        Game.partie.add_player("j2",j1, x=50)
+        Game.partie.add_player("j3",j1, x=100)
+        Game.partie.test()
         Game.partie.add_object("test",(400,200))
         Camera.HUD = True
         Camera.maximise = True
@@ -104,13 +107,10 @@ class Camera:
 
     def __setattr__(self, __name: str, __value) -> None:
             if __name == "_screen_UI":
-                Camera.cache = False
+                Camera.cache = True
             setattr(Camera.cache,__name,__value)
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
 game_manager.CAMERA = menu_main.CAMERA = Camera
 
-import mobs.MOTHER as mom
-
-mom.CAMERA = Camera

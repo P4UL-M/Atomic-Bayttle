@@ -9,6 +9,7 @@ import tools.constant as tl
 from tools.tools import sprite_sheet,animation_Manager,MixeurAudio
 from weapons.physique import *
 import pathlib
+import time
 
 GAME = None
 CAMERA = None
@@ -30,14 +31,25 @@ class Partie:
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
+        self.nbr_player=1
+        self.cooldown_tour=10
+        self.timer_tour=0
 
     @property
     def bg(self):
         return self.manager.surface
 
-    def add_player(self, name,team):
-        player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
+    def add_player(self, name,team, x=0):
+        player = Player(name,(self.checkpoint[0]+x, self.checkpoint[1]),tl.TEAM[team]["idle"],team,self.mobs)
         self.mobs.add(player)
+    
+    def test(self):
+        
+        for sprite in self.mobs.sprites():
+            sprite.list_others=[]
+            for sprite2 in self.mobs.sprites():
+                if sprite2.name!=sprite.name:
+                    sprite.list_others.append(sprite2)
 
     def add_object(self,name,pos):
         self.group_object.add(Object_map(name,pos,PATH / "assets" / "weapons" / "mortier1.png"))
@@ -55,8 +67,13 @@ class Partie:
                         mob.handle(event)
                     for obj in self.group_object:
                         obj.handle(event)
-        
-        self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle)
+        if time.time()-self.timer_tour>self.cooldown_tour:
+            self.timer_tour=time.time()
+            self.nbr_player+=1
+            if self.nbr_player>len(self.mobs.sprites()):
+                self.nbr_player=1
+
+        self.mobs.update(self.map,GAME.serialized,CAMERA,self.group_particle, self.nbr_player)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()

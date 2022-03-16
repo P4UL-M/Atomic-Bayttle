@@ -4,6 +4,7 @@ import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from tools.constant import TEAM,EndPartie,IMPACT,INTERACT
 from entities_sprite.particule import Particule
+import time
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
@@ -35,6 +36,14 @@ class Player(MOB):
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
 
+        # pushback quand on collide un autre joueur
+        self.start_pushback=False
+        self.last_coords=(0,0)
+        self.dir_push_back=(0,0)
+        self.last_dist=(0,0)
+        self.was_longer=[False,False]
+        self.cooldown_pushback=0.1
+        self.timer_push_back=0
         self.load_team(team)
 
     @property
@@ -77,8 +86,8 @@ class Player(MOB):
                 ... #* put here the future of the game like charging up or impact
         super().handle(event)
 
-    def update(self,map,serialized,CAMERA,particle_group):
-        if not self.lock:
+    def update(self,map,serialized,CAMERA,particle_group, nbr_player):
+        if not self.lock and str(nbr_player) in self.name and time.time()-self.timer_push_back>self.cooldown_pushback:
             self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown< pygame.time.get_ticks() and (self.grounded or self.double_jump):
@@ -144,8 +153,9 @@ class Player(MOB):
             #* Effect of dezoom relatif to speed
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
-
+        else:
+            self.x_axis.update()
         if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
-        super().update(map,serialized)
+        super().update(map,serialized, nbr_player)
