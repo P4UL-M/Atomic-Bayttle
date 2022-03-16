@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.init()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((int(INFO.current_w*0.7),int(INFO.current_h*0.7)), OPENGL|DOUBLEBUF,depth=16)
+pygame.display.set_mode((int(INFO.current_w*1),int(INFO.current_h*1)), OPENGL|DOUBLEBUF,depth=16)
 pygame.display.init()
 
 import pathlib
@@ -55,10 +55,17 @@ class Game:
     def start_partie(j1):
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1",j1)
-        Game.partie.add_player("j2",j1, x=50)
-        Game.partie.add_player("j3",j1, x=100)
-        Game.partie.test()
-        Game.partie.add_object("test",(400,200))
+        Game.partie.add_player("j2",j1)
+        Game.partie.add_player("j3",j1)
+        Game.partie.add_player("j4",j1)
+        Game.partie.add_player("j5",j1)
+        Game.partie.add_player("j6",j1)
+        Game.partie.add_player("j7",j1)
+        Game.partie.add_player("j8",j1)
+        Game.partie.place_player()
+        Game.partie.add_playerList_into_players()
+        Game.partie.add_object("test",(400,200), PATH / "assets" / "weapons" / "mortier1.png")
+        Game.partie.add_object("cave",(927,221), PATH / "assets" / "environnement" / "cave.png")
         Camera.HUD = True
         Camera.maximise = True
         MixeurAudio.stop("music")
