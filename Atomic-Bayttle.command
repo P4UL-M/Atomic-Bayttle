@@ -1,0 +1,1 @@
+$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/Atomic-Bayttle/bin/python $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/Atomic-Bayttle/main.py
