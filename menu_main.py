@@ -947,12 +947,63 @@ def setup_manager():
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
         _button.spritesheet.config(_button.image.get_size())
-        _button.image = _button.spritesheet[int(sprite_sheet.dico[Keyboard.left.key])]
+        _button.image = _button.spritesheet[Keyboard.left.key]
         _button.active = False
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def keyleft():
-            Keyboard.left.key=-1
+            if not _button.active:
+                Keyboard.left.key=-1
+                _button.image = _button.spritesheet[-1]
+                _button.active = True
+                for sprite in keybind_menu.sprites():
+                    if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
+                        sprite.active = False
+            else:
+                _button.active = False
+
+        @_button.Event(pygame.KEYDOWN)
+        def changeleft(event):
+            if _button.active:
+                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                    _button.active = False
+                    Keyboard.left.key = event.key
+                    _button.image = _button.spritesheet[event.key]
+                    Keyboard.save(PATH)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
+                else:
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
+
+        @_button.Event(None)
+        def animate():
+            if _button.active:
+                _button.image = _button.spritesheet[-1].copy()
+                _button.image.fill((0,0,0,100))
+                """alpha courbe sinus du temps"""
+            else:
+                _button.image = _button.spritesheet[Keyboard.left.key].copy()
+
+        return _button
+
+    @keybind_menu.add_sprite
+    def movealiasleft():
+        _button=Button(
+            name="movekeyleft",
+            path=PATH / "assets" / "menu" / "keybinds" / "button_keybind.png",
+            manager=game
+            )
+
+        _button.set_position(Vector2(0.68,0.18))
+        _button.set_scale(Vector2(4.0,4.0))
+
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
+        _button.spritesheet.config(_button.image.get_size())
+        _button.image = _button.spritesheet[Keyboard.left.alias]
+        _button.active = False
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def aliasleft():
+            Keyboard.left.alias=-1
             _button.image = _button.spritesheet[-1]
             _button.active = True
             for sprite in keybind_menu.sprites():
@@ -964,7 +1015,85 @@ def setup_manager():
             if _button.active:
                 if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
-                    Keyboard.left.key = event.key
+                    Keyboard.left.alias = event.key
+                    _button.image = _button.spritesheet[event.key]
+                    Keyboard.save(PATH)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
+                else:
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
+
+        return _button
+
+    @keybind_menu.add_sprite
+    def movealiasright():
+        _button=Button(
+            name="movealiasright",
+            path=PATH / "assets" / "menu" / "keybinds" / "button_keybind.png",
+            manager=game
+            )
+
+        _button.set_position(Vector2(0.88,0.18))
+        _button.set_scale(Vector2(4.0,4.0))
+
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
+        _button.spritesheet.config(_button.image.get_size())
+        _button.image = _button.spritesheet[Keyboard.right.alias]
+        _button.active = False
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def aliasright():
+            Keyboard.right.alias=-1
+            _button.image = _button.spritesheet[-1]
+            _button.active = True
+            for sprite in keybind_menu.sprites():
+                if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
+                    sprite.active = False
+
+        @_button.Event(pygame.KEYDOWN)
+        def changeright(event):
+            if _button.active:
+                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                    _button.active = False
+                    Keyboard.right.alias = event.key
+                    _button.image = _button.spritesheet[event.key]
+                    Keyboard.save(PATH)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
+                else:
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
+
+        return _button
+
+    @keybind_menu.add_sprite
+    def movekeyright():
+        _button=Button(
+            name="movekeyright",
+            path=PATH / "assets" / "menu" / "keybinds" / "button_keybind.png",
+            manager=game
+            )
+
+        _button.set_position(Vector2(0.8,0.18))
+        _button.set_scale(Vector2(4.0,4.0))
+
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
+        _button.spritesheet.config(_button.image.get_size())
+        _button.image = _button.spritesheet[Keyboard.right.key]
+        _button.active = False
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def keyright():
+            Keyboard.right.key=-1
+            _button.image = _button.spritesheet[-1]
+            _button.active = True
+            for sprite in keybind_menu.sprites():
+                if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
+                    sprite.active = False
+
+        @_button.Event(pygame.KEYDOWN)
+        def changeright(event):
+            if _button.active:
+                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                    _button.active = False
+                    Keyboard.right.key = event.key
                     _button.image = _button.spritesheet[event.key]
                     Keyboard.save(PATH)
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
