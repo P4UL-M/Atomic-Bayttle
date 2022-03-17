@@ -24,7 +24,6 @@ class Player(MOB):
         self.name = name
 
         self.manager:animation_Manager = animation_Manager()
-        self.increment_foot=2
         self.rigth_direction = True
 
         self.jump_force = 8

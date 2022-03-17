@@ -8,8 +8,6 @@ import tools.constant as tl
 from tools.tools import sprite_sheet,animation_Manager,MixeurAudio,Vector2,cycle
 from weapons.physique import *
 import pathlib
-import time
-import random
 from math import sqrt
 
 GAME = None
