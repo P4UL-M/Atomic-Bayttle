@@ -1,5 +1,6 @@
 from multiprocessing import Process,Value,Manager,Queue
 from pydub import AudioSegment
+from queue import Empty
 
 """
 A scrit that allow real time musique speed modification with calcul on another Proccess to avoid overloading the main boucle
@@ -40,6 +41,11 @@ class generator:
             self.p.terminate()
             self.p = None
         self.sound_factor.value = 1
+        try:
+            while True:
+                self.Sounds_buffer.get_nowait()
+        except Empty:
+            pass
         self.start()
 
 def worker(buffer,factor,musique_original,sound_offset):
