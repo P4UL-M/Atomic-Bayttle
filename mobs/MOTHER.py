@@ -67,20 +67,20 @@ class MOB(pygame.sprite.Sprite):
         for i in _movements:
             if _d.arg != None: # arg is none we have no movement
                 __d = _d.unity * i
-                __d = self.collide_reaction(__d,i,target)
+                __d = self.collide_reaction(__d,i,target,serialized)
                 self.rect.move_ip(*__d)
             else:
-                __d = self.collide_reaction(Vector2(0,0),0,target)
+                __d = self.collide_reaction(Vector2(0,0),0,target,serialized)
                 self.rect.move_ip(*__d)
 
-    def collide_reaction(self,__d:Vector2,i:int,target):
+    def collide_reaction(self,__d:Vector2,i:int,target,serialized):
         _n = self.body_mask.collide_normal((__d + self.rect.topleft)(),target)
         if _n.arg != None: #* arg is not none then we have collision
-            if self.actual_speed > self.speed * 2 and __d.lenght > 0: # boucing effect
+            if self.actual_speed/serialized > self.speed * 2 and __d.lenght > 0: # boucing effect
                 _angle = 2*_n.arg - __d.arg # the absolute angle of our new vector
                 _dangle = __d.arg - _angle # the diff of angle between the two
-                self.inertia.x = -(cos(_dangle)*__d.x + sin(_dangle)*__d.y)*self.life_multiplicator
-                self.inertia.y = -(sin(_dangle)*__d.x + cos(_dangle)*__d.y)*2*self.life_multiplicator
+                self.inertia.x = -(cos(_dangle)*__d.x + sin(_dangle)*__d.y)*self.life_multiplicator/serialized
+                self.inertia.y = -(sin(_dangle)*__d.x + cos(_dangle)*__d.y)*2*self.life_multiplicator/serialized
             elif _n.arg < -pi/4 and _n.arg > -3*pi/4 and self.feet.collide((__d + self.rect.topleft)(),target): # collision on feet
                 self.inertia.y = 0
                 self.grounded = True
