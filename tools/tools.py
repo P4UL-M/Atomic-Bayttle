@@ -100,6 +100,9 @@ class sprite_sheet(pygame.Surface):
         for i in range(self.x_nb*self.y_nb):
             self.images.append(self.get(i))
 
+    def __iter__(self):
+            return iter(self.images)
+
 class animation_Manager(object):
     
     def __init__(self):

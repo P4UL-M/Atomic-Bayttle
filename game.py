@@ -14,6 +14,7 @@ from tools.constant import EndPartie
 import menu_main
 #import test
 import game_manager
+import map.Background as bg
 
 PATH = pathlib.Path(__file__).parent
 INFO = pygame.display.Info()
@@ -45,7 +46,7 @@ class Game:
 
             Camera.render()
             
-            #print(Game.clock.get_fps())
+            print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60)/16.7
@@ -71,13 +72,18 @@ class Camera:
     zoom_offset = (1,1)
     maximise = True
     HUD = True
-    _off_screen:pygame.Surface = pygame.Surface((1536,864))
+    _off_screen:pygame.Surface = pygame.Surface((1536,864),flags=SRCALPHA)
     _screen_UI:pygame.Surface = pygame.Surface((1280,720),flags=SRCALPHA)
     cache = False
+    _bg = bg.background()
 
     def render() -> None:
         gl.cleangl()
         Camera.zoom = max(1,Camera.zoom)
+        _bg, _bgsize, _bcloud,_bx,_bsize, _ccloud,_cx,_csize = next(Camera._bg) # background dynamique
+        gl.simpleRender(_bg,(Camera.x,Camera.y),_bgsize,Camera.zoom,maximize=Camera.maximise)
+        gl.simpleRender(_bcloud,(_bx,Camera.y),_bsize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
+        gl.simpleRender(_ccloud,(_cx,Camera.y),_csize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
         Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom,maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
@@ -105,11 +111,6 @@ class Camera:
         _y = (y/Camera._off_screen.get_height() -0.5 - Camera.y) * y_zoom + 0.5
 
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
-
-    def __setattr__(self, __name: str, __value) -> None:
-            if __name == "_screen_UI":
-                Camera.cache = True
-            setattr(Camera.cache,__name,__value)
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
