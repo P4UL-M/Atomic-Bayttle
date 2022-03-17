@@ -119,6 +119,8 @@ def simpleRender(text,pos:tuple[float,float],size,zoom:float,maximize=True,offse
     glTexCoord2f(x+1, y+1); glVertex2f(zoom*x_zoom+offset[0], -zoom*y_zoom+offset[1])
     glTexCoord2f(x+1, y); glVertex2f(zoom*x_zoom+offset[0], zoom*y_zoom+offset[1])
     glEnd()
+    
+    return x,y,(x_zoom,y_zoom)
 
 def cleangl():
     # prepare to render the texture-mapped rectangle

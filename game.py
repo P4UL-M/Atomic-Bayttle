@@ -83,8 +83,6 @@ class Camera:
     def render() -> None:
         Camera.zoom = max(1,Camera.zoom)
         Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom,maximize=Camera.maximise)
-        Camera.render_bg()
-        Camera.x,Camera.y,Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen,(Camera.x,Camera.y),Camera.zoom,maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
             gl.uiToScreen(Camera._screen_UI if not Camera.cache else None) # try to blit only if not null take more time to check than blit it anyway
@@ -114,7 +112,7 @@ class Camera:
 
     def render_bg():
         _bg, _bgsize, _bcloud,_bx,_bsize, _ccloud,_cx,_csize = next(Camera._bg) # background dynamique
-        gl.simpleRender(_bg,(Camera.x,Camera.y),_bgsize,Camera.zoom,maximize=Camera.maximise)
+        Camera.x,Camera.y,Camera.zoom_offset = gl.simpleRender(_bg,(Camera.x,Camera.y),_bgsize,Camera.zoom,maximize=Camera.maximise)
         gl.simpleRender(_bcloud,(_bx,Camera.y),_bsize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
         gl.simpleRender(_ccloud,(_cx,Camera.y),_csize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
 
