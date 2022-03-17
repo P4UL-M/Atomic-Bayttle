@@ -118,7 +118,7 @@ class animation_Manager(object):
             self.frame %= self.__loaded.x_nb*self.__loaded.y_nb
             if self._loaded_name in self.links.keys():
                 self.load(self.links[self._loaded_name])
-        return self.__loaded[int(self.frame)]
+        return self.__loaded[int(self.frame)].copy()
     
     @property
     def actual_surface(self):

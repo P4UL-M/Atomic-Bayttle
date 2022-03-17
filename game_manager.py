@@ -23,6 +23,8 @@ class Partie:
         self.manager = animation_Manager()
         _animation = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png",(448,252))
         _animation.config(self.map.image.get_size())
+        self.back_cloud = pygame.transform.scale(pygame.image.load(PATH /  "assets" / "environnement" / "cloud_back_sheet.png"),(self.map.image.get_width()*2,self.map.image.get_height()))
+        self.front_cloud = pygame.transform.scale(pygame.image.load(PATH /  "assets" / "environnement" / "cloud_front_sheet.png"),(self.map.image.get_width()*2,self.map.image.get_height()))
         self.manager.add_annimation("main",_animation,10)
         self.manager.load("main")
 
@@ -37,7 +39,10 @@ class Partie:
 
     @property
     def bg(self):
-        return self.manager.surface
+        _surf = self.manager.surface
+        _surf.blit(self.back_cloud, (-((pygame.time.get_ticks()/100)%(self.map.image.get_width())),0))
+        _surf.blit(self.front_cloud, (-((pygame.time.get_ticks()/50)%(self.map.image.get_width())),0))
+        return _surf
 
     def add_player(self, name,team,lock=False):
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
