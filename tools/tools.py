@@ -329,9 +329,9 @@ class MixeurAudio:
             MixeurAudio.__musicMixer.play(pygame.mixer.Sound(_buffer))
 
     @staticmethod
-    def play_effect(path,volume=None):
+    def play_effect(path,volume=1):
         mixer = pygame.mixer.find_channel() or MixeurAudio.__effectMixerCallback
-        mixer.set_volume(volume or MixeurAudio.volume_effect)
+        mixer.set_volume(volume * MixeurAudio.volume_effect)
         mixer.play(pygame.mixer.Sound(path))
 
     @staticmethod

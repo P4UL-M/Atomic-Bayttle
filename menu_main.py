@@ -955,18 +955,21 @@ def setup_manager():
             Keyboard.left.key=-1
             _button.image = _button.spritesheet[-1]
             _button.active = True
+            for sprite in keybind_menu.sprites():
+                if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
+                    sprite.active = False
 
-        @_button.Event(None)
-        def changeleft():
+        @_button.Event(pygame.KEYDOWN)
+        def changeleft(event):
             if _button.active:
-                for keys in sprite_sheet.dico.keys():
-                    if pygame.key.get_pressed()[keys]:
-                        keypressed=keys
-                        if not Keyboard.key_used(keypressed):
-                            _button.active = False
-                            Keyboard.left.key = keypressed
-                            _button.image = _button.spritesheet[int(sprite_sheet.dico[Keyboard.left.key])]
-                            Keyboard.save(PATH)
+                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                    _button.active = False
+                    Keyboard.left.key = event.key
+                    _button.image = _button.spritesheet[event.key]
+                    Keyboard.save(PATH)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
+                else:
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
 
         return _button
 
