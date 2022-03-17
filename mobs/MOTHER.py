@@ -2,8 +2,6 @@ import pygame
 from math import sqrt,ceil,pi,sin,cos
 from tools.tools import Keyboard,Vector2,Axis
 import tools.constant as tl
-import time
-import random
 
 class BodyPartSprite(pygame.mask.Mask):
     def __init__(self, pos:tuple,size:tuple):

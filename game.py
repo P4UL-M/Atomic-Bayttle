@@ -115,12 +115,7 @@ class Camera:
         gl.simpleRender(_bg,(Camera.x,Camera.y),_bgsize,Camera.zoom,maximize=Camera.maximise)
         gl.simpleRender(_bcloud,(_bx,Camera.y),_bsize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
         gl.simpleRender(_ccloud,(_cx,Camera.y),_csize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
-        
 
 # class parent now accessible to childs too
 game_manager.GAME = menu_main.GAME= Game
 game_manager.CAMERA = menu_main.CAMERA = Camera
-
-import mobs.MOTHER as mom
-
-mom.CAMERA = Camera

@@ -8,7 +8,6 @@ PATH = pathlib.Path(__file__).parent.parent
 
 def background():
     sp = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png",(448,252))
-    sp.config((1536,864))
     _bgs = [gl.returnSurfaceToTexture(spr) for spr in sp]
 
     _b_cloud = gl.returnSurfaceToTexture(pygame.image.load(PATH /  "assets" / "environnement" / "cloud_back_sheet.png"),True)
