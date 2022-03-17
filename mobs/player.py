@@ -2,12 +2,13 @@ import pygame
 from .MOTHER import MOB
 import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
-from tools.constant import TEAM,EndPartie,IMPACT,INTERACT
+from tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN
 from entities_sprite.particule import Particule
 from math import pi
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
+pygame.key.set_repeat()
 
 class Player(MOB):
 
@@ -36,11 +37,6 @@ class Player(MOB):
         self.weapon_manager = None # mettre travail de Joseph ici
 
         # pushback quand on collide un autre joueur
-        self.start_pushback=False
-        self.last_coords=(0,0)
-        self.dir_push_back=(0,0)
-        self.last_dist=(0,0)
-        self.was_longer=[False,False]
         self.cooldown_pushback=0.1
         self.timer_push_back=0
         self.load_team(team)
@@ -74,8 +70,8 @@ class Player(MOB):
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
         match event.type:
-            case _:
-                ... #* put here the future of the game like charging up or impact
+            case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
+                pygame.event.post(pygame.event.Event(ENDTURN))
         super().handle(event)
 
     def update(self,map,players,serialized,CAMERA,particle_group):

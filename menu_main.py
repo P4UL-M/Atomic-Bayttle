@@ -4,6 +4,7 @@ from pygame_easy_menu import *
 from pygame_easy_menu.tools import *
 from tools.tools import *
 import pathlib
+from math import sin
 
 GAME = None
 CAMERA = None
@@ -976,12 +977,9 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
+            _button.image = _button.spritesheet[Keyboard.left.key].copy()
             if _button.active:
-                _button.image = _button.spritesheet[-1].copy()
-                _button.image.fill((0,0,0,100))
-                """alpha courbe sinus du temps"""
-            else:
-                _button.image = _button.spritesheet[Keyboard.left.key].copy()
+                _button.image.fill((255,255,255,200 + 55*sin(pygame.time.get_ticks()/200)),special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1022,6 +1020,12 @@ def setup_manager():
                 else:
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
 
+        @_button.Event(None)
+        def animate():
+            _button.image = _button.spritesheet[Keyboard.left.alias].copy()
+            if _button.active:
+                _button.image.fill((255,255,255,200 + 55*sin(pygame.time.get_ticks()/200)),special_flags=BLEND_RGBA_MULT)
+
         return _button
 
     @keybind_menu.add_sprite
@@ -1061,6 +1065,11 @@ def setup_manager():
                 else:
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
 
+        @_button.Event(None)
+        def animate():
+            _button.image = _button.spritesheet[Keyboard.right.alias].copy()
+            if _button.active:
+                _button.image.fill((255,255,255,200 + 55*sin(pygame.time.get_ticks()/200)),special_flags=BLEND_RGBA_MULT)
         return _button
 
     @keybind_menu.add_sprite
@@ -1099,6 +1108,12 @@ def setup_manager():
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key.wav",volume=4)
                 else:
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "button-key-fail.wav",volume=4)
+
+        @_button.Event(None)
+        def animate():
+            _button.image = _button.spritesheet[Keyboard.right.key].copy()
+            if _button.active:
+                _button.image.fill((255,255,255,200 + 55*sin(pygame.time.get_ticks()/200)),special_flags=BLEND_RGBA_MULT)
 
         return _button
 

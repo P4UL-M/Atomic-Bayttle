@@ -44,7 +44,6 @@ class MOB(pygame.sprite.Sprite):
         self.life_multiplicator = 1
 
         self.grounded = False # vérification si au sol ou non
-        self.in_action = False # en cas d'annimation spéciale
 
         # body part with position relative to the player position
         self.body_mask = BodyPartSprite((0,0),(self.rect.width, self.rect.height))
@@ -78,50 +77,52 @@ class MOB(pygame.sprite.Sprite):
 
     def collide_reaction(self,__d:Vector2,i:int,target):
         _n = self.body_mask.collide_normal((__d + self.rect.topleft)(),target)
-        if _n.arg != None: # arg is none we have no collision
-            if self.actual_speed > self.speed * 2 and __d.lenght > 0: #* boucing effect
+        if _n.arg != None: #* arg is not none then we have collision
+            if self.actual_speed > self.speed * 2 and __d.lenght > 0: # boucing effect
                 _angle = 2*_n.arg - __d.arg # the absolute angle of our new vector
                 _dangle = __d.arg - _angle # the diff of angle between the two
                 self.inertia.x = -(cos(_dangle)*__d.x + sin(_dangle)*__d.y)*self.life_multiplicator
                 self.inertia.y = -(sin(_dangle)*__d.x + cos(_dangle)*__d.y)*2*self.life_multiplicator
-                return Vector2(0,0)# break before movement to take account of new inertia
-            #* counter of collision
-            if _n.arg < -pi/4 and _n.arg > -3*pi/4 and self.feet.collide((__d + self.rect.topleft)(),target):
+            elif _n.arg < -pi/4 and _n.arg > -3*pi/4 and self.feet.collide((__d + self.rect.topleft)(),target): # collision on feet
                 self.inertia.y = 0
                 self.grounded = True
-                while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.y > 0:
+                while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.y > 0: # unclip
                     __d.y -= 1
-                _test = (__d + self.rect.topleft); _test.y -= i
+                _test = (__d + self.rect.topleft); _test.y -= i # test climbing
                 if not self.body_mask.collide(_test(),target) and abs(__d.x) > 0 and self.body_mask.collide((__d + self.rect.topleft)(),target):
                     __d.y -= i
-            elif _n.arg > pi/4 and _n.arg < 3*pi/4 and self.head.collide((__d + self.rect.topleft)(),target):
-                _test = (__d + self.rect.topleft); _test.x -= i*1.2
-                if not self.body_mask.collide(_test(),target):
-                    __d.y -= i*1.2
-                _test = (__d + self.rect.topleft); _test.x += i*1.2
-                if not self.body_mask.collide(_test(),target):
-                    __d.y += i*1.2
-                else:
+            elif _n.arg > pi/4 and _n.arg < 3*pi/4 and self.head.collide((__d + self.rect.topleft)(),target): # collision of head
+                _NE = (__d + self.rect.topleft); _NE.x -= i*1.2
+                _NW = (__d + self.rect.topleft); _NW.x += i*1.2
+                if not self.body_mask.collide(_NE(),target): # test displacement on right
+                    __d.x -= i*1.2
+                elif not self.body_mask.collide(_NW(),target): # test displacement on left
+                    __d.x += i*1.2
+                else: # no alternative then stop the jump
                     self.inertia.y = 0
                     while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.y < 0:
                         __d.y += 1
-            elif self.side_mask.collide((__d + self.rect.topleft)(),target):
+            elif self.side_mask.collide((__d + self.rect.topleft)(),target): # collision on side
                 if _n.x > 0:
                     while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.x < 0:
                         __d.x += 1
+                    if not self.grounded: # strange bug clip surface while flying
+                        self.inertia.x += self.speed
                 elif _n.x < 0:
                     while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.x > 0:
                         __d.x -= 1
-            else:
+                    if not self.grounded: # strange bug clip surface while flying
+                        self.inertia.x -= self.speed
+            else: # collision undefined
                 while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.lenght < self.speed*3:
                     __d += _n.unity
                     self.body_mask.collide_normal((__d + self.rect.topleft)(),target)
-        else:
+        else: #* else no collison so no operation
             self.grounded = False
         if not self.body_mask.collide((__d + self.rect.topleft)(),target):
             return __d
         else:
-            return Vector2(0,0)
+            return Vector2(0,0) # in case the reaction fail or like with boucing
 
     def handle(self,event:pygame.event.Event):
         """methode appele a chaque event"""

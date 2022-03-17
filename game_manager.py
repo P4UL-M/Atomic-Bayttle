@@ -16,6 +16,8 @@ GAME = None
 CAMERA = None
 PATH = pathlib.Path(__file__).parent
 
+FONT = pygame.font.SysFont("Arial",24)
+
 class Partie:
     def __init__(self):
         self.map = Map(PATH)
@@ -86,15 +88,19 @@ class Partie:
             self.map.water_manager.load("idle")
 
         # render
+        CAMERA._screen_UI.fill((0,0,0,0))
+        timer = (self.timer_tour + self.cooldown_tour - pygame.time.get_ticks())//1000 + 1
+        CAMERA._screen_UI.blit(FONT.render(str(timer),1,(0,0,0)),(640,50))
+        CAMERA.cache = False
         self.Draw()
 
         return
 
     def Draw(self): 
         _surf = self.bg.copy()
+        _surf.blit(self.map.cave_bg.image,self.map.cave_bg.rect.topleft)
         _surf.blit(self.map.image,(0,0))
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
-        _surf.blit(self.map.cave_bg.image,self.map.cave_bg.rect.topleft)
         self.mobs.draw(_surf) 
         self.group_object.draw(_surf)
         self.group_particle.draw(_surf)
