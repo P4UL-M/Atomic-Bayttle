@@ -33,6 +33,8 @@ class Partie:
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         player.lock = lock
         self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
+        if "j2" in player.name:
+            player.rect.topleft = (900,100)
         self.mobs.add(player)
 
     def add_object(self,name,pos, path):

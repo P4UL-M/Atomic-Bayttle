@@ -50,7 +50,7 @@ class MOB(pygame.sprite.Sprite):
         self.side_mask = BodyPartSprite((0,self.rect.width*0.3),(self.rect.width, self.rect.height*0.4))
         self.mask = self.body_mask # for collision with other and projectil
 
-    def move(self,target,serialized):
+    def move(self,target,players,serialized):
         try:
             self.__getattribute__("rect")
         except:
@@ -68,9 +68,19 @@ class MOB(pygame.sprite.Sprite):
             if _d.arg != None: # arg is none we have no movement
                 __d = _d.unity * i
                 __d = self.collide_reaction(__d,i,target,serialized)
+                on_ground = self.grounded
+                for player in players:
+                    if player is not self:
+                        __d = self.collide_reaction(__d,i,player,serialized)
+                self.grounded = on_ground and not self.grounded
                 self.rect.move_ip(*__d)
             else:
                 __d = self.collide_reaction(Vector2(0,0),0,target,serialized)
+                on_ground = self.grounded
+                for player in players:
+                    if player is not self:
+                        __d = self.collide_reaction(__d,i,player,serialized)
+                self.grounded = on_ground and not self.grounded
                 self.rect.move_ip(*__d)
 
     def collide_reaction(self,__d:Vector2,i:int,target,serialized):
@@ -133,5 +143,5 @@ class MOB(pygame.sprite.Sprite):
             case _:
                 ...
 
-    def update(self,map,serialized):
-        self.move(map,serialized)
+    def update(self,map,serialized,players):
+        self.move(map,players,serialized)
