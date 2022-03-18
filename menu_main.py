@@ -1414,7 +1414,6 @@ def setup_manager():
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
         _button.spritesheet.config(_button.image.get_size())
-        print(Keyboard.jump.alias)
         _button.image = _button.spritesheet[Keyboard.jump.alias]
         _button.active = False
 
