@@ -4,11 +4,9 @@ import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN
 from entities_sprite.particule import Particule
-from math import pi
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
-pygame.key.set_repeat()
 
 class Player(MOB):
 
@@ -111,22 +109,6 @@ class Player(MOB):
             elif self.x_axis.value<0:
                 self.rigth_direction = False
 
-            #* annimation
-            if self.manager._loaded_name not in ["jump","ground","emote"]:
-                if self.actual_speed>1:
-                    if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
-                        self.manager.load("fall")
-                    elif self.manager._loaded_name == "fall":
-                        self.manager.load("ground")
-                    else:
-                        self.manager.load("run")
-                        self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
-                elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
-                    if self.manager._loaded_name == "fall":
-                        self.manager.load("ground")
-                    else:
-                        self.manager.load("idle")
-
             #* walking particle here
             if self.grounded:
                 self.double_jump = True
@@ -141,21 +123,25 @@ class Player(MOB):
             #* Effect of dezoom relatif to speed
             zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1))
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
-
-            #* other player repels
-            for player in players:
-                if self.body_mask.collide(self.rect.topleft,player):
-                    _n = self.body_mask.collide_normal(self.rect.topleft,player)
-                    if _n.lenght != 0:
-                        if _n.arg < -pi/2:
-                            _n = Vector2(-1,-0.5)
-                        else:
-                            _n = Vector2(1,-0.5)
-                        self.inertia += _n*serialized*self.speed*0.5
-   
         else:
             self.x_axis.update()
+
+        #* annimation
+        if self.manager._loaded_name not in ["jump","ground","emote"]:
+            if self.actual_speed>1:
+                if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
+                    self.manager.load("fall")
+                elif self.manager._loaded_name == "fall":
+                    self.manager.load("ground")
+                else:
+                    self.manager.load("run")
+                    self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
+            elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
+                if self.manager._loaded_name == "fall":
+                    self.manager.load("ground")
+                else:
+                    self.manager.load("idle")
         if self.rect.bottom > map.water_level:
             self.rect.topleft = (100, 50)
         #* inertia and still update if inactive
-        super().update(map,serialized)
+        super().update(map,serialized,players)
