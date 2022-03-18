@@ -235,7 +235,7 @@ class cycle:
 class Key:
     def __init__(self,key:int,alias:int=None):
         self.key = key
-        self.alias = alias
+        self.alias = alias if alias else -1
         self.name = pygame.key.name(key)
         self.name_alias = pygame.key.name(alias) if alias else None
 
