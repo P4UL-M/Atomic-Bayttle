@@ -72,7 +72,7 @@ class MOB(pygame.sprite.Sprite):
                 for player in players:
                     if player is not self:
                         __d = self.collide_reaction(__d,i,player,serialized)
-                self.grounded = on_ground and not self.grounded
+                self.grounded = on_ground or self.grounded
                 self.rect.move_ip(*__d)
             else:
                 __d = self.collide_reaction(Vector2(0,0),0,target,serialized)
