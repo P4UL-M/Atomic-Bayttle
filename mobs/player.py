@@ -4,11 +4,9 @@ import pathlib
 from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN
 from entities_sprite.particule import Particule
-from math import pi
 
 PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
-pygame.key.set_repeat()
 
 class Player(MOB):
 
