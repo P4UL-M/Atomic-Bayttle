@@ -26,7 +26,7 @@ class Partie:
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
-        self.cooldown_tour=5000
+        self.cooldown_tour=15000
         self.timer_tour=pygame.time.get_ticks()
 
     def add_player(self, name,team,lock=False):

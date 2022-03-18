@@ -923,6 +923,19 @@ def setup_manager():
         return _button
 
     @keybind_menu.add_sprite
+    def scrollzone():
+        _panel = ScrollableBox(
+            name="panel",
+            size=(int(keybind_menu._manager.screen.get_width() * 0.8),int(keybind_menu._manager.screen.get_height() * 0.68)),
+            manager=game,
+            path = PATH / "assets" / "menu" / "keybinds" / "cursor.png"
+        )
+
+        _panel.set_position(Vector2(0.5,0.45))
+
+        return _panel
+
+    @keybind_menu.get_sprite("panel").add_sprite
     def movebutton():
         _sprite=sprite(
             name="movebutton",
@@ -930,12 +943,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.18))
+        _sprite.set_position(Vector2(0.28,0.1),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def movekeyleft():
         _button=Button(
             name="movekeyleft",
@@ -943,7 +956,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.18))
+        _button.set_position(Vector2(0.54,0.1),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -957,7 +970,7 @@ def setup_manager():
                 Keyboard.left.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -984,7 +997,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def movealiasleft():
         _button=Button(
             name="movekeyleft",
@@ -992,7 +1005,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.18))
+        _button.set_position(Vector2(0.62,0.1),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1006,7 +1019,7 @@ def setup_manager():
                 Keyboard.left.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1033,7 +1046,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def movealiasright():
         _button=Button(
             name="movealiasright",
@@ -1041,7 +1054,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.82,0.18))
+        _button.set_position(Vector2(0.82,0.1),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1055,7 +1068,7 @@ def setup_manager():
                 Keyboard.right.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1081,7 +1094,7 @@ def setup_manager():
                 _button.image.fill((255,255,255,200 + 55*sin(pygame.time.get_ticks()/200)),special_flags=BLEND_RGBA_MULT)
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def movekeyright():
         _button=Button(
             name="movekeyright",
@@ -1089,7 +1102,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.74,0.18))
+        _button.set_position(Vector2(0.74,0.1),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1103,7 +1116,7 @@ def setup_manager():
                 Keyboard.right.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1130,7 +1143,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def angle():
         _sprite=sprite(
             name="anglesprite",
@@ -1138,12 +1151,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.3))
+        _sprite.set_position(Vector2(0.28,0.28),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def angleupkey():
         _button=Button(
             name="angleupkey",
@@ -1151,7 +1164,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.3))
+        _button.set_position(Vector2(0.54,0.28),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1165,7 +1178,7 @@ def setup_manager():
                 Keyboard.up.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1192,7 +1205,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def angleupalias():
         _button=Button(
             name="angleupalias",
@@ -1200,7 +1213,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.3))
+        _button.set_position(Vector2(0.62,0.28),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1214,7 +1227,7 @@ def setup_manager():
                 Keyboard.up.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1241,7 +1254,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def angledownkey():
         _button=Button(
             name="angledownkey",
@@ -1249,7 +1262,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.74,0.3))
+        _button.set_position(Vector2(0.74,0.28),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1263,7 +1276,7 @@ def setup_manager():
                 Keyboard.down.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1290,7 +1303,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def angledownalias():
         _button=Button(
             name="angledownalias",
@@ -1298,7 +1311,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.82,0.3))
+        _button.set_position(Vector2(0.82,0.28),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1312,7 +1325,7 @@ def setup_manager():
                 Keyboard.down.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1339,7 +1352,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def jump():
         _sprite=sprite(
             name="jumpsprite",
@@ -1347,12 +1360,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.42))
+        _sprite.set_position(Vector2(0.28,0.46),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def jumpkey():
         _button=Button(
             name="jumpkey",
@@ -1360,7 +1373,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.42))
+        _button.set_position(Vector2(0.54,0.46),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1374,7 +1387,7 @@ def setup_manager():
                 Keyboard.jump.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1401,7 +1414,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def jumpalias():
         _button=Button(
             name="jumpalias",
@@ -1409,7 +1422,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.42))
+        _button.set_position(Vector2(0.62,0.46),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1423,7 +1436,7 @@ def setup_manager():
                 Keyboard.jump.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1450,7 +1463,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def inventory():
         _sprite=sprite(
             name="inventorysprite",
@@ -1458,12 +1471,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.66))
+        _sprite.set_position(Vector2(0.28,0.64),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def inventorykey():
         _button=Button(
             name="inventorykey",
@@ -1471,7 +1484,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.66))
+        _button.set_position(Vector2(0.54,0.64),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1485,7 +1498,7 @@ def setup_manager():
                 Keyboard.inventory.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1512,7 +1525,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def inventoryalias():
         _button=Button(
             name="inventoryalias",
@@ -1520,7 +1533,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.66))
+        _button.set_position(Vector2(0.62,0.64),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1534,7 +1547,7 @@ def setup_manager():
                 Keyboard.inventory.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1561,7 +1574,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def shoot():
         _sprite=sprite(
             name="shootsprite",
@@ -1569,12 +1582,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.54))
+        _sprite.set_position(Vector2(0.28,0.82),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def shootkey():
         _button=Button(
             name="shootkey",
@@ -1582,7 +1595,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.54))
+        _button.set_position(Vector2(0.54,0.82),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1596,7 +1609,7 @@ def setup_manager():
                 Keyboard.interact.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1623,7 +1636,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def shootalias():
         _button=Button(
             name="shootalias",
@@ -1631,7 +1644,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.54))
+        _button.set_position(Vector2(0.62,0.82),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1645,7 +1658,7 @@ def setup_manager():
                 Keyboard.interact.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1672,7 +1685,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def pause():
         _sprite=sprite(
             name="pausesprite",
@@ -1680,12 +1693,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.78))
+        _sprite.set_position(Vector2(0.28,1.),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def pausekey():
         _button=Button(
             name="pausekey",
@@ -1693,7 +1706,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.78))
+        _button.set_position(Vector2(0.54,1.),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1707,7 +1720,7 @@ def setup_manager():
                 Keyboard.pause.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1734,7 +1747,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def pausealias():
         _button=Button(
             name="pausealias",
@@ -1742,7 +1755,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.78))
+        _button.set_position(Vector2(0.62,1.),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1756,7 +1769,7 @@ def setup_manager():
                 Keyboard.pause.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1783,7 +1796,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def endturn():
         _sprite=sprite(
             name="endturnsprite",
@@ -1791,12 +1804,12 @@ def setup_manager():
             manager=game
             )
 
-        _sprite.set_position(Vector2(0.28,0.90))
+        _sprite.set_position(Vector2(0.28,1.18),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def endturnkey():
         _button=Button(
             name="endturnkey",
@@ -1804,7 +1817,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.54,0.90))
+        _button.set_position(Vector2(0.54,1.18),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1818,7 +1831,7 @@ def setup_manager():
                 Keyboard.end_turn.key=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
@@ -1845,7 +1858,7 @@ def setup_manager():
 
         return _button
 
-    @keybind_menu.add_sprite
+    @keybind_menu.get_sprite("panel").add_sprite
     def endturnalias():
         _button=Button(
             name="endturnalias",
@@ -1853,7 +1866,7 @@ def setup_manager():
             manager=game
             )
 
-        _button.set_position(Vector2(0.62,0.90))
+        _button.set_position(Vector2(0.62,1.18),parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0,4.0))
 
         _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28,28))
@@ -1867,7 +1880,7 @@ def setup_manager():
                 Keyboard.end_turn.alias=-1
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
-                for sprite in keybind_menu.sprites():
+                for sprite in keybind_menu.get_sprite("panel").sprites:
                     if type(sprite) == Button and hasattr(sprite,"active") and sprite is not _button:
                         sprite.active = False
             else:
