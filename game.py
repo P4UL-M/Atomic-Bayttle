@@ -1,13 +1,16 @@
 import pygame
 from pygame.locals import *
+import pathlib
 
 pygame.init()
+INFO = pygame.display.Info()
+PATH = pathlib.Path(__file__).parent
 INFO = pygame.display.Info()
 
 pygame.display.set_mode((int(INFO.current_w),int(INFO.current_h)), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
 pygame.display.init()
+pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
-import pathlib
 import tools.opengl_pygame as gl
 from tools.tools import MixeurAudio
 from tools.constant import EndPartie
@@ -15,9 +18,6 @@ import menu_main
 #import test
 import game_manager
 import map.Background as bg
-
-PATH = pathlib.Path(__file__).parent
-INFO = pygame.display.Info()
 
 # there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
 class Game:
@@ -45,7 +45,7 @@ class Game:
                 menu_main.game.Update()
 
             gl.cleangl()
-            if Game.partie:
+            if Game.partie or True:
                 Camera.render_bg()
             Camera.render()
             
@@ -111,6 +111,7 @@ class Camera:
         return (int(_x * INFO.current_w),int(_y * INFO.current_h))
 
     def render_bg():
+        Camera.zoom = max(1,Camera.zoom)
         _bg, _bgsize, _bcloud,_bx,_bsize, _ccloud,_cx,_csize = next(Camera._bg) # background dynamique
         Camera.x,Camera.y,Camera.zoom_offset = gl.simpleRender(_bg,(Camera.x,Camera.y),_bgsize,Camera.zoom,maximize=Camera.maximise)
         gl.simpleRender(_bcloud,(_bx,Camera.y),_bsize,Camera.zoom,maximize=Camera.maximise,offset=(-Camera.x*Camera.zoom*2,0))
