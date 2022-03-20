@@ -2,14 +2,13 @@ import pygame
 from pygame.locals import *
 from pygame_easy_menu import *
 from pygame_easy_menu.tools import *
-from tools.tools import *
-import pathlib
+from src.tools.tools import *
+from src.tools.constant import PATH
 from math import sin
 
 GAME = None
 CAMERA = None
 
-PATH = pathlib.Path(__file__).parent
 game = None
 
 class CursorButton(Button,sprite):

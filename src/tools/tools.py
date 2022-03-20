@@ -2,6 +2,7 @@ import pygame
 import json
 from typing import Any
 from math import atan,sqrt,pi
+from pygame_easy_menu import Vector2
 
 pygame.init()
 
@@ -143,73 +144,6 @@ class animation_Manager(object):
 
     def add_link(self,origin:str,to:str):
         self.links[origin] = to
-
-class Vector2:
-    """
-    class Vecteur 2 dimension pour un stockage des position et range plus facile qu'avec un array tuple
-    """
-    def __init__(self,x,y):
-        self.x = x
-        self.y = y
-
-    @property
-    def lenght(self):
-        return sqrt(self.x**2 + self.y**2)
-
-    @property
-    def unity(self):
-        return Vector2(self.x/self.lenght,self.y/self.lenght) if self.lenght > 0 else Vector2(0,0)
-
-    @property
-    def arg(self):
-        if self.x > 0:
-            return atan(self.y/self.x)
-        elif self.x < 0 and self.y >= 0:
-            return atan(self.y/self.x) + pi
-        elif self.x < 0 and self.y < 0:
-            return atan(self.y/self.x) - pi
-        elif self.x==0 and self.y < 0: return -pi/2
-        elif self.x ==0 and self.y > 0: return pi/2
-        else: return None
-
-    def __str__(self) -> str:
-        return f'({self.x},{self.y})'
-
-    def __call__(self) -> tuple:
-        """return a tuple of the vector"""
-        return (self.x,self.y)
-    
-    def copy(self):
-        return Vector2(self.x,self.y)
-
-    def __iter__(self):
-        return iter((self.x, self.y))
-
-    def __add__(self,other):
-        if type(other)==Vector2:
-            return Vector2(self.x + other.x, self.y + other.y)
-        if type(other)==tuple:
-            return Vector2(self.x + other[0], self.y + other[1])
-        else:
-            raise TypeError("You can just add Vector2 between them but you pass :", type(other))
-
-    def __iadd__(self,other):
-        return self.__add__(other)
-
-    def __sub__(self,other):
-        if type(other)==Vector2:
-            return Vector2(self.x - other.x, self.y - other.y)
-        if type(other)==tuple:
-            return Vector2(self.x - other[0], self.y - other[1])
-        else:
-            raise TypeError("You can just substract Vector2 between them but you pass :", type(other))
-
-    def __isub__(self,other):
-        return self.__min__(other)
-
-    def __mul__(self,other):
-        if type(other)==int or type(other)==float:
-            return Vector2(self.x*other,self.y*other)
 
 class cycle:
     def __init__(self,*args:str,index=0) -> None:

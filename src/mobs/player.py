@@ -1,11 +1,10 @@
 import pygame
 from .MOTHER import MOB
 import pathlib
-from tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
-from tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN
-from entities_sprite.particule import Particule
+from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
+from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
+from src.entities_sprite.particule import Particule
 
-PATH = pathlib.Path(__file__).parent.parent
 INFO = pygame.display.Info()
 
 class Player(MOB):
@@ -64,6 +63,12 @@ class Player(MOB):
         self.manager.add_link("emote","idle")
         self.manager.load("idle")
 
+    def respawn(self,y):
+        self.inertia.y = 0
+        self.rect.y = y
+        if not self.lock:
+            pygame.event.post(pygame.event.Event(ENDTURN))
+
     def handle(self, event: pygame.event.Event):
         """methode appele a chaque event"""
         match event.type:
@@ -83,14 +88,6 @@ class Player(MOB):
                     self.manager.load("jump")
                     for i in range(5):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
-            if Keyboard.down.is_pressed:
-                map.add_damage(Vector2(*self.rect.center),50)
-            if Keyboard.up.is_pressed:
-                ...
-            if Keyboard.left.is_pressed:
-                ...
-            if Keyboard.right.is_pressed:
-                ...
             if Keyboard.interact.is_pressed:
                 #map.add_damage(Vector2(self.rect.left,self.rect.top),50)
                 ev = pygame.event.Event(INTERACT,{'rect':self.rect})
@@ -98,12 +95,11 @@ class Player(MOB):
                 self.manager.load("emote")
             if Keyboard.inventory.is_pressed:
                 ...
+            if Keyboard.down.is_pressed:
+                map.add_damage(Vector2(*self.rect.center),50)
             if Keyboard.pause.is_pressed:
                 raise EndPartie
-                ...
-            if Keyboard.end_turn.is_pressed:
-                ...
-
+ 
             if self.x_axis.value>0: # tempo variable so keep in cache until real changement of direction
                 self.rigth_direction = True
             elif self.x_axis.value<0:
@@ -141,7 +137,9 @@ class Player(MOB):
                     self.manager.load("ground")
                 else:
                     self.manager.load("idle")
+        # death
         if self.rect.bottom > map.water_level:
-            self.rect.topleft = (100, 50)
+            ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
+            pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)

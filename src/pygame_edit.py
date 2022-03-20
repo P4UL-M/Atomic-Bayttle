@@ -1,7 +1,5 @@
-import pygame 
-from tools.tools import animation_Manager
-from game import Camera
-from typing import Union
+import pygame
+from src.game import Camera
 
 # rewrite of get_pos to send now the pos in the virtual surface and not the screen.
 def get_pos(func):

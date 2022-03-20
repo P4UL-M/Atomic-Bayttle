@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
-from tools.tools import Vector2,sprite_sheet,animation_Manager,MixeurAudio
+from src.tools.tools import Vector2,sprite_sheet,animation_Manager,MixeurAudio
+from src.tools.constant import PATH
 
 class Map(pygame.sprite.Sprite):
-    def __init__(self, PATH):
+    def __init__(self):
         super().__init__()
         self.image = pygame.image.load(PATH / "assets" / "environnement" / "map.png").convert_alpha()
         self.rect = self.image.get_rect()

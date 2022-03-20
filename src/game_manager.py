@@ -1,24 +1,20 @@
 import pygame
 from pygame.locals import *
-from map.render_map import Map
-from entities_sprite.particule import Particule
-from mobs.player import Player
-from map.object_map import Object_map
-import tools.constant as tl
-from tools.tools import sprite_sheet,animation_Manager,MixeurAudio,Vector2,cycle
-from weapons.physique import *
-import pathlib
-from math import sqrt
+from src.map.render_map import Map
+from src.mobs.player import Player
+from src.map.object_map import Object_map
+import src.tools.constant as tl
+from src.tools.tools import MixeurAudio,cycle
+from src.weapons.physique import *
 
 GAME = None
 CAMERA = None
-PATH = pathlib.Path(__file__).parent
 
 FONT = pygame.font.SysFont("Arial",24)
 
 class Partie:
     def __init__(self):
-        self.map = Map(PATH)
+        self.map = Map()
 
         self.mobs = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
@@ -56,6 +52,11 @@ class Partie:
                             mob.lock = False
                         else:
                             mob.lock = True
+                case tl.DEATH:
+                    CAMERA.zoom = 1
+                    for mob in self.mobs.sprites():
+                        if mob.name == event.name:
+                            mob.respawn(self.checkpoint[1])
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)

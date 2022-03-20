@@ -1,23 +1,22 @@
 import pygame
 from pygame.locals import *
-import pathlib
+from src.tools.constant import PATH
 
 pygame.init()
 INFO = pygame.display.Info()
-PATH = pathlib.Path(__file__).parent
 INFO = pygame.display.Info()
 
 pygame.display.set_mode((int(INFO.current_w),int(INFO.current_h)), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
-import tools.opengl_pygame as gl
-from tools.tools import MixeurAudio
-from tools.constant import EndPartie
-import menu_main
+import src.tools.opengl_pygame as gl
+from src.tools.tools import MixeurAudio
+from src.tools.constant import EndPartie
+import src.menu_main as menu_main
 #import test
-import game_manager
-import map.Background as bg
+import src.game_manager as game_manager
+import src.map.Background as bg
 
 # there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
 class Game:

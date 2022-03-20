@@ -1,10 +1,8 @@
 import pygame
 from pygame.locals import *
-import tools.opengl_pygame as gl
-import pathlib
-from tools.tools import sprite_sheet
-
-PATH = pathlib.Path(__file__).parent.parent
+import src.tools.opengl_pygame as gl
+from src.tools.tools import sprite_sheet
+from src.tools.constant import PATH
 
 def background():
     sp = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png",(448,252))
