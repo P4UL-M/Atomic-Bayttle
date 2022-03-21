@@ -1,6 +1,5 @@
 import pygame
 from .MOTHER import MOB
-import pathlib
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
 from src.game_effect.particule import Particule

@@ -1,12 +1,8 @@
 """class mother des armes"""
-
-from tkinter import E
 import pygame
 from src.tools.constant import PATH, IMPACT
 from src.tools.tools import Vector2
 from src.weapons.physique import *
-from math import pi
-import time
 from src.mobs.MOTHER import BodyPartSprite
 
 class WEAPON(pygame.sprite.Sprite):
@@ -44,7 +40,7 @@ class WEAPON(pygame.sprite.Sprite):
     def fire(self):
         if not self.is_firing:
             self.is_firing=True
-            self.start_firing=time.time()
+            self.start_firing=pygame.time.get_ticks()
             self.h0=self.rect.y
             self.x0=self.rect.x
             self.rect_bullet.x=self.x0
@@ -57,11 +53,9 @@ class WEAPON(pygame.sprite.Sprite):
             transColor = self.image_bullet.get_at((0,0))
             self.image_bullet.set_colorkey(transColor)
 
-
-    def update(self, map):
-        
+    def update(self, map,players):
         if self.is_firing:
-            t=time.time()-self.start_firing
+            t=pygame.time.get_ticks()-self.start_firing
             x=get_x(t, self.v0, self.angle)
             self.rect_bullet.y=get_y(x, self.v0, self.angle, self.h0)
             if self.bullet_direction=="left":
