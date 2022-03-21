@@ -3,7 +3,7 @@ from .MOTHER import MOB
 import pathlib
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
-from src.entities_sprite.particule import Particule
+from src.game_effect.particule import Particule
 
 INFO = pygame.display.Info()
 
@@ -88,7 +88,7 @@ class Player(MOB):
                     self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
                     self.manager.load("jump")
                     for i in range(5):
-                        particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
+                        particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,pygame.Color(20,20,0)))
             if Keyboard.interact.is_pressed:
                 #map.add_damage(Vector2(self.rect.left,self.rect.top),50)
                 # ev = pygame.event.Event(INTERACT,{'rect':self.rect})
@@ -111,7 +111,7 @@ class Player(MOB):
             if self.grounded:
                 self.double_jump = True
                 if self.actual_speed > 1 and pygame.time.get_ticks()%7==0:
-                    particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,True))
+                    particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,pygame.Color(20,20,0)))
 
             #* CAMERA Update of the player
             x,y = CAMERA.to_virtual(INFO.current_w/2,INFO.current_h/2 )

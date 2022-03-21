@@ -80,9 +80,7 @@ class sprite_sheet(pygame.Surface):
         x = (key%self.x_nb)*self.tile_size[0]
         y = ((key//self.x_nb)%self.y_nb)*self.tile_size[1]
 
-        _surf = pygame.Surface(self.tile_size,pygame.SRCALPHA)
-
-        _surf.blit(self,(0,0),pygame.Rect(x,y,*self.tile_size))
+        _surf = self.subsurface(pygame.Rect(x,y,*self.tile_size)).copy()
 
         _surf = pygame.transform.scale(_surf,self.render_size) #* resize seems more perf than stocking a bigger spritesheet
  
