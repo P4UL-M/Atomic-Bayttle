@@ -3,12 +3,13 @@ from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
 from src.game_effect.particule import Particule
+from src.weapons.WEAPON import WEAPON
 
 INFO = pygame.display.Info()
 
 class Player(MOB):
 
-    def __init__(self,name, pos, size,team,group):
+    def __init__(self,name, pos, size,team,group, id_weapon):
         """parametres :
             - pos : les position de base
             - size : la taille du sprite
@@ -30,12 +31,13 @@ class Player(MOB):
         # for action
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
-        self.current_weapon=None
 
         # pushback quand on collide un autre joueur
         self.cooldown_pushback=0.1
         self.timer_push_back=0
         self.load_team(team)
+
+        self.current_weapon=WEAPON("sniper", self)
 
     @property
     def image(self) -> pygame.Surface:
@@ -96,8 +98,10 @@ class Player(MOB):
                 self.current_weapon.fire()
             if Keyboard.inventory.is_pressed:
                 ...
+            if Keyboard.up.is_pressed:
+                self.current_weapon.aim("up")
             if Keyboard.down.is_pressed:
-                map.add_damage(Vector2(*self.rect.center),50)
+                self.current_weapon.aim("down")
             if Keyboard.pause.is_pressed:
                 raise EndPartie
  
@@ -144,3 +148,4 @@ class Player(MOB):
             pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)
+        self.current_weapon.update(map)
