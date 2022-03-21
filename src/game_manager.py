@@ -27,18 +27,13 @@ class Partie:
         self.cooldown_tour=15000
         self.timer_tour=pygame.time.get_ticks()
 
-    def add_player(self, name,team,lock=False, weapon=False):
-        player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
+    def add_player(self, name,team,lock=False):
+        player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs, "sniper")
         player.lock = lock
         self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
         if "j2" in player.name:
             player.rect.topleft = (1200,600)
-        weapon=WEAPON("sniper", player)
-        self.weapons.append(weapon)
-        player.current_weapon=weapon
         self.mobs.add(player)
-        
-        
 
     def add_object(self,name,pos, path):
         self.group_object.add(Object_map(name,pos, path))
@@ -73,8 +68,6 @@ class Partie:
                         obj.handle(event)
 
         self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle)
-        for w in self.weapons:
-            w.update(self.map)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()
@@ -105,10 +98,10 @@ class Partie:
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
         self.mobs.draw(_surf) 
         self.group_object.draw(_surf)
-        for w in self.weapons:
-            _surf.blit(w.image, (w.rect.x, w.rect.y))
-            if w.is_firing:
-                _surf.blit(w.image_bullet, (w.rect_bullet.x, w.rect_bullet.y))
+        for mob in self.mobs.sprites():
+            _surf.blit(mob.current_weapon.image, (mob.current_weapon.rect.x, mob.current_weapon.rect.y))
+            if mob.current_weapon.is_firing:
+                _surf.blit(mob.current_weapon.image_bullet, (mob.current_weapon.rect_bullet.x, mob.current_weapon.rect_bullet.y))
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf
 
