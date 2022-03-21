@@ -31,6 +31,7 @@ class Player(MOB):
         # for action
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
+        self.current_weapon=None
 
         # pushback quand on collide un autre joueur
         self.cooldown_pushback=0.1
@@ -90,9 +91,10 @@ class Player(MOB):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,True))
             if Keyboard.interact.is_pressed:
                 #map.add_damage(Vector2(self.rect.left,self.rect.top),50)
-                ev = pygame.event.Event(INTERACT,{'rect':self.rect})
-                pygame.event.post(ev)
-                self.manager.load("emote")
+                # ev = pygame.event.Event(INTERACT,{'rect':self.rect})
+                # pygame.event.post(ev)
+                # self.manager.load("emote")
+                self.current_weapon.fire()
             if Keyboard.inventory.is_pressed:
                 ...
             if Keyboard.down.is_pressed:

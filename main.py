@@ -12,7 +12,7 @@ if __name__=="__main__":
     tl.MixeurAudio.gn = gn
     tl.MixeurAudio.music_factor = gn.sound_factor
 
-    # import the game
+    # import the gamew
     import src.pygame_edit
     from src.game import Game as game
     

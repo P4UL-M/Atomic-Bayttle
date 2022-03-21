@@ -4,8 +4,9 @@ from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio,cycle
+from src.tools.tools import MixeurAudio,cycle,Vector2
 from src.weapons.physique import *
+from src.weapons.WEAPON import WEAPON
 
 GAME = None
 CAMERA = None
@@ -19,19 +20,25 @@ class Partie:
         self.mobs = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
+        self.weapons=[]
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
         self.cooldown_tour=15000
         self.timer_tour=pygame.time.get_ticks()
 
-    def add_player(self, name,team,lock=False):
+    def add_player(self, name,team,lock=False, weapon=False):
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs)
         player.lock = lock
         self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
         if "j2" in player.name:
-            player.rect.topleft = (900,100)
+            player.rect.topleft = (1200,600)
+        weapon=WEAPON("sniper", player)
+        self.weapons.append(weapon)
+        player.current_weapon=weapon
         self.mobs.add(player)
+        
+        
 
     def add_object(self,name,pos, path):
         self.group_object.add(Object_map(name,pos, path))
@@ -57,6 +64,8 @@ class Partie:
                     for mob in self.mobs.sprites():
                         if mob.name == event.name:
                             mob.respawn(self.checkpoint[1])
+                case tl.IMPACT:
+                    self.map.add_damage(Vector2(event.x, event.y),event.radius)
                 case _:
                     for mob in self.mobs:
                         mob.handle(event)
@@ -64,6 +73,8 @@ class Partie:
                         obj.handle(event)
 
         self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle)
+        for w in self.weapons:
+            w.update(self.map)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()
@@ -94,6 +105,10 @@ class Partie:
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
         self.mobs.draw(_surf) 
         self.group_object.draw(_surf)
+        for w in self.weapons:
+            _surf.blit(w.image, (w.rect.x, w.rect.y))
+            if w.is_firing:
+                _surf.blit(w.image_bullet, (w.rect_bullet.x, w.rect_bullet.y))
         self.group_particle.draw(_surf)
         CAMERA._off_screen = _surf
 

@@ -6,7 +6,7 @@ pygame.init()
 INFO = pygame.display.Info()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((int(INFO.current_w),int(INFO.current_h)), OPENGL|DOUBLEBUF|FULLSCREEN,depth=16)
+pygame.display.set_mode((int(INFO.current_w*0.7),int(INFO.current_h*0.7)), OPENGL|DOUBLEBUF,depth=16)
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
@@ -57,8 +57,8 @@ class Game:
 
     def start_partie(j1,j2):
         Game.partie = game_manager.Partie()
-        Game.partie.add_player("j1.1",j1)
-        Game.partie.add_player("j2.1",j2,True)
+        Game.partie.add_player("j1.1",j1, weapon=True)
+        Game.partie.add_player("j2.1",j2,True, weapon=True)
         #Game.partie.add_player("j1.2",j1,True) # ajouter avec respawn pour éviter le bordel
         #Game.partie.add_player("j2.3",j2,True)
         MixeurAudio.gn.reset()

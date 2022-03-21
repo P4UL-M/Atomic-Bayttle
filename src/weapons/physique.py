@@ -12,5 +12,5 @@ def get_y(x, v0, a, h0):
     else:
         c=x/(cos(a)*v0)
         b=x/cos(a)
-
+    #print("y :", -(-(g/2) * c**2 + v0*sin(a)*b), " c :",c, " b :",b, " x :", x)
     return -(-(g/2) * c**2 + v0*sin(a)*b)+ h0
