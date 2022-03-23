@@ -1,12 +1,8 @@
 """class mother des armes"""
-
-from tkinter import E
 import pygame
 from src.tools.constant import PATH, IMPACT
 from src.tools.tools import Vector2
 from src.weapons.physique import *
-from math import pi
-import time
 from src.mobs.MOTHER import BodyPartSprite
 
 class WEAPON(pygame.sprite.Sprite):
@@ -79,7 +75,7 @@ class WEAPON(pygame.sprite.Sprite):
     def fire(self):
         if not self.is_firing:
             self.is_firing=True
-            self.start_firing=time.time()
+            self.start_firing=pygame.time.get_ticks()
             self.h0=self.rect.y
             if self.angle<0:
                 self.h0-=self.angle*10
@@ -96,14 +92,21 @@ class WEAPON(pygame.sprite.Sprite):
             self.image_bullet.set_colorkey(transColor)    
             self.angle_shoot=self.angle
 
-    def update(self, map):
+    def update(self, map,players):
         if self.is_firing:
-            t=time.time()-self.start_firing
-            x=get_x(t, self.v0, self.angle_shoot)
+            t=pygame.time.get_ticks()-self.start_firing
+            x=get_x(t/1000, self.v0, self.angle_shoot)
             self.rect_bullet.y=get_y(x, self.v0, self.angle_shoot, self.h0)
             if self.bullet_direction=="left":
                 x*=-1
             self.rect_bullet.x=x+self.x0
+            for player in players:
+                    
+                    if player is not self and self.bullet_mask.collide(self.rect_bullet.topleft, player):
+                        self.is_firing=False
+                        ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})
+                        pygame.event.post(ev)
+                        print
             if self.bullet_mask.collide(self.rect_bullet.topleft, map):
                 self.is_firing=False
                 ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})

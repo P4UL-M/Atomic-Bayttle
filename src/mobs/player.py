@@ -1,6 +1,5 @@
 import pygame
 from .MOTHER import MOB
-import pathlib
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
 from src.game_effect.particule import Particule
@@ -149,4 +148,4 @@ class Player(MOB):
             pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)
-        self.current_weapon.update(map)
+        self.current_weapon.update(map,players)
