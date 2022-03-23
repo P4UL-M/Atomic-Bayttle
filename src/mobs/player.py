@@ -148,4 +148,4 @@ class Player(MOB):
             pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)
-        self.current_weapon.update(map)
+        self.current_weapon.update(map,players)

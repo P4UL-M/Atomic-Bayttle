@@ -92,7 +92,7 @@ class WEAPON(pygame.sprite.Sprite):
             self.image_bullet.set_colorkey(transColor)    
             self.angle_shoot=self.angle
 
-    def update(self, map):
+    def update(self, map,players):
         if self.is_firing:
             t=pygame.time.get_ticks()-self.start_firing
             x=get_x(t/1000, self.v0, self.angle_shoot)
@@ -100,6 +100,13 @@ class WEAPON(pygame.sprite.Sprite):
             if self.bullet_direction=="left":
                 x*=-1
             self.rect_bullet.x=x+self.x0
+            for player in players:
+                    
+                    if player is not self and self.bullet_mask.collide(self.rect_bullet.topleft, player):
+                        self.is_firing=False
+                        ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})
+                        pygame.event.post(ev)
+                        print
             if self.bullet_mask.collide(self.rect_bullet.topleft, map):
                 self.is_firing=False
                 ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})
