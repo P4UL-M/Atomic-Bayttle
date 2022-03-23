@@ -56,10 +56,11 @@ def setup_manager():
     game.play_effect = MixeurAudio.play_effect
     game.running = True
 
-    principal = Menu("Principal",game, childs=["Settings", "Play"])
+    principal = Menu("Principal",game, childs=["Settings", "Play", "Rules"])
     settings_menu = Menu("Settings",game, parent="Principal", childs="Keybinds")
     keybind_menu = Menu("Keybinds",game, parent="Settings")
     play_menu = Menu("Play",game, parent="Principal")
+    rules_menu = Menu("Rules", game, parent="Principal")
 
 
     #region Principal menu
@@ -98,7 +99,7 @@ def setup_manager():
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def rules():
-            pass
+            game.actual_menu = principal.get_child("Rules")
 
         return _button
 
@@ -2057,13 +2058,13 @@ def setup_manager():
     @play_menu.add_sprite
     def perso1():
         manager = animation_Manager()
-        spritesheet1 = sprite_sheet(PATH / "assets" / "perso" / "perso_1" / "spritesheet1.png", (24,28))
+        spritesheet1 = sprite_sheet(PATH / "assets" / "perso" / "perso_1" / "idle.png", (24,28))
         spritesheet1.config((120,135))
-        spritesheet2 = sprite_sheet(PATH / "assets" / "perso" / "perso_2" / "spritesheet2.png", (42,29))
+        spritesheet2 = sprite_sheet(PATH / "assets" / "perso" / "perso_2" / "idle.png", (42,29))
         spritesheet2.config((210,145))
-        spritesheet3 = sprite_sheet(PATH / "assets" / "perso" / "perso_3" / "spritesheet3.png", (24,28))
+        spritesheet3 = sprite_sheet(PATH / "assets" / "perso" / "perso_3" / "idle.png", (24,28))
         spritesheet3.config((120,135))
-        spritesheet4 = sprite_sheet(PATH / "assets" / "perso" / "perso_4" / "spritesheet4.png", (31,28))
+        spritesheet4 = sprite_sheet(PATH / "assets" / "perso" / "perso_4" / "idle.png", (31,28))
         spritesheet4.config((155,135))
         manager.add_annimation("perso_1",spritesheet1,10)
         manager.add_annimation("perso_2",spritesheet2,7)
@@ -2156,13 +2157,13 @@ def setup_manager():
     @play_menu.add_sprite
     def perso2():
         manager = animation_Manager()
-        spritesheet1 = sprite_sheet(PATH / "assets" / "perso" / "perso_1" / "spritesheet1.png", (24,28))
+        spritesheet1 = sprite_sheet(PATH / "assets" / "perso" / "perso_1" / "idle.png", (24,28))
         spritesheet1.config((120,135))
-        spritesheet2 = sprite_sheet(PATH / "assets" / "perso" / "perso_2" / "spritesheet2.png", (42,29))
+        spritesheet2 = sprite_sheet(PATH / "assets" / "perso" / "perso_2" / "idle.png", (42,29))
         spritesheet2.config((210,145))
-        spritesheet3 = sprite_sheet(PATH / "assets" / "perso" / "perso_3" / "spritesheet3.png", (24,28))
+        spritesheet3 = sprite_sheet(PATH / "assets" / "perso" / "perso_3" / "idle.png", (24,28))
         spritesheet3.config((120,135))
-        spritesheet4 = sprite_sheet(PATH / "assets" / "perso" / "perso_4" / "spritesheet4.png", (31,28))
+        spritesheet4 = sprite_sheet(PATH / "assets" / "perso" / "perso_4" / "idle.png", (31,28))
         spritesheet4.config((155,135))
         manager.add_annimation("perso_1",spritesheet1,10)
         manager.add_annimation("perso_2",spritesheet2,7)
@@ -2180,4 +2181,49 @@ def setup_manager():
         
         return _button
 
+    #endregion
+
+    #region Rules menu
+
+    @rules_menu.add_sprite
+    def board():
+        _sprite=sprite(
+            name="board",
+            path=PATH / "assets" / "menu" / "rules" / "brownboard.png",
+            manager=game
+            )
+
+        _sprite.set_position(Vector2(0.5,0.5))
+        _sprite.set_scale(Vector2(2.03,1.83))
+
+        return _sprite
+
+    @rules_menu.add_sprite
+    def gobackbutton():
+        _button=Button(
+            name="gobackbutton",
+            path= PATH / "assets" / "menu" / "rules" / "goback.png",
+            manager=game
+            )
+
+        _button.set_position(Vector2(0.18,0.85))
+        _button.set_scale(Vector2(5.1,5.1))
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def goback():
+            game.actual_menu = rules_menu.get_parent()
+
+        return _button
+
+    """@rules_menu.add_sprite
+    def rules():
+        _text=textZone(
+            name="Rules",
+            size=Vector2(1700,900),
+            manager=game,
+            text_color="orange"
+            )
+
+        _text.set_text("")
+"""
     #endregion

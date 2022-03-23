@@ -6,7 +6,7 @@ pygame.init()
 INFO = pygame.display.Info()
 INFO = pygame.display.Info()
 
-pygame.display.set_mode((int(INFO.current_w*0.7),int(INFO.current_h*0.7)), OPENGL|DOUBLEBUF,depth=16)
+pygame.display.set_mode((int(INFO.current_w*1),int(INFO.current_h*1)), OPENGL|DOUBLEBUF,depth=16)
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
