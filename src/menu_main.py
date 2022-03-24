@@ -135,6 +135,11 @@ def setup_manager():
         def play():
             game.actual_menu = principal.get_child("Play")
 
+        @_button.Event(pygame.KEYDOWN)
+        def start(event):
+            if event.key == Keyboard.interact.key:
+                game.actual_menu = principal.get_child("Play")
+
         return _button
 
     @principal.add_sprite
@@ -1980,6 +1985,11 @@ def setup_manager():
         @_button.on_click()
         def start():
             GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
+
+        @_button.Event(pygame.KEYDOWN)
+        def start(event):
+            if event.key == Keyboard.interact.key:
+                GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
 
         return _button
 
