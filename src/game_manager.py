@@ -89,6 +89,14 @@ class Partie:
         CAMERA._screen_UI.fill((0,0,0,0))
         timer = (self.timer_tour + self.cooldown_tour - pygame.time.get_ticks())//1000 + 1
         CAMERA._screen_UI.blit(FONT.render(str(timer),1,(0,0,0)),(640,50))
+
+        #todo à virer après
+        for player in self.mobs.sprites():
+            if type(player)== Player:
+                if not player.lock:
+                    print(str(player.life_multiplicator))
+                    CAMERA._screen_UI.blit(FONT.render(str(round(player.life_multiplicator,2)),1,(255,0,0)),(50,50))
+
         CAMERA.cache = False
         self.Draw()
 

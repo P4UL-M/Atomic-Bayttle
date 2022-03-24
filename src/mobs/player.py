@@ -67,6 +67,7 @@ class Player(MOB):
         self.inertia.y = 0
         self.rect.y = y
         self.rect.x = 200
+        self.life_multiplicator = 0
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -79,7 +80,8 @@ class Player(MOB):
                 _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
                 if _dist.lenght < event.radius + self.rect.width and self.lock:
                     _reaction = _dist
-                    self.inertia += _reaction * 0.8 * self.life_multiplicator
+                    self.inertia += _reaction * self.life_multiplicator * event.multiplicator_repulsion
+                    self.life_multiplicator += event.damage /100
         super().handle(event)
 
     def update(self,map,players,serialized,CAMERA,particle_group,mob_group):

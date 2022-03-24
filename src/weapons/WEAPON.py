@@ -47,11 +47,11 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in players:
                     if player is not self and self.mask.collide(self.__rect.topleft,player) and not "bullet" in player.name:
-                        pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
+                        pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius,"multiplicator_repulsion":0.8,"damage":20}))
                         self.kill()
                         return
                 if self.mask.collide(self.__rect.topleft,target):
-                    pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
+                    pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius,"multiplicator_repulsion":0.8,"damage":20}))
                     self.kill()
                     return
                 self.__rect.move_ip(*__d)
