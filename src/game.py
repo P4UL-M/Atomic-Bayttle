@@ -51,7 +51,7 @@ class Game:
             print(Game.clock.get_fps())
             pygame.display.flip()
 
-            Game.serialized = Game.clock.tick(60)/16.7
+            Game.serialized = Game.clock.tick()/16.7
         else:
             raise SystemExit
 

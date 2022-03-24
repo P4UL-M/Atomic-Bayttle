@@ -1,6 +1,6 @@
 import pygame
 from .MOTHER import MOB
-from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
+from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2,MixeurAudio
 from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule
@@ -68,6 +68,7 @@ class Player(MOB):
         self.rect.y = y
         self.rect.x = 200
         self.life_multiplicator = 0
+        MixeurAudio.play_effect(PATH / "assets" / "sound" / "fall_in_water.wav",0.5)
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -98,7 +99,7 @@ class Player(MOB):
                     for i in range(5):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,pygame.Color(20,20,0)))
             if Keyboard.interact.is_pressed:
-                self.current_weapon.fire(self.rigth_direction,mob_group)
+                self.current_weapon.fire(self.rigth_direction,mob_group,particle_group)
             if Keyboard.inventory.is_pressed:
                 ...
             if Keyboard.up.is_pressed:

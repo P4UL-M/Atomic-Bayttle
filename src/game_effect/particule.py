@@ -7,7 +7,7 @@ from src.tools.constant import PATH
 
 class Particule(pygame.sprite.Sprite):
     """ MAIN CLASS OF THE SCRIPT"""
-    def __init__(self, lifetime,position:Vector2,range,direction:Vector2,speed,teinte:pygame.Color,gravity=False):
+    def __init__(self, lifetime,position:Vector2,range,direction:Vector2,speed,teinte:pygame.Color,gravity=False,size=(3,3)):
         super().__init__()
         self.lifetime = lifetime*random.uniform(0.9, 1.1)
         self.position = Vector2(position.x + random.randrange(-range,range), position.y)
@@ -15,7 +15,7 @@ class Particule(pygame.sprite.Sprite):
         self.gravity = gravity
         self.speed = speed
         
-        self.image = pygame.transform.scale(pygame.image.load(PATH / "assets" / "particle.png"),(3,3))
+        self.image = pygame.transform.scale(pygame.image.load(PATH / "assets" / "particle.png"),size)
         self.image = pygame.transform.rotate(self.image,random.randrange(0,90))
         li_loss = random.randrange(0,55); 
         li_teinte = pygame.Color(teinte.r-min(teinte.r,teinte.g,teinte.b),teinte.g-min(teinte.r,teinte.g,teinte.b),teinte.b-min(teinte.r,teinte.g,teinte.b))

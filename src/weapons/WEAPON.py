@@ -1,7 +1,8 @@
 """class mother des armes"""
 import pygame
+from src.game_effect.particule import Particule
 from src.tools.constant import PATH, IMPACT
-from src.tools.tools import Vector2
+from src.tools.tools import Vector2,MixeurAudio
 from src.weapons.physique import *
 from src.mobs.MOTHER import MOB
 from math import pi,cos,sin
@@ -49,10 +50,12 @@ class Bullet(MOB):
                     if player is not self and self.mask.collide(self.__rect.topleft,player) and not "bullet" in player.name:
                         pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius,"multiplicator_repulsion":0.8,"damage":20}))
                         self.kill()
+                        MixeurAudio.play_effect(PATH / "assets" / "sound" / "kill_sound.wav")
                         return
                 if self.mask.collide(self.__rect.topleft,target):
                     pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius,"multiplicator_repulsion":0.8,"damage":20}))
                     self.kill()
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "kill_sound.wav")
                     return
                 self.__rect.move_ip(*__d)
         
@@ -86,13 +89,15 @@ class WEAPON(pygame.sprite.Sprite):
         self.__cooldown = 0
         self.angle = 0
 
-    def fire(self,right_direction,group):
+    def fire(self,right_direction,group,particle_group):
         if self.__cooldown + self.cooldown < pygame.time.get_ticks():
             self.__cooldown = pygame.time.get_ticks()
             angle = self.angle
             x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.__rect.left
             y = -self.l * sin(angle) + self.__rect.top
             Bullet((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.v0,angle,right_direction,group)
+            for i in range(5):
+                particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
 
     def update(self,pos,right,_dangle):
         self.angle += _dangle
