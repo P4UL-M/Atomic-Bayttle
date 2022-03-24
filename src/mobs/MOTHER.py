@@ -139,7 +139,7 @@ class MOB(pygame.sprite.Sprite):
                 if not self.grounded and self.inertia.y < self.speed*2:
                     self.inertia.y += 9.81*event.serialized*self.gravity
                 if self.inertia.x != 0:
-                    self.inertia.x += (0-self.inertia.x)/2
+                    self.inertia.x += (0-self.inertia.x)/3
             case _:
                 ...
 

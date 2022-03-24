@@ -75,9 +75,8 @@ class Player(MOB):
             case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
                 pygame.event.post(pygame.event.Event(ENDTURN))
             case tl.IMPACT:
-                print("hey")
                 _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
-                if _dist.lenght < event.radius + self.rect.width:
+                if _dist.lenght < event.radius + self.rect.width and self.lock:
                     _reaction = _dist
                     _reaction.x *= 2
                     self.inertia += _reaction

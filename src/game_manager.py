@@ -65,7 +65,6 @@ class Partie:
                     for obj in self.group_object:
                         obj.handle(event)
                 case _:
-                    print(event)
                     for mob in self.mobs:
                         mob.handle(event)
                     for obj in self.group_object:

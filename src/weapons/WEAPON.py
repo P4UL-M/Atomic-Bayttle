@@ -32,7 +32,6 @@ class Bullet(MOB):
             raise AttributeError("MOB must have a rect to move")
         
         t = (pygame.time.get_ticks() - self.t0)/100
-        #print("time :",t)
         x = self.trajectoire.get_x(t)
         y = - self.trajectoire.get_y(x) + self.trajectoire.pos0[1]
         if not self.right_direction:
@@ -91,8 +90,8 @@ class WEAPON(pygame.sprite.Sprite):
         if self.__cooldown + self.cooldown < pygame.time.get_ticks():
             self.__cooldown = pygame.time.get_ticks()
             angle = self.angle
-            x = self.l*0.4 * cos(angle) * (1 if right_direction else -2.3) + self.rect.centerx
-            y = -self.l * sin(angle) + self.rect.centery
+            x = self.l*0.4 * cos(angle) * (1 if right_direction else -2.3) + self.__rect.left
+            y = -self.l * sin(angle) + self.__rect.top
             Bullet((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.v0,angle,right_direction,group)
 
     def update(self,pos,right,_dangle):
