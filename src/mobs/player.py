@@ -3,7 +3,7 @@ from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
 from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
 from src.game_effect.particule import Particule
-from src.weapons.WEAPON import WEAPON
+from src.weapons.WEAPON import Sniper
 
 INFO = pygame.display.Info()
 
@@ -32,12 +32,9 @@ class Player(MOB):
         self.lock = False
         self.weapon_manager = None # mettre travail de Joseph ici
 
-        # pushback quand on collide un autre joueur
-        self.cooldown_pushback=0.1
-        self.timer_push_back=0
         self.load_team(team)
 
-        self.current_weapon=WEAPON("sniper", self)
+        self.current_weapon=Sniper()
 
     @property
     def image(self) -> pygame.Surface:
@@ -78,9 +75,10 @@ class Player(MOB):
                 pygame.event.post(pygame.event.Event(ENDTURN))
         super().handle(event)
 
-    def update(self,map,players,serialized,CAMERA,particle_group):
+    def update(self,map,players,serialized,CAMERA,particle_group,mob_group):
         if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
+            self.y_axis.update(Keyboard.up.is_pressed,Keyboard.down.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown< pygame.time.get_ticks() and (self.grounded or self.double_jump):
                     self.double_jump = (self.inertia.y < 1 and self.inertia.y > 0) or self.grounded # this is like grounded but constant because sometime we are on the ground but not colliding because gravity too weak
@@ -91,17 +89,13 @@ class Player(MOB):
                     for i in range(5):
                         particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,pygame.Color(20,20,0)))
             if Keyboard.interact.is_pressed:
-                #map.add_damage(Vector2(self.rect.left,self.rect.top),50)
-                # ev = pygame.event.Event(INTERACT,{'rect':self.rect})
-                # pygame.event.post(ev)
-                # self.manager.load("emote")
-                self.current_weapon.fire()
+                self.current_weapon.fire(self.rigth_direction,mob_group)
             if Keyboard.inventory.is_pressed:
                 ...
             if Keyboard.up.is_pressed:
-                self.current_weapon.aim("up")
+                ...
             if Keyboard.down.is_pressed:
-                self.current_weapon.aim("down")
+                ...
             if Keyboard.pause.is_pressed:
                 raise EndPartie
  
@@ -126,6 +120,7 @@ class Player(MOB):
             CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
         else:
             self.x_axis.update()
+            self.y_axis.update()
 
         #* annimation
         if self.manager._loaded_name not in ["jump","ground","emote"]:
@@ -142,10 +137,11 @@ class Player(MOB):
                     self.manager.load("ground")
                 else:
                     self.manager.load("idle")
+                    self.manager.annim_speed_factor = 1
         # death
         if self.rect.bottom > map.water_level:
             ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
             pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)
-        self.current_weapon.update(map,players)
+        self.current_weapon.update(self.rect.center,self.rigth_direction,self.y_axis*0.05)

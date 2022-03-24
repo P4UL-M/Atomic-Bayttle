@@ -3,126 +3,128 @@ import pygame
 from src.tools.constant import PATH, IMPACT
 from src.tools.tools import Vector2
 from src.weapons.physique import *
-from src.mobs.MOTHER import BodyPartSprite
+from src.mobs.MOTHER import MOB
+from math import pi,cos,sin,sqrt
 
-class WEAPON(pygame.sprite.Sprite):
+class Bullet(MOB):
+    def __init__(self, pos:tuple[int], size:tuple[int],path:str,impact_surface:pygame.Surface,force:int,angle:int,right_direction:bool, group):
+        super().__init__(pos, size, group)
+        self.__image = pygame.transform.scale(pygame.image.load(path),size)
+        self.image = self.__image.copy()
+        self.__rect = self.rect.copy()
+        self.__image.convert_alpha()
+        self.impact_surface = impact_surface
+        
+        self.right_direction = right_direction
+        self.trajectoire = trajectoire(pos,angle,force)
+        self.t0 = pygame.time.get_ticks()
+        self.radius = 20
+        self.name = f"bullet_{pygame.time.get_ticks()}"
+        x = self.trajectoire.get_x(1)
+        y = - self.trajectoire.get_y(1)
+        _d = Vector2(x,y)
+        self.image,self.rect = self.rot_center(_d.arg)
+
+    def move(self,target,players,*arg,**kargs):
+        try:
+            self.__getattribute__("rect")
+        except:
+            raise AttributeError("MOB must have a rect to move")
+        
+        t = (pygame.time.get_ticks() - self.t0)/100
+        #print("time :",t)
+        x = self.trajectoire.get_x(t)
+        y = - self.trajectoire.get_y(x) + self.trajectoire.pos0[1]
+        if not self.right_direction:
+            x *= -1
+        x += self.trajectoire.pos0[0]
+        _d = Vector2(x-self.__rect.left,y-self.__rect.top)
+        self.actual_speed = _d.lenght
+
+        _movements = [self.__rect.width // 4 for i in range(int(self.actual_speed/(self.__rect.width // 4)))] + [self.actual_speed%(self.__rect.width // 4)]
+        
+        for i in _movements:
+            if _d.arg != None: # arg is none we have no movement
+                __d = _d.unity * i
+                for player in players:
+                    if player is not self and self.mask.collide(self.__rect.topleft,player) and not "bullet" in player.name:
+                        pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
+                        print("impact at")
+                        self.kill()
+                        return
+                if self.mask.collide(self.__rect.topleft,target):
+                    pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
+                    print("impact at")
+                    self.kill()
+                    return
+                self.__rect.move_ip(*__d)
+        
+        self.image,self.rect = self.rot_center(_d.arg)
+
+    def collide_reaction(self, *arg,**kargs):
+        ...
+
+    def update(self, map, players,*arg,**kargs):
+        if not self.rect.colliderect(map.rect):
+            self.kill()
+        super().update(map,1, players)
+
+    def rot_center(self, angle):
     
-    def __init__(self, id, target):
+        rotated_image = pygame.transform.rotate(self.__image, -angle*180/pi)
+        new_rect = rotated_image.get_rect(center = self.__image.get_rect(center = self.__rect.topleft).center)
+
+        return rotated_image, new_rect
+
+
+class WEAPON(pygame.sprite.Sprite): 
+    def __init__(self,path):
         super().__init__()
-        if id == "sniper":
-            self.image=pygame.image.load(PATH/"assets"/"weapons"/"sniper.png").convert_alpha()
-            self.image_bullet_r=pygame.image.load(PATH/"assets"/"weapons"/"bullet.png").convert_alpha()
-            self.image_bullet_l=pygame.transform.flip(self.image_bullet_r, True, False)
-            self.v0=130
-            self.rayon=20
-            self.base_image=self.image.copy()
-        
-        transColor = self.image.get_at((0,0))
-        self.image.set_colorkey(transColor)
-        
-        self.image_bullet=self.image_bullet_r
-        transColor = self.image_bullet.get_at((0,0))
-        self.image_bullet.set_colorkey(transColor)
-        self.rect_bullet=self.image_bullet.get_rect()
-        self.rect=self.image.get_rect()
-        self.target=target
-        self.id=id
-        self.direction="left"
-        self.angle=0
-        self.max_angle=1.8
-        self.min_angle=-1.8
-        self.is_firing=False
-        self.start_firing=0
-        self.h0=0
-        self.x0=0
-        self.angle_shoot=self.angle
-        
-        self.bullet_mask = BodyPartSprite((0,0),(self.rect_bullet.width, self.rect_bullet.height))
-    
-    def flip_pic(self, dir):
-        self.direction=dir
-        self.image=pygame.transform.flip(self.image, True, False)
-        transColor = self.image.get_at((0,0))
-        self.image.set_colorkey(transColor)
-        self.base_image=pygame.transform.flip(self.base_image, True, False)
-        self.base_image.set_colorkey(transColor)
+        self.__image=pygame.image.load(path).convert_alpha()
+        self.image = self.__image.copy()
+        self.pivot = (self.__image.get_width()//3,self.__image.get_height()//2)
+        self.__rect = self.__image.get_rect(topleft=(0,0))
+        self.rect = self.__image.get_rect(topleft = (self.__rect.x-self.pivot[0], self.__rect.y-self.pivot[1]))
+        self.l = self.__rect.width
+        self.__cooldown = 0
+        self.angle = 0
 
-    def aim(self,dir):
-        i=0.1
-        if dir=="up":
-            if self.angle+i<self.max_angle:
-                self.angle+=i
-                if self.direction=="left":
-                    ri = pygame.transform.rotate(self.base_image, -1*self.angle*10)
-                else:
-                    ri = pygame.transform.rotate(self.base_image, 1*self.angle*10)
-                self.rect = ri.get_rect()
-                self.image=ri
-                transColor = self.image.get_at((0,0))
-                self.image.set_colorkey(transColor)
+    def fire(self,right_direction,group):
+        if self.__cooldown + self.cooldown < pygame.time.get_ticks():
+            print("fire")
+            self.__cooldown = pygame.time.get_ticks()
+            angle = self.angle
+            x = self.l*0.4 * cos(angle) * (1 if right_direction else -2.3) + self.rect.centerx
+            y = -self.l * sin(angle) + self.rect.centery
+            Bullet((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.v0,angle,right_direction,group)
+
+    def update(self,pos,right,_dangle):
+        self.angle += _dangle
+        if self.angle > pi/2: self.angle = pi/2
+        elif self.angle < -pi/2: self.angle = -pi/2
+        self.__rect.topleft =pos
+
+        offset = self.pivot
+
+        if not right:
+            image = pygame.transform.flip(self.__image,True,False)
+            offset = (self.__image.get_width()//3*2,self.__image.get_height()//2)
+            angle = self.angle*-1
         else:
-            if self.angle-i>self.min_angle:
-                self.angle-=i
-                if self.direction=="left":
-                    ri = pygame.transform.rotate(self.base_image, -1*self.angle*10)
-                else:
-                    ri = pygame.transform.rotate(self.base_image, 1*self.angle*10)
-                
-                self.rect = ri.get_rect()
-                self.image = ri
-                transColor = self.image.get_at((0,0))
-                self.image.set_colorkey(transColor)
-    def fire(self):
-        if not self.is_firing:
-            self.is_firing=True
-            self.start_firing=pygame.time.get_ticks()
-            self.h0=self.rect.y
-            if self.angle<0:
-                self.h0-=self.angle*10
-            self.bullet_direction=self.direction
-            if self.bullet_direction=='right':
-                self.x0=self.rect.x+self.image.get_width()
-                self.image_bullet=self.image_bullet_r
-            else:
-                self.x0=self.rect.x-self.target.image.get_width()+15
-                self.image_bullet=self.image_bullet_l
-            self.rect_bullet.x=self.x0
-            self.rect_bullet.y=self.h0
-            transColor = self.image_bullet.get_at((0,0))
-            self.image_bullet.set_colorkey(transColor)    
-            self.angle_shoot=self.angle
+            image = self.__image.copy()
+            angle = self.angle
 
-    def update(self, map,players):
-        if self.is_firing:
-            t=pygame.time.get_ticks()-self.start_firing
-            x=get_x(t/1000, self.v0, self.angle_shoot)
-            self.rect_bullet.y=get_y(x, self.v0, self.angle_shoot, self.h0)
-            if self.bullet_direction=="left":
-                x*=-1
-            self.rect_bullet.x=x+self.x0
-            for player in players:
-                    
-                    if player is not self and self.bullet_mask.collide(self.rect_bullet.topleft, player):
-                        self.is_firing=False
-                        ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})
-                        pygame.event.post(ev)
-                        print
-            if self.bullet_mask.collide(self.rect_bullet.topleft, map):
-                self.is_firing=False
-                ev=pygame.event.Event(IMPACT, {"x":self.rect_bullet.x, "y":self.rect_bullet.y, "radius":self.rayon})
-                pygame.event.post(ev)
-            elif self.rect_bullet.x<-300 or self.rect_bullet.x>map.rect.width+300 or self.rect_bullet.y<-300 or self.rect_bullet.y>map.rect.height+300:
-                self.is_firing=False
-            #print(t, self.rect_bullet.x, self.rect_bullet.y, self.h0, self.x0)
-        if self.target.rigth_direction and self.direction=="left":
-            self.flip_pic("right")
-        elif not self.target.rigth_direction and self.direction=="right":
-            self.flip_pic("left")
-        if self.direction=="left":
-            self.rect.centerx=self.target.rect.x-self. base_image.get_width()+30
-            self.rect.centery=self.target.rect.y+20-self.angle*2
-        else:
-            self.rect.centerx=self.target.rect.x+self.target.image.get_width()+15
-            self.rect.centery=self.target.rect.y+20-self.angle*2
+        image_rect = image.get_rect(topleft = (self.__rect.left-offset[0], self.__rect.top-offset[1]))
+        offset_center_to_pivot = pygame.math.Vector2(self.__rect.topleft) - image_rect.center
+        rotated_offset = offset_center_to_pivot.rotate(-angle*180/pi)
+        rotated_image_center = (self.__rect.left - rotated_offset.x, self.__rect.top - rotated_offset.y)
+        self.image = pygame.transform.rotate(image, angle*180/pi).convert_alpha()
+        self.rect = self.image.get_rect(center = rotated_image_center)
 
-        
+class Sniper(WEAPON):
+    def __init__(self) -> None:
+        self.bullet=PATH/"assets"/"laser"/"14.png"
+        self.v0=100
+        self.rayon=30
+        self.cooldown = 200
+        super().__init__(PATH/"assets"/"weapons"/"sniper.png")

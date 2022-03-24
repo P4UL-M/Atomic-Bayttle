@@ -20,7 +20,6 @@ class Partie:
         self.mobs = pygame.sprite.Group()
         self.group_particle = pygame.sprite.Group()
         self.group_object=pygame.sprite.Group()
-        self.weapons=[]
         
         self.checkpoint=(100, 50) # the swpan point à remplacer après par le system
         pygame.mouse.set_visible(False)
@@ -67,7 +66,7 @@ class Partie:
                     for obj in self.group_object:
                         obj.handle(event)
 
-        self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle)
+        self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle,self.mobs)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()
@@ -95,52 +94,11 @@ class Partie:
         _surf = pygame.Surface(self.map.image.get_size(),flags=pygame.SRCALPHA)
         _surf.blit(self.map.cave_bg.image,self.map.cave_bg.rect.topleft)
         _surf.blit(self.map.image,(0,0))
-        _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
-        self.mobs.draw(_surf) 
-        self.group_object.draw(_surf)
-        for mob in self.mobs.sprites():
-            _surf.blit(mob.current_weapon.image, (mob.current_weapon.rect.x, mob.current_weapon.rect.y))
-            if mob.current_weapon.is_firing:
-                _surf.blit(mob.current_weapon.image_bullet, (mob.current_weapon.rect_bullet.x, mob.current_weapon.rect_bullet.y))
+        self.mobs.draw(_surf)
+        for player in self.mobs.sprites():
+            if type(player)==Player:
+                _surf.blit(player.current_weapon.image,player.current_weapon.rect)
         self.group_particle.draw(_surf)
+        self.group_object.draw(_surf)
+        _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))
         CAMERA._off_screen = _surf
-
-    def test_parabole(self): #! a réécrire sans le zoom
-        x0=self.mortier.position[0] + self.mortier.image.get_width()/2
-        h0=self.mortier.position[1] + self.mortier.image.get_width()/2
-        v0=8.2
-        from math import pi
-        a=pi/4
-
-        for t in range(1, 1000):
-            x=get_x(t/10, v0, a)
-            y=get_y(x, v0, a, h0)
-            x=x*v0+x0
-            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                    pygame.draw.circle(self.screen, (255, 0, 0), (new_x, new_y), 3)
-        
-        a=pi/6            
-        for t in range(1, 1000):
-            x=get_x(t/10, v0, a)
-            y=get_y(x, v0, a, h0)
-            x=x*v0+x0
-            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                    pygame.draw.circle(self.screen, (0, 255, 0), (new_x, new_y), 3)
-        
-        
-        a=(2*pi)/6
-        for t in range(1, 1000):
-            x=get_x(t/10, v0, a)
-            y=get_y(x, v0, a, h0)
-            x=x*v0+x0
-            if self.scroll_rect.x - (self.screen.get_width()/2) <= x <= self.scroll_rect.x + (self.screen.get_width()/2) and \
-                self.scroll_rect.y - (self.screen.get_height()/2) <= y <= self.scroll_rect.y + (self.screen.get_height()/2):
-                    new_x=self.screen.get_width()/2 + x - self.scroll_rect.x
-                    new_y = self.screen.get_height()/2 + y - self.scroll_rect.y
-                    pygame.draw.circle(self.screen, (0, 0, 255), (new_x, new_y), 3)

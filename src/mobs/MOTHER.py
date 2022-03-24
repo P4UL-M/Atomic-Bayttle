@@ -56,7 +56,7 @@ class MOB(pygame.sprite.Sprite):
         except:
             raise AttributeError("MOB must have a rect to move")
             
-        _dy = int((self.y_axis*self.speed + self.inertia.y)*serialized)
+        _dy = int((self.inertia.y)*serialized)
         _dx = int((self.x_axis*self.speed + self.inertia.x)*serialized)
         _d = Vector2(_dx,_dy)
         self.actual_speed = _d.lenght
@@ -78,7 +78,7 @@ class MOB(pygame.sprite.Sprite):
                 __d = self.collide_reaction(Vector2(0,0),0,target,serialized)
                 on_ground = self.grounded
                 for player in players:
-                    if player is not self:
+                    if player is not self and "bullet" not in player.name:
                         __d = self.collide_reaction(__d,i,player,serialized)
                 self.grounded = on_ground and not self.grounded
                 self.rect.move_ip(*__d)

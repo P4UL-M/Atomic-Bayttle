@@ -1,18 +1,17 @@
-from math import cos, sin, pi
+from math import cos, tan,pi
 
-g=9.806 *0.5
+g=9.806
 
-def get_x(t, v0, a):
-    a=a*(pi/180)*0.2
-    return v0*t*cos(a)*5
+class trajectoire:
+    def __init__(self,pos,angle,force) -> None:
+        self.pos0 = pos
+        self.angle = angle
+        self.force = force
 
-def get_y(x, v0, a, h0):
-    a=a*(pi/180)*0.2
-    if cos(a)==0:
-        b=1
-        c=1
-    else:
-        c=x/(cos(a)*v0)
-        b=x/cos(a)
-    #print("y :", -(-(g/2) * c**2 + v0*sin(a)*b), " c :",c, " b :",b, " x :", x)
-    return -(-(g/2) * c**2 + v0*sin(a)*b)+ h0
+    def get_x(self,t):
+        a=self.angle
+        return t*self.force*cos(a)
+
+    def get_y(self,x):
+        a=self.angle
+        return x*tan(a) - (g*x**2)/(2*self.force**2*cos(a)**2)
