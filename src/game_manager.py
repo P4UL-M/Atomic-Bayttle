@@ -94,7 +94,7 @@ class Partie:
         for player in self.mobs.sprites():
             if type(player)== Player:
                 if not player.lock:
-                    CAMERA._screen_UI.blit(FONT.render(str(round(player.life_multiplicator,2)),1,(255,0,0)),(50,50))
+                    CAMERA._screen_UI.blit(FONT.render(str(int(player.life_multiplicator * 100)) + "%",1,(255,0,0)),(50,50))
 
         CAMERA.cache = False
         self.Draw()
