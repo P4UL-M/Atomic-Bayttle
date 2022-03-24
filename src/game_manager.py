@@ -60,7 +60,12 @@ class Partie:
                             mob.respawn(self.checkpoint[1])
                 case tl.IMPACT:
                     self.map.add_damage(Vector2(event.x, event.y),event.radius)
+                    for mob in self.mobs:
+                        mob.handle(event)
+                    for obj in self.group_object:
+                        obj.handle(event)
                 case _:
+                    print(event)
                     for mob in self.mobs:
                         mob.handle(event)
                     for obj in self.group_object:

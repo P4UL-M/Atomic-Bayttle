@@ -1,7 +1,8 @@
 import pygame
 from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2
-from src.tools.constant import TEAM,EndPartie,IMPACT,INTERACT,ENDTURN,DEATH,PATH
+from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
+import src.tools.constant as tl
 from src.game_effect.particule import Particule
 from src.weapons.WEAPON import Sniper
 
@@ -73,6 +74,13 @@ class Player(MOB):
         match event.type:
             case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
                 pygame.event.post(pygame.event.Event(ENDTURN))
+            case tl.IMPACT:
+                print("hey")
+                _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
+                if _dist.lenght < event.radius + self.rect.width:
+                    _reaction = _dist
+                    _reaction.x *= 2
+                    self.inertia += _reaction
         super().handle(event)
 
     def update(self,map,players,serialized,CAMERA,particle_group,mob_group):

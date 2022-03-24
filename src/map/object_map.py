@@ -18,8 +18,7 @@ class Object_map(pygame.sprite.Sprite):
                 if self.rect.colliderect(event.rect):
                     print("interraction")
             case tools.IMPACT:
-                if self.rect.collidepoint(event.pos):
-                    print("destruction")
+                ...
 
     def update(self):
         ...
