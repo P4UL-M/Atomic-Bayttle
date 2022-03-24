@@ -76,7 +76,7 @@ class Player(MOB):
                 pygame.event.post(pygame.event.Event(ENDTURN))
             case tl.IMPACT:
                 _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
-                if _dist.lenght < event.radius + self.rect.width:
+                if _dist.lenght < event.radius + self.rect.width and self.lock:
                     _reaction = _dist
                     _reaction.x *= 2
                     self.inertia += _reaction
