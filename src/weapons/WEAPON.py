@@ -32,7 +32,6 @@ class Bullet(MOB):
             raise AttributeError("MOB must have a rect to move")
         
         t = (pygame.time.get_ticks() - self.t0)/100
-        #print("time :",t)
         x = self.trajectoire.get_x(t)
         y = - self.trajectoire.get_y(x) + self.trajectoire.pos0[1]
         if not self.right_direction:
