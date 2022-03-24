@@ -49,12 +49,10 @@ class Bullet(MOB):
                 for player in players:
                     if player is not self and self.mask.collide(self.__rect.topleft,player) and not "bullet" in player.name:
                         pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
-                        print("impact at")
                         self.kill()
                         return
                 if self.mask.collide(self.__rect.topleft,target):
                     pygame.event.post(pygame.event.Event(IMPACT,{"x":self.__rect.centerx,"y":self.__rect.centery,"radius":self.radius}))
-                    print("impact at")
                     self.kill()
                     return
                 self.__rect.move_ip(*__d)
@@ -91,7 +89,6 @@ class WEAPON(pygame.sprite.Sprite):
 
     def fire(self,right_direction,group):
         if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-            print("fire")
             self.__cooldown = pygame.time.get_ticks()
             angle = self.angle
             x = self.l*0.4 * cos(angle) * (1 if right_direction else -2.3) + self.rect.centerx
