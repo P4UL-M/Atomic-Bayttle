@@ -68,7 +68,6 @@ class Player(MOB):
         self.rect.y = y
         self.rect.x = 200
         self.life_multiplicator = 0
-        MixeurAudio.play_effect(PATH / "assets" / "sound" / "fall_in_water.wav",0.5)
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -148,8 +147,12 @@ class Player(MOB):
                 else:
                     self.manager.load("idle")
                     self.manager.annim_speed_factor = 1
-        # death
+        #* death
         if self.rect.bottom > map.water_level:
+            MixeurAudio.play_effect(PATH / "assets" / "sound" / "fall_in_water.wav",0.5)
+            ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
+            pygame.event.post(ev)
+        elif (Vector2(*self.rect.topleft) - Vector2(*map.rect.center)).lenght > 2500:
             ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
             pygame.event.post(ev)
         #* inertia and still update if inactive

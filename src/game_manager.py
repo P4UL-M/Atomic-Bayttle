@@ -94,7 +94,6 @@ class Partie:
         for player in self.mobs.sprites():
             if type(player)== Player:
                 if not player.lock:
-                    print(str(player.life_multiplicator))
                     CAMERA._screen_UI.blit(FONT.render(str(round(player.life_multiplicator,2)),1,(255,0,0)),(50,50))
 
         CAMERA.cache = False
