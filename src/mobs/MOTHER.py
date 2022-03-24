@@ -1,6 +1,6 @@
 import pygame
 from math import sqrt,ceil,pi,sin,cos
-from src.tools.tools import Keyboard,Vector2,Axis
+from src.tools.tools import Vector2,Axis
 import src.tools.constant as tl
 
 class BodyPartSprite(pygame.mask.Mask):
@@ -115,12 +115,12 @@ class MOB(pygame.sprite.Sprite):
                     while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.x < 0:
                         __d.x += 1
                     if not self.grounded: # strange bug clip surface while flying
-                        self.inertia.x += self.speed
+                        self.inertia.x += self.speed/4
                 elif _n.x < 0:
                     while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.x > 0:
                         __d.x -= 1
                     if not self.grounded: # strange bug clip surface while flying
-                        self.inertia.x -= self.speed
+                        self.inertia.x -= self.speed/4
             else: # collision undefined
                 while self.body_mask.collide((__d + self.rect.topleft)(),target) and __d.lenght < self.speed*3:
                     __d += _n.unity
@@ -139,7 +139,11 @@ class MOB(pygame.sprite.Sprite):
                 if not self.grounded and self.inertia.y < self.speed*2:
                     self.inertia.y += 9.81*event.serialized*self.gravity
                 if self.inertia.x != 0:
-                    self.inertia.x += (0-self.inertia.x)/3
+                    if abs(self.inertia.x) < self.speed/2:
+                        _d = (0-self.inertia.x)/2
+                    else:
+                        _d = -9.81*event.serialized*self.gravity*Axis.sign(self.inertia.x)*0.5
+                    self.inertia.x += _d
             case _:
                 ...
 

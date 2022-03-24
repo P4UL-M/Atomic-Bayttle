@@ -66,6 +66,7 @@ class Player(MOB):
     def respawn(self,y):
         self.inertia.y = 0
         self.rect.y = y
+        self.rect.x = 200
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -78,8 +79,7 @@ class Player(MOB):
                 _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
                 if _dist.lenght < event.radius + self.rect.width and self.lock:
                     _reaction = _dist
-                    _reaction.x *= 2
-                    self.inertia += _reaction
+                    self.inertia += _reaction * 0.8 * self.life_multiplicator
         super().handle(event)
 
     def update(self,map,players,serialized,CAMERA,particle_group,mob_group):
