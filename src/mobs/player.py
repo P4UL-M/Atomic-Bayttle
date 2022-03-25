@@ -4,7 +4,7 @@ from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2,Mix
 from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule
-from src.weapons.WEAPON import Sniper,Launcher
+from src.weapons.WEAPON import Sniper,Launcher,Chainsaw
 from random import choice
 
 INFO = pygame.display.Info()
@@ -36,7 +36,7 @@ class Player(MOB):
 
         self.load_team(team)
 
-        self.current_weapon= choice((Launcher(),Sniper())) 
+        self.current_weapon= choice((Launcher(),Sniper(),Chainsaw())) 
 
     @property
     def image(self) -> pygame.Surface:
@@ -161,4 +161,4 @@ class Player(MOB):
             pygame.event.post(ev)
         #* inertia and still update if inactive
         super().update(map,serialized,players)
-        self.current_weapon.update(self.rect.center,self.rigth_direction,self.y_axis*0.05)
+        self.current_weapon.update(self.rect.center,self.rigth_direction,self.y_axis*0.05,self.lock)

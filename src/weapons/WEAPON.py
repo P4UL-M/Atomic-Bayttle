@@ -10,10 +10,10 @@ from math import pi,cos,sin
 class Bullet(MOB):
     def __init__(self, pos:tuple[int], size:tuple[int],path:str,impact_surface:pygame.Surface,radius,force:int,angle:int,right_direction:bool, group):
         super().__init__(pos, size, group)
-        self.__image = pygame.transform.scale(pygame.image.load(path),size)
-        self.image = self.__image.copy()
+        self.real_image = pygame.transform.scale(pygame.image.load(path),size)
+        self.image = self.real_image.copy()
         self.real_rect = self.rect.copy()
-        self.__image.convert_alpha()
+        self.real_image.convert_alpha()
         self.impact_surface = impact_surface
         
         self.right_direction = right_direction
@@ -76,8 +76,8 @@ class Bullet(MOB):
 
     def rot_center(self, angle):
     
-        rotated_image = pygame.transform.rotate(self.__image, -angle*180/pi)
-        new_rect = rotated_image.get_rect(center = self.__image.get_rect(center = self.real_rect.topleft).center)
+        rotated_image = pygame.transform.rotate(self.real_image, -angle*180/pi)
+        new_rect = rotated_image.get_rect(center = self.real_image.get_rect(center = self.real_rect.topleft).center)
 
         return rotated_image, new_rect
 
@@ -96,11 +96,11 @@ class Grenade(Bullet):
 class WEAPON(pygame.sprite.Sprite): 
     def __init__(self,path):
         super().__init__()
-        self.__image=pygame.image.load(path).convert_alpha()
-        self.image = self.__image.copy()
-        self.pivot = (self.__image.get_width()//3,self.__image.get_height()//2)
-        self.real_rect = self.__image.get_rect(topleft=(0,0))
-        self.rect = self.__image.get_rect(topleft = (self.real_rect.x-self.pivot[0], self.real_rect.y-self.pivot[1]))
+        self.real_image=pygame.image.load(path).convert_alpha()
+        self.image = self.real_image.copy()
+        self.pivot = (1/3,1/2)
+        self.real_rect = self.real_image.get_rect(topleft=(0,0))
+        self.rect = self.real_image.get_rect(topleft = (self.real_rect.x-self.pivot[0], self.real_rect.y-self.pivot[1]))
         self.l = self.real_rect.width
         self.__cooldown = 0
         self.angle = 0
@@ -115,20 +115,20 @@ class WEAPON(pygame.sprite.Sprite):
             for i in range(5):
                 particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
 
-    def update(self,pos,right,_dangle):
+    def update(self,pos,right,_dangle,lock=False):
         self.angle += _dangle
         if self.angle > pi/2: self.angle = pi/2
         elif self.angle < -pi/2: self.angle = -pi/2
         self.real_rect.topleft =pos
 
-        offset = self.pivot
+        offset = (int(self.real_image.get_width() * self.pivot[0]),int(self.real_image.get_height()*self.pivot[1]))
 
         if not right:
-            image = pygame.transform.flip(self.__image,True,False)
-            offset = (self.__image.get_width()//3*2,self.__image.get_height()//2)
+            image = pygame.transform.flip(self.real_image,True,False)
+            offset = (int(image.get_width() * (1 - self.pivot[0])),int(image.get_height()*self.pivot[1]))
             angle = self.angle*-1
         else:
-            image = self.__image.copy()
+            image = self.real_image.copy()
             angle = self.angle
 
         image_rect = image.get_rect(topleft = (self.real_rect.left-offset[0], self.real_rect.top-offset[1]))
@@ -165,3 +165,39 @@ class Launcher(WEAPON):
             MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav",0.5)
             for i in range(5):
                 particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+
+class Chainsaw(WEAPON):
+    def __init__(self) -> None:
+        self.rayon=35
+        self.damage=15
+        self.multiplicator_repulsion = 0.2
+        self.cooldown = 100
+        self.__cooldown = 0
+        self.sound_cooldown = 1000
+        self.__sound_cooldown = 0
+        self.idle_sound = None
+        super().__init__(PATH/"assets"/"weapons"/"chainsaw.png")
+        self.pivot = (1/5,1/2)
+
+    def fire(self, right_direction, group, particle_group):
+        if self.__cooldown + self.cooldown < pygame.time.get_ticks():
+            self.__cooldown = pygame.time.get_ticks()
+            angle = self.angle
+            x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+            y = -self.l * sin(angle) + self.real_rect.top
+            pygame.event.post(pygame.event.Event(IMPACT,{"x":x,"y":y,"radius":self.rayon,"multiplicator_repulsion":self.multiplicator_repulsion,"damage":self.damage}))
+            if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
+                self.__sound_cooldown = pygame.time.get_ticks()
+                MixeurAudio.play_effect(PATH / "assets" / "sound" / "chainsaw_hit.wav",0.5)
+            for i in range(5):
+                particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+    
+    def update(self, pos, right, _dangle, lock):
+        super().update(pos, right, _dangle)
+        if not lock:
+            if not self.idle_sound:
+                self.idle_sound = MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "chainsaw_idle.wav",1.2)
+        else:
+            if self.idle_sound:
+                self.idle_sound()
+                self.idle_sound = None
