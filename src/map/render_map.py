@@ -29,5 +29,16 @@ class Map(pygame.sprite.Sprite):
         pygame.draw.circle(self.image,(0,0,0,0),_pos(),radius)
         pygame.draw.circle(self.cave_bg.image,(0,0,0,0),(_pos - self.cave_bg.rect.topleft)(),radius)
         self.mask = pygame.mask.from_surface(self.image)
-        self.water_target -= 1
-        MixeurAudio.gn.sound_factor.value = 0.5 + 800 / (self.water_target + 800)
+        self.water_target -= 5
+
+    def update(self,serialized):
+        MixeurAudio.gn.sound_factor.value = min(- 2/self.rect.height * max(self.water_target,self.water_level) + 3,3)
+        if self.water_target < self.water_level:
+            self.water_level -= 0.1*serialized
+            self.water_manager.load("agitated")
+        elif self.water_target > self.water_level:
+            self.water_level += 0.3*serialized
+            self.water_manager.load("agitated")
+        else:
+            self.water_manager.load("idle")
+        

@@ -55,6 +55,7 @@ class Partie:
                             mob.lock = True
                 case tl.DEATH:
                     CAMERA.zoom = 1
+                    self.map.water_target = self.map.rect.height - 30
                     for mob in self.mobs.sprites():
                         if mob.name == event.name:
                             mob.respawn(self.checkpoint[1])
@@ -79,11 +80,7 @@ class Partie:
             ev = pygame.event.Event(tl.ENDTURN)
             pygame.event.post(ev)
 
-        if self.map.water_target < self.map.water_level:
-            self.map.water_level -= 0.1*GAME.serialized
-            self.map.water_manager.load("agitated")
-        else:
-            self.map.water_manager.load("idle")
+        self.map.update(GAME.serialized)
 
         # render
         CAMERA._screen_UI.fill((0,0,0,0))

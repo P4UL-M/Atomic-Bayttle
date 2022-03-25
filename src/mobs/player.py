@@ -65,6 +65,7 @@ class Player(MOB):
 
     def respawn(self,y):
         self.inertia.y = 0
+        self.inertia.x = 0
         self.rect.y = y
         self.rect.x = 200
         self.life_multiplicator = 0
@@ -82,6 +83,8 @@ class Player(MOB):
                     _reaction = _dist
                     self.inertia += _reaction * self.life_multiplicator * event.multiplicator_repulsion
                     self.life_multiplicator += event.damage /100
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav",0.20)
+
         super().handle(event)
 
     def update(self,map,players,serialized,CAMERA,particle_group,mob_group):

@@ -127,5 +127,5 @@ class Sniper(WEAPON):
         self.bullet=PATH/"assets"/"laser"/"14.png"
         self.v0=100
         self.rayon=30
-        self.cooldown = 200
+        self.cooldown = 100
         super().__init__(PATH/"assets"/"weapons"/"sniper.png")

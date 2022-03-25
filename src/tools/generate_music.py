@@ -52,16 +52,12 @@ def worker(buffer,factor,musique_original,sound_offset):
     # var declaration
     musique_alternate = musique_original # current study of the musique
     player_offset = sound_offset # offset of each sample
-    max_occilation = 0.01 # max modification of speed between two sample (lesser => more faded)
     local_factor = factor.value # local factor of speed
 
     while True:
         if not buffer.full(): # if the Queue is not full
             # if local factor need update
-            if local_factor<factor.value:
-                local_factor += max_occilation
-            elif local_factor>factor.value:
-                local_factor -= max_occilation
+            local_factor += (factor.value - local_factor)/3
 
             if len(musique_alternate) > player_offset*local_factor: # check if we can take a normal sample in the study
                 sample, musique_alternate = musique_alternate[:player_offset*local_factor], musique_alternate[player_offset*local_factor:]

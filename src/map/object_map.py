@@ -1,5 +1,6 @@
 import pygame
 import src.tools.constant as tools
+from src.tools.tools import Vector2,MixeurAudio
 
 class Object_map(pygame.sprite.Sprite):
     
@@ -18,7 +19,10 @@ class Object_map(pygame.sprite.Sprite):
                 if self.rect.colliderect(event.rect):
                     print("interraction")
             case tools.IMPACT:
-                ...
+                _dist = Vector2(self.rect.centerx - event.x,self.rect.centery - event.y)
+                if _dist.lenght < event.radius * 2:
+                    self.kill()
+                    MixeurAudio.play_effect(tools.PATH / "assets" / "sound" / "explosion.wav")
 
     def update(self):
         ...
