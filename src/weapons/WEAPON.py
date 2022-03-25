@@ -154,6 +154,7 @@ class Launcher(WEAPON):
         self.cooldown = 500
         self.__cooldown = 0
         super().__init__(PATH/"assets"/"weapons"/"launcher.png")
+        self.pivot = (1/2,1/2)
 
     def fire(self, right_direction, group, particle_group):
         if self.__cooldown + self.cooldown < pygame.time.get_ticks():
