@@ -4,7 +4,7 @@ from src.tools.tools import animation_Manager, sprite_sheet,Keyboard,Vector2,Mix
 from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule
-from src.weapons.WEAPON import Sniper
+from src.weapons.WEAPON import Sniper,Launcher
 
 INFO = pygame.display.Info()
 
@@ -35,7 +35,7 @@ class Player(MOB):
 
         self.load_team(team)
 
-        self.current_weapon=Sniper()
+        self.current_weapon=Launcher()
 
     @property
     def image(self) -> pygame.Surface:
