@@ -5,6 +5,7 @@ from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule
 from src.weapons.WEAPON import Sniper,Launcher
+from random import choice
 
 INFO = pygame.display.Info()
 
@@ -35,7 +36,7 @@ class Player(MOB):
 
         self.load_team(team)
 
-        self.current_weapon=Launcher()
+        self.current_weapon= choice((Launcher(),Sniper())) 
 
     @property
     def image(self) -> pygame.Surface:
