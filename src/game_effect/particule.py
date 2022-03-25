@@ -58,14 +58,11 @@ class AnimatedParticule(pygame.sprite.Sprite):
         self.dframe = (spritesheet.x_nb * spritesheet.y_nb)/lifetime
         
         self.spritesheet = spritesheet
-        self.image = pygame.transform.rotate(self.image,random.randrange(0,90))
-        li_loss = random.randrange(0,55); li_teinte = random.randrange(0,25)
-        self.image.fill((255-li_loss,255-li_loss-li_teinte,255-li_loss-li_teinte))
         self.rect = self.image.get_rect(topleft=self.position())
     
     @property
-    def image(self):
-        return self.spritesheet[self.frame]
+    def image(self) -> pygame.Surface:
+        return self.spritesheet[int(self.frame)]
 
     def move(self,serialized):
         try:
@@ -84,7 +81,7 @@ class AnimatedParticule(pygame.sprite.Sprite):
                 self.direction.y -= 9.81/self.speed
 
     def update(self,serialized,*args,**kargs):
-        if self.lifetime >= self.frame:
+        if self.lifetime <= self.frame:
             self.kill()
         else:
             self.frame += self.dframe

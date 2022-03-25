@@ -4,7 +4,8 @@ from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio,cycle,Vector2
+from src.tools.tools import MixeurAudio,cycle,Vector2,sprite_sheet
+from src.game_effect.particule import AnimatedParticule
 from src.weapons.physique import *
 from src.weapons.WEAPON import WEAPON
 
@@ -61,6 +62,8 @@ class Partie:
                             mob.respawn(self.checkpoint[1])
                 case tl.IMPACT:
                     self.map.add_damage(Vector2(event.x, event.y),event.radius)
+                    if event.particle:
+                        self.group_particle.add(event.particle)
                     for mob in self.mobs:
                         mob.handle(event)
                     for obj in self.group_object:
