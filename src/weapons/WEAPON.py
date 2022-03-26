@@ -220,19 +220,27 @@ class Chainsaw(WEAPON):
 		super().__init__(PATH/"assets"/"weapons"/"chainsaw.png")
 		self.pivot = (1/5,1/2)
 
+	def handle(self, event: pygame.event.Event,owner,GAME,CAMERA):
+		"""methode appele a chaque event"""
+		match event.type:
+			case tl.CHARGING:
+				if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
+					self.__cooldown = pygame.time.get_ticks()
+					self.fire(owner.right_direction,GAME.partie.mobs,GAME.partie.group_particle)
+					self.lock = False
+
 	def fire(self, right_direction, group, particle_group):
-		if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-			self.__cooldown = pygame.time.get_ticks()
-			angle = self.angle
-			x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
-			y = -self.l * sin(angle) + self.real_rect.top
-			pygame.event.post(pygame.event.Event(IMPACT,{"x":x,"y":y,"radius":self.rayon,"multiplicator_repulsion":self.multiplicator_repulsion,"damage":self.damage,"particle":None}))
-			if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
-				self.__sound_cooldown = pygame.time.get_ticks()
-				MixeurAudio.play_effect(PATH / "assets" / "sound" / "chainsaw_hit.wav",0.5)
-			for i in range(5):
-				particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
-	
+		angle = self.angle
+		x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+		y = -self.l * sin(angle) + self.real_rect.top
+		pygame.event.post(pygame.event.Event(IMPACT,{"x":x,"y":y,"radius":self.rayon,"multiplicator_repulsion":self.multiplicator_repulsion,"damage":self.damage,"particle":None}))
+		if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
+			self.__sound_cooldown = pygame.time.get_ticks()
+			if self.idle_sound: self.idle_sound()
+			self.idle_sound = MixeurAudio.play_effect(PATH / "assets" / "sound" / "chainsaw_hit.wav",0.5)
+		for i in range(5):
+			particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+
 	def update(self, pos, right, _dangle, lock):
 		super().update(pos, right, _dangle)
 		if not lock:
