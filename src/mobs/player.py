@@ -5,7 +5,7 @@ from src.tools.constant import TEAM,EndPartie,ENDTURN,DEATH,PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule
 from src.weapons.WEAPON import Sniper,Launcher,Chainsaw
-from random import choice
+from src.weapons.manager import inventory
 
 INFO = pygame.display.Info()
 
@@ -23,7 +23,7 @@ class Player(MOB):
         self.name = name
 
         self.manager:animation_Manager = animation_Manager()
-        self.rigth_direction = True
+        self.right_direction = True
 
         self.jump_force = 8
         self.double_jump = 0
@@ -32,16 +32,14 @@ class Player(MOB):
 
         # for action
         self.lock = False
-        self.weapon_manager = None # mettre travail de Joseph ici
+        self.weapon_manager = inventory() # mettre travail de Joseph ici
 
         self.load_team(team)
-
-        self.current_weapon= choice((Launcher(),Sniper(),Chainsaw())) 
 
     @property
     def image(self) -> pygame.Surface:
         surf = self.manager.surface
-        if self.rigth_direction:
+        if self.right_direction:
             return surf
         else:
             return pygame.transform.flip(surf,True,False) #! if too much loss of perf we will stock both
@@ -73,7 +71,7 @@ class Player(MOB):
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
-    def handle(self, event: pygame.event.Event):
+    def handle(self, event: pygame.event.Event,GAME,CAMERA):
         """methode appele a chaque event"""
         match event.type:
             case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
@@ -85,10 +83,11 @@ class Player(MOB):
                     self.inertia += _reaction * self.life_multiplicator * event.multiplicator_repulsion
                     self.life_multiplicator += event.damage /100
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav",0.20)
-
         super().handle(event)
+        self.weapon_manager.handle(event,self,GAME,CAMERA)
 
-    def update(self,map,players,serialized,CAMERA,particle_group,mob_group):
+    def update(self,GAME,CAMERA):
+        GM = GAME.partie
         if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed,Keyboard.left.is_pressed)
             self.y_axis.update(Keyboard.up.is_pressed,Keyboard.down.is_pressed)
@@ -100,28 +99,24 @@ class Player(MOB):
                     self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
                     self.manager.load("jump")
                     for i in range(5):
-                        particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,pygame.Color(20,20,0)))
+                        GM.group_particle.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(1,-2),2,pygame.Color(20,20,0)))
             if Keyboard.interact.is_pressed:
-                self.current_weapon.fire(self.rigth_direction,mob_group,particle_group)
+                ...
             if Keyboard.inventory.is_pressed:
-                ...
-            if Keyboard.up.is_pressed:
-                ...
-            if Keyboard.down.is_pressed:
                 ...
             if Keyboard.pause.is_pressed:
                 raise EndPartie
  
             if self.x_axis.value>0: # tempo variable so keep in cache until real changement of direction
-                self.rigth_direction = True
+                self.right_direction = True
             elif self.x_axis.value<0:
-                self.rigth_direction = False
+                self.right_direction = False
 
             #* walking particle here
             if self.grounded:
                 self.double_jump = True
                 if self.actual_speed > 1 and pygame.time.get_ticks()%7==0:
-                    particle_group.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,pygame.Color(20,20,0)))
+                    GM.group_particle.add(Particule(10,Vector2(self.rect.left + self.image.get_width()//2,self.rect.bottom),self.image.get_width()//2,Vector2(-self.x_axis.value*2,0),0.25*self.actual_speed,pygame.Color(20,20,0)))
 
             #* CAMERA Update of the player
             x,y = CAMERA.to_virtual(INFO.current_w/2,INFO.current_h/2 )
@@ -152,13 +147,13 @@ class Player(MOB):
                     self.manager.load("idle")
                     self.manager.annim_speed_factor = 1
         #* death
-        if self.rect.bottom > map.water_level:
+        if self.rect.bottom > GM.map.water_level:
             MixeurAudio.play_effect(PATH / "assets" / "sound" / "fall_in_water.wav",0.5)
             ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
             pygame.event.post(ev)
-        elif (Vector2(*self.rect.topleft) - Vector2(*map.rect.center)).lenght > 2500:
+        elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
             ev = pygame.event.Event(DEATH,{"name":self.name,"pos":self.rect.bottomleft})
             pygame.event.post(ev)
         #* inertia and still update if inactive
-        super().update(map,serialized,players)
-        self.current_weapon.update(self.rect.center,self.rigth_direction,self.y_axis*0.05,self.lock)
+        super().update(GM.map,GAME.serialized,GM.players)
+        self.weapon_manager.update(self,GAME,CAMERA) # after move so in final

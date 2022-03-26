@@ -13,7 +13,7 @@ class Object_map(pygame.sprite.Sprite):
         self.image.set_colorkey(transColor)
         self.rect = self.image.get_rect(topleft=pos)
 
-    def handle(self,event):
+    def handle(self,event,*args,**kargs):
         match event.type:
             case tools.INTERACT:
                 if self.rect.colliderect(event.rect):

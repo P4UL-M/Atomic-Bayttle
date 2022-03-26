@@ -27,6 +27,10 @@ class Partie:
         self.cooldown_tour=15000
         self.timer_tour=pygame.time.get_ticks()
 
+    @property
+    def players(self):
+        return [mob for mob in self.mobs.sprites() if type(mob)==Player]
+
     def add_player(self, name,team,lock=False):
         player = Player(name,self.checkpoint,tl.TEAM[team]["idle"],team,self.mobs, "sniper")
         player.lock = lock
@@ -65,16 +69,16 @@ class Partie:
                     if event.particle:
                         self.group_particle.add(event.particle)
                     for mob in self.mobs:
-                        mob.handle(event)
+                        mob.handle(event,GAME,CAMERA)
                     for obj in self.group_object:
-                        obj.handle(event)
+                        obj.handle(event,GAME,CAMERA)
                 case _:
                     for mob in self.mobs:
-                        mob.handle(event)
+                        mob.handle(event,GAME,CAMERA)
                     for obj in self.group_object:
-                        obj.handle(event)
+                        obj.handle(event,GAME,CAMERA)
 
-        self.mobs.update(self.map,self.mobs.sprites(),GAME.serialized,CAMERA,self.group_particle,self.mobs)
+        self.mobs.update(GAME,CAMERA)
         self.group_particle.update(GAME.serialized)
 
         MixeurAudio.update_musique()
@@ -108,7 +112,7 @@ class Partie:
         self.mobs.draw(_surf)
         for player in self.mobs.sprites():
             if type(player)==Player:
-                _surf.blit(player.current_weapon.image,player.current_weapon.rect)
+                _surf.blit(player.weapon_manager.current_weapon.image,player.weapon_manager.current_weapon.rect)
         self.group_particle.draw(_surf)
         self.group_object.draw(_surf)
         _surf.blit(self.map.water_manager.surface,(0,self.map.water_level))

@@ -8,6 +8,13 @@ from src.weapons.physique import *
 from src.mobs.MOTHER import MOB
 from math import pi,cos,sin
 
+_list_weapon = []
+
+def add_weapon(_class):
+	global _list_weapon
+	_list_weapon.append(_class)
+	return _class
+
 class Bullet(MOB):
 	def __init__(self, pos:tuple[int], size:tuple[int],path:str,impact_surface:pygame.Surface,radius,force:int,angle:int,right_direction:bool, group):
 		super().__init__(pos, size, group)
@@ -22,9 +29,7 @@ class Bullet(MOB):
 		self.t0 = pygame.time.get_ticks()
 		self.radius = radius
 		self.name = f"bullet_{pygame.time.get_ticks()}"
-		x = self.trajectoire.get_x(1)
-		y = - self.trajectoire.get_y(1)
-		_d = Vector2(x,y)
+		_d = Vector2(self.trajectoire.get_x(1)-self.trajectoire.get_x(0),self.trajectoire.get_y(1) - self.trajectoire.get_y(0))
 		self.image,self.rect = self.rot_center(_d.arg)
 
 		self.speed = 1
@@ -74,22 +79,25 @@ class Bullet(MOB):
 	def collide_reaction(self, *arg,**kargs):
 		...
 
-	def update(self, map, players,*arg,**kargs):
-		if not self.rect.colliderect(map.rect):
+	def handle(self,event:pygame.event.Event,*args,**kargs): ...
+
+	def update(self, GAME,CAMERA):
+		GM = GAME.partie
+		if not self.rect.colliderect(GM.map.rect):
 			self.kill()
-		super().update(map,1, players)
+		super().update(GM.map,GAME.serialized, GM.players)
 
 	def rot_center(self, angle):
 	
-		rotated_image = pygame.transform.rotate(self.real_image, -angle*180/pi)
+		rotated_image = pygame.transform.rotate(self.real_image, -(angle or 0)*180/pi)
 		new_rect = rotated_image.get_rect(center = self.real_image.get_rect(center = self.real_rect.topleft).center)
 
 		return rotated_image, new_rect
 
 class Grenade(Bullet):
-	def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group):
+	def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int,speed:int, angle: int, right_direction: bool, group):
 		super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group)
-		self.speed = 0.7
+		self.speed = speed * 0.7
 		self.path_sound = PATH / "assets" / "sound" / "grenade_sound.wav"
 		self.multiplicator_repulsion = 1.2
 		self.damage = 40
@@ -114,20 +122,26 @@ class WEAPON(pygame.sprite.Sprite):
 		self.__cooldown = 0
 		self.angle = 0
 
-	def handle(self,*arg,**kargs):
-		...
+		self.lock = False
 
-	def fire(self,right_direction,group,particle_group):
-		if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-			self.__cooldown = pygame.time.get_ticks()
-			angle = self.angle
-			x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
-			y = -self.l * sin(angle) + self.real_rect.top
-			Bullet((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.rayon,self.v0,angle,right_direction,group)
-			for i in range(5):
-				particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+	def handle(self, event: pygame.event.Event,owner,GAME,CAMERA):
+		"""methode appele a chaque event"""
+		match event.type:
+			case tl.CHARGING:
+				if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
+					self.__cooldown = pygame.time.get_ticks()
+					self.fire(owner.right_direction,GAME.partie.mobs,GAME.partie.group_particle,force=self.v0 * event.value,speed=event.value*0.3 + 0.9)
+					self.lock = False
 
-	def update(self,pos,right,_dangle,lock=False):
+	def fire(self, right_direction, group, particle_group,force=None,speed:int=1):
+		angle = self.angle
+		x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+		y = -self.l * sin(angle) + self.real_rect.top
+		Bullet((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.rayon,self.v0,angle,right_direction,group)
+		for i in range(5):
+			particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+
+	def update(self,pos:tuple,right:bool,_dangle:int,lock=False):
 		self.angle += _dangle
 		if self.angle > pi/2: self.angle = pi/2
 		elif self.angle < -pi/2: self.angle = -pi/2
@@ -150,6 +164,7 @@ class WEAPON(pygame.sprite.Sprite):
 		self.image = pygame.transform.rotate(image, angle*180/pi).convert_alpha()
 		self.rect = self.image.get_rect(center = rotated_image_center)
 
+@add_weapon
 class Sniper(WEAPON):
 	def __init__(self) -> None:
 		self.bullet=PATH/"assets"/"laser"/"14.png"
@@ -158,6 +173,7 @@ class Sniper(WEAPON):
 		self.cooldown = 100
 		super().__init__(PATH/"assets"/"weapons"/"sniper.png")
 
+@add_weapon
 class Launcher(WEAPON):
 	def __init__(self) -> None:
 		self.bullet=PATH/"assets"/"laser"/"grenade.png"
@@ -168,26 +184,29 @@ class Launcher(WEAPON):
 		super().__init__(PATH/"assets"/"weapons"/"launcher.png")
 		self.pivot = (1/2,1/2)
 
-	def handle(self, event: pygame.event.Event,*arg,**kargs):
+	def handle(self, event: pygame.event.Event,owner,GAME,CAMERA):
 		"""methode appele a chaque event"""
 		match event.type:
 			case tl.CHARGING:
-				if Keyboard.interact.is_pressed and event.value <= 1:
-					pygame.event.post(pygame.event.Event(tl.CHARGING, {"value": event.value + 0.032}))
-				else:
-					self.fire(*arg,**kargs,force=self.v0 * event.value)
+				if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
+					if Keyboard.interact.is_pressed and event.value <= 1:
+						pygame.event.post(pygame.event.Event(tl.CHARGING, {"weapon":self,"value": event.value + 0.032}))
+						self.lock = True
+					else:
+						self.__cooldown = pygame.time.get_ticks()
+						self.fire(owner.right_direction,GAME.partie.mobs,GAME.partie.group_particle,force=self.v0 * event.value,speed=event.value*0.3 + 0.9)
+						self.lock = False
 
-	def fire(self, right_direction, group, particle_group,force=None):
-		if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-			self.__cooldown = pygame.time.get_ticks()
-			angle = self.angle
-			x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
-			y = -self.l * sin(angle) + self.real_rect.top
-			Grenade((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.rayon,force or self.v0,angle,right_direction,group)
-			MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav",0.5)
-			for i in range(5):
-				particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
+	def fire(self, right_direction, group, particle_group,force=None,speed:int=1):
+		angle = self.angle
+		x = self.l*0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+		y = -self.l * sin(angle) + self.real_rect.top
+		Grenade((x,y),(14,7),self.bullet,pygame.Surface((5,3)),self.rayon,force or self.v0,speed,angle,right_direction,group)
+		MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav",0.5)
+		for i in range(5):
+			particle_group.add(Particule(2,Vector2(x,y),1,Vector2(x,y).unity*-1,5,pygame.Color(60,0,0),False,(2,2)))
 
+@add_weapon
 class Chainsaw(WEAPON):
 	def __init__(self) -> None:
 		self.rayon=35
