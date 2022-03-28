@@ -1990,6 +1990,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def start(event):
             if event.key == Keyboard.interact.key:
+                MixeurAudio.play_effect(PATH / "assets" / "sound" / "explosion.wav")
                 for sprite in play_menu.sprites():
                     sprite.isactive = not sprite.isactive
 
