@@ -229,11 +229,11 @@ class Launcher(WEAPON):
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
-                    if Keyboard.interact.is_pressed and event.value <= 4:
+                    if Keyboard.interact.is_pressed and event.value <= 2:
                         if owner.weapon_manager.zoom_factor > 0.5:
                             owner.weapon_manager.zoom_factor -= 0.2
                         pygame.event.post(pygame.event.Event(
-                            tl.CHARGING, {"weapon": self, "value": event.value + 0.032}))
+                            tl.CHARGING, {"weapon": self, "value": event.value + 0.016}))
                         self.lock = True
                         if not self.chargingsound:
                             self.chargingsound = MixeurAudio.play_until_Stop(
