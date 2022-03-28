@@ -1,7 +1,5 @@
 import pygame
 import json
-from typing import Any
-from math import atan, sqrt, pi
 from pygame_easy_menu import Vector2
 
 pygame.init()
@@ -96,6 +94,8 @@ class sprite_sheet(pygame.Surface):
         elif type(key) != int:
             raise AttributeError(
                 "You must pass an integer or define a dictionary")
+        if key % self.x_nb*self.y_nb == 0:
+            self.__on_end()
         return self.images[key % self.x_nb*self.y_nb]
 
     def config(self, size):
@@ -106,6 +106,11 @@ class sprite_sheet(pygame.Surface):
 
     def __iter__(self):
         return iter(self.images)
+
+    def add_on_end(self, func):
+        self.__on_end = func
+
+    def __on_end(self): ...
 
 
 class animation_Manager(object):
@@ -118,6 +123,7 @@ class animation_Manager(object):
         self.links: dict[list] = {}
         self.__loaded: sprite_sheet = None
         self._loaded_name: str = None
+        self.on_end = None
 
     @property
     def surface(self):
