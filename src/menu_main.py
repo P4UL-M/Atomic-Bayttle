@@ -1982,6 +1982,11 @@ def setup_manager():
         _button.set_position(Vector2(0.5, 0.5))
         _button.set_scale(Vector2(3.0,3.0))
 
+        @_button.on_click(PATH / "assets" / "sound" / "explosion.wav")
+        def start():
+            for sprite in play_menu.sprites():
+                sprite.isactive = not sprite.isactive
+
         @_button.Event(pygame.KEYDOWN)
         def start(event):
             if event.key == Keyboard.interact.key:
