@@ -177,6 +177,6 @@ class Player(MOB):
                 DEATH, {"name": self.name, "pos": self.rect.bottomleft})
             pygame.event.post(ev)
         # * inertia and still update if inactive
-        super().update(GM.map, GAME.serialized, GM.players)
+        super().update(GAME, CAMERA)
         # after move so in final
         self.weapon_manager.update(self, GAME, CAMERA)

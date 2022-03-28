@@ -46,7 +46,8 @@ class Bullet(MOB):
         self.particle_sprite.config(
             (self.radius*2*self.size_particule, self.radius*2*self.size_particule))
 
-    def move(self, target, players, *arg, **kargs):
+    def move(self, GAME, CAMERA):
+        GM = GAME.partie
         try:
             self.__getattribute__("rect")
         except:
@@ -67,14 +68,14 @@ class Bullet(MOB):
         for i in _movements:
             if _d.arg != None:  # arg is none we have no movement
                 __d = _d.unity * i
-                for player in players:
+                for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
                         pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": AnimatedParticule(
                             self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius*self.size_particule, self.real_rect.centery - self.radius*self.size_particule), 1, Vector2(0, 0), 0, False)}))
                         self.kill()
                         MixeurAudio.play_effect(self.path_sound)
                         return
-                if self.mask.collide(self.real_rect.topleft, target):
+                if self.mask.collide(self.real_rect.topleft, GM.map):
                     pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": AnimatedParticule(
                         self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius*self.size_particule, self.real_rect.centery - self.radius*self.size_particule), 1, Vector2(0, 0), 0, False)}))
                     self.kill()
@@ -83,6 +84,7 @@ class Bullet(MOB):
                 self.real_rect.move_ip(*__d)
 
         self.image, self.rect = self.rot_center(_d.arg)
+        return _d.unity
 
     def collide_reaction(self, *arg, **kargs):
         ...
@@ -93,7 +95,7 @@ class Bullet(MOB):
         GM = GAME.partie
         if not self.rect.colliderect(GM.map.rect):
             self.kill()
-        super().update(GM.map, GAME.serialized, GM.players)
+        return super().update(GAME, CAMERA)
 
     def rot_center(self, angle):
 
@@ -120,8 +122,11 @@ class Grenade(Bullet):
         self.particle_sprite.config(
             (self.radius*2*self.size_particule, self.radius*2*self.size_particule))
 
-    def update(self, map, players, *arg, **kargs):
-        super().update(map, players, *arg, **kargs)
+    def update(self, GAME, CAMERA):
+        _d = super().update(GAME, CAMERA)
+        _d = (_d if _d else Vector2(1, 1)) * -1
+        GAME.partie.group_particle.add(Particule(4, Vector2(
+            *self.real_rect.center), 1, _d, 2, pygame.Color(0, 0, 0), gravity=True, size=(2, 2)))
         self.image, self.rect = self.rot_center(pygame.time.get_ticks()/100)
 
 
@@ -170,12 +175,12 @@ class WEAPON(pygame.sprite.Sprite):
         self.real_rect.topleft = pos
 
         offset = (int(self.real_image.get_width() *
-                  self.pivot[0]), int(self.real_image.get_height()*self.pivot[1]))
+                      self.pivot[0]), int(self.real_image.get_height()*self.pivot[1]))
 
         if not right:
             image = pygame.transform.flip(self.real_image, True, False)
             offset = (int(image.get_width() * (1 -
-                      self.pivot[0])), int(image.get_height()*self.pivot[1]))
+                                               self.pivot[0])), int(image.get_height()*self.pivot[1]))
             angle = self.angle*-1
         else:
             image = self.real_image.copy()
@@ -196,7 +201,7 @@ class WEAPON(pygame.sprite.Sprite):
         ...
 
 
-@add_weapon
+@ add_weapon
 class Sniper(WEAPON):
     def __init__(self) -> None:
         self.bullet = PATH/"assets"/"laser"/"14.png"
@@ -206,7 +211,7 @@ class Sniper(WEAPON):
         super().__init__(PATH/"assets"/"weapons"/"sniper.png")
 
 
-@add_weapon
+@ add_weapon
 class Launcher(WEAPON):
     def __init__(self) -> None:
         self.bullet = PATH/"assets"/"laser"/"grenade.png"
@@ -249,7 +254,7 @@ class Launcher(WEAPON):
                 x, y).unity*-1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
 
 
-@add_weapon
+@ add_weapon
 class Chainsaw(WEAPON):
     def __init__(self) -> None:
         self.rayon = 35
