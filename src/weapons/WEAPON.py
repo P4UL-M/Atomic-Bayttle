@@ -222,23 +222,30 @@ class Launcher(WEAPON):
         super().__init__(PATH/"assets"/"weapons"/"launcher.png")
         self.pivot = (1/2, 1/2)
 
+        self.chargingsound = None
+
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
         """methode appele a chaque event"""
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
-                    if Keyboard.interact.is_pressed and event.value <= 1:
+                    if Keyboard.interact.is_pressed and event.value <= 4:
                         if owner.weapon_manager.zoom_factor > 0.5:
                             owner.weapon_manager.zoom_factor -= 0.2
                         pygame.event.post(pygame.event.Event(
                             tl.CHARGING, {"weapon": self, "value": event.value + 0.032}))
                         self.lock = True
+                        if not self.chargingsound:
+                            self.chargingsound = MixeurAudio.play_until_Stop(
+                                PATH / "assets" / "sound" / "weapon_charge.wav", volume=2)
                     else:
                         owner.weapon_manager.zoom_factor = 1
                         self.__cooldown = pygame.time.get_ticks()
                         self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle,
                                   force=self.v0 * event.value, speed=event.value*0.3 + 0.9)
                         self.lock = False
+                        self.chargingsound()
+                        self.chargingsound = None
 
     def fire(self, right_direction, group, particle_group, force=None, speed: int = 1):
         angle = self.angle
@@ -293,7 +300,7 @@ class Chainsaw(WEAPON):
                 PATH / "assets" / "sound" / "chainsaw_hit.wav", 0.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
-                x, y).unity*-1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+                x, y).unity*-1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
 
     def update(self, pos, right, _dangle, lock):
         super().update(pos, right, _dangle)

@@ -291,7 +291,7 @@ class MixeurAudio:
         mixer.play(pygame.mixer.Sound(path))
 
     @staticmethod
-    def play_until_Stop(path, volume=None):
+    def play_until_Stop(path, volume=1):
         mixer = pygame.mixer.find_channel() or MixeurAudio.__effectMixerCallback
         mixer.set_volume(volume * MixeurAudio.volume_effect)
         mixer.play(pygame.mixer.Sound(path), loops=-1)
