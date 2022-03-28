@@ -244,8 +244,9 @@ class Launcher(WEAPON):
                         self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle,
                                   force=self.v0 * event.value, speed=event.value*0.3 + 0.9)
                         self.lock = False
-                        self.chargingsound()
-                        self.chargingsound = None
+                        if self.chargingsound:
+                            self.chargingsound()
+                            self.chargingsound = None
 
     def fire(self, right_direction, group, particle_group, force=None, speed: int = 1):
         angle = self.angle
