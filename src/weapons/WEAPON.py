@@ -192,6 +192,9 @@ class WEAPON(pygame.sprite.Sprite):
             image, angle*180/pi).convert_alpha()
         self.rect = self.image.get_rect(center=rotated_image_center)
 
+    def clean(self):
+        ...
+
 
 @add_weapon
 class Sniper(WEAPON):
@@ -297,3 +300,7 @@ class Chainsaw(WEAPON):
             if self.idle_sound:
                 self.idle_sound()
                 self.idle_sound = None
+
+    def clean(self):
+        self.idle_sound()
+        self.idle_sound = None

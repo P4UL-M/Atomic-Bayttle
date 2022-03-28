@@ -29,6 +29,7 @@ class inventory:
                 self.index += 1
                 if self.index >= len(self.weapon_list):
                     self.index = 0
+                self.current_weapon.clean()
                 self.current_weapon = self.weapon_list[self.index]
         self.current_weapon.update(
             owner.rect.center, owner.right_direction, owner.y_axis*0.05, owner.lock)
