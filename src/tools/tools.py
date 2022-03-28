@@ -94,7 +94,7 @@ class sprite_sheet(pygame.Surface):
         elif type(key) != int:
             raise AttributeError(
                 "You must pass an integer or define a dictionary")
-        if key % self.x_nb*self.y_nb == 0:
+        if key % self.x_nb*self.y_nb == 0 and key != 0:
             self.__on_end()
         return self.images[key % self.x_nb*self.y_nb]
 

@@ -1976,20 +1976,42 @@ def setup_manager():
         _button=Button(
             name="playbutton",
             path=PATH / "assets" / "menu" / "play" / "playbutton.png",
-            manager=game
+            manager=game,
             )
         
         _button.set_position(Vector2(0.5, 0.5))
         _button.set_scale(Vector2(3.0,3.0))
 
-        @_button.on_click()
-        def start():
-            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
-
         @_button.Event(pygame.KEYDOWN)
         def start(event):
             if event.key == Keyboard.interact.key:
-                GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
+                for sprite in play_menu.sprites():
+                    sprite.isactive = not sprite.isactive
+
+        return _button
+
+    @play_menu.add_sprite
+    def start_explosion():
+        manager = animation_Manager()
+        explosion = sprite_sheet(PATH / "assets" / "explosion" / "explosion-5.png", (192,192))
+        explosion.config((1920,1080))
+
+        @explosion.add_on_end
+        def func():
+            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle),str(play_menu.get_sprite("plateform2").cycle))
+
+        manager.add_annimation("explosion", explosion, 1)
+
+        manager.load("explosion")
+
+        _button=animated_sprite(
+            name="explosion",
+            manager=game,
+            animation_manager=manager,
+            isactive=False
+            )
+
+        _button.set_position(Vector2(0.5,0.5))
 
         return _button
 
