@@ -62,7 +62,7 @@ class Game:
         Game.partie.add_player("j1.1", j1)
         Game.partie.add_player("j2.1", j2, True)
         Game.partie.add_player("j1.2", j1, True)  # ajouter avec respawn pour éviter le bordel
-        Game.partie.add_player("j2.3", j2, True)
+        Game.partie.add_player("j2.2", j2, True)
         MixeurAudio.gn.reset()
         Game.partie.add_object("test", (400, 200), PATH / "assets" / "weapons" / "mortier1.png")
         Camera.HUD = True

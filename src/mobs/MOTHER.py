@@ -15,13 +15,13 @@ class BodyPartSprite(pygame.mask.Mask):
         except:
             raise AttributeError("target must have a mask to detect collision")
 
-        x_off = target.rect.left - (pos[0]+self.pos.x)
-        y_off = target.rect.top - (pos[1]+self.pos.y)
+        x_off = target.rect.left - (pos[0] + self.pos.x)
+        y_off = target.rect.top - (pos[1] + self.pos.y)
         return self.overlap(target.mask, (x_off, y_off)) != None
 
     def collide_normal(self, pos: tuple, target: pygame.sprite.Sprite) -> Vector2:
-        x = target.rect.left - (pos[0]+self.pos.x)
-        y = target.rect.top - (pos[1]+self.pos.y)
+        x = target.rect.left - (pos[0] + self.pos.x)
+        y = target.rect.top - (pos[1] + self.pos.y)
         dx = self.overlap_area(target.mask, (x + 1, y)) - \
             self.overlap_area(target.mask, (x - 1, y))
         dy = self.overlap_area(target.mask, (x, y + 1)) - \
@@ -33,6 +33,7 @@ class MOB(pygame.sprite.Sprite):
 
     def __init__(self, pos, size, group):
         super().__init__(group)
+        self.visible = True
 
         self.rect = pygame.Rect(*pos, *size)
         self.inertia = Vector2(0, 0)
@@ -51,11 +52,11 @@ class MOB(pygame.sprite.Sprite):
         self.body_mask = BodyPartSprite(
             (0, 0), (self.rect.width, self.rect.height))
         self.feet = BodyPartSprite(
-            (self.rect.width*0.15, self.rect.height*0.6), (self.rect.width*0.7, self.rect.height*0.8))
+            (self.rect.width * 0.15, self.rect.height * 0.6), (self.rect.width * 0.7, self.rect.height * 0.8))
         self.head = BodyPartSprite(
-            (0, self.rect.height*-0.2), (self.rect.width, self.rect.height*0.5))
+            (0, self.rect.height * -0.2), (self.rect.width, self.rect.height * 0.5))
         self.side_mask = BodyPartSprite(
-            (0, self.rect.width*0.3), (self.rect.width, self.rect.height*0.4))
+            (0, self.rect.width * 0.3), (self.rect.width, self.rect.height * 0.4))
         self.mask = self.body_mask  # for collision with other and projectil
 
     def move(self, GAME, CAMERA):
@@ -65,12 +66,12 @@ class MOB(pygame.sprite.Sprite):
         except:
             raise AttributeError("MOB must have a rect to move")
 
-        _dy = int((self.inertia.y)*GAME.serialized)
-        _dx = int((self.x_axis*self.speed + self.inertia.x)*GAME.serialized)
+        _dy = int((self.inertia.y) * GAME.serialized)
+        _dx = int((self.x_axis * self.speed + self.inertia.x) * GAME.serialized)
         _d = Vector2(_dx, _dy)
         self.actual_speed = _d.lenght
 
-        _movements = [self.rect.width // 4 for i in range(int(self.actual_speed/(
+        _movements = [self.rect.width // 4 for i in range(int(self.actual_speed / (
             self.rect.width // 4)))] + [self.actual_speed % (self.rect.width // 4)]
 
         j = 0
@@ -99,17 +100,17 @@ class MOB(pygame.sprite.Sprite):
     def collide_reaction(self, __d: Vector2, i: int, target, serialized):
         _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
         if _n.arg != None:  # * arg is not none then we have collision
-            if self.actual_speed/serialized > self.speed * 2 and __d.lenght > 0:  # boucing effect
-                _angle = 2*_n.arg - __d.arg  # the absolute angle of our new vector
+            if self.actual_speed / serialized > self.speed * 2 and __d.lenght > 0:  # boucing effect
+                _angle = 2 * _n.arg - __d.arg  # the absolute angle of our new vector
                 _dangle = __d.arg - _angle  # the diff of angle between the two
                 self.inertia.x = - \
-                    (cos(_dangle)*__d.x + sin(_dangle)*__d.y) * \
-                    self.life_multiplicator/serialized
+                    (cos(_dangle) * __d.x + sin(_dangle) * __d.y) * \
+                    self.life_multiplicator / serialized
                 self.inertia.y = - \
-                    (sin(_dangle)*__d.x + cos(_dangle)*__d.y) * \
-                    2*self.life_multiplicator/serialized
+                    (sin(_dangle) * __d.x + cos(_dangle) * __d.y) * \
+                    2 * self.life_multiplicator / serialized
             # collision on feet
-            elif _n.arg < -pi/4 and _n.arg > -3*pi/4 and self.feet.collide((__d + self.rect.topleft)(), target):
+            elif _n.arg < -pi / 4 and _n.arg > -3 * pi / 4 and self.feet.collide((__d + self.rect.topleft)(), target):
                 self.inertia.y = 0
                 self.grounded = True
                 # unclip
@@ -120,17 +121,17 @@ class MOB(pygame.sprite.Sprite):
                 if not self.body_mask.collide(_test(), target) and abs(__d.x) > 0 and self.body_mask.collide((__d + self.rect.topleft)(), target):
                     __d.y -= i
             # collision of head
-            elif _n.arg > pi/4 and _n.arg < 3*pi/4 and self.head.collide((__d + self.rect.topleft)(), target):
+            elif _n.arg > pi / 4 and _n.arg < 3 * pi / 4 and self.head.collide((__d + self.rect.topleft)(), target):
                 _NE = (__d + self.rect.topleft)
-                _NE.x -= i*1.2
+                _NE.x -= i * 1.2
                 _NW = (__d + self.rect.topleft)
-                _NW.x += i*1.2
+                _NW.x += i * 1.2
                 # test displacement on right
                 if not self.body_mask.collide(_NE(), target):
-                    __d.x -= i*1.2
+                    __d.x -= i * 1.2
                 # test displacement on left
                 elif not self.body_mask.collide(_NW(), target):
-                    __d.x += i*1.2
+                    __d.x += i * 1.2
                 else:  # no alternative then stop the jump
                     self.inertia.y = 0
                     while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.y < 0:
@@ -141,14 +142,14 @@ class MOB(pygame.sprite.Sprite):
                     while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.x < 0:
                         __d.x += 1
                     if not self.grounded:  # strange bug clip surface while flying
-                        self.inertia.x += self.speed/4
+                        self.inertia.x += self.speed / 4
                 elif _n.x < 0:
                     while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.x > 0:
                         __d.x -= 1
                     if not self.grounded:  # strange bug clip surface while flying
-                        self.inertia.x -= self.speed/4
+                        self.inertia.x -= self.speed / 4
             else:  # collision undefined
-                while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.lenght < self.speed*3:
+                while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.lenght < self.speed * 3:
                     __d += _n.unity
                     self.body_mask.collide_normal(
                         (__d + self.rect.topleft)(), target)
@@ -164,14 +165,14 @@ class MOB(pygame.sprite.Sprite):
         """methode appele a chaque event"""
         match event.type:
             case tl.GRAVITY:
-                if not self.grounded and self.inertia.y < self.speed*2:
-                    self.inertia.y += 9.81*event.serialized*self.gravity
+                if not self.grounded and self.inertia.y < self.speed * 2:
+                    self.inertia.y += 9.81 * event.serialized * self.gravity
                 if self.inertia.x != 0:
-                    if abs(self.inertia.x) < self.speed/2:
-                        _d = (0-self.inertia.x)/2
+                    if abs(self.inertia.x) < self.speed / 2:
+                        _d = (0 - self.inertia.x) / 2
                     else:
-                        _d = -9.81*event.serialized*self.gravity * \
-                            Axis.sign(self.inertia.x)*0.5
+                        _d = -9.81 * event.serialized * self.gravity * \
+                            Axis.sign(self.inertia.x) * 0.5
                     self.inertia.x += _d
             case _:
                 ...

@@ -77,7 +77,8 @@ class turn(Action):
                 case tl.ENDTURN:
                     raise EndAction
                 case tl.DEATH:
-                    GM.timeline.add_action(Respawn(str(GM.actual_player), duration=10000))
+                    GM.timeline.add_action(Death(str(GM.actual_player)))
+                    GM.timeline.add_action(Respawn(str(GM.actual_player)))
                     raise EndAction
                 case tl.IMPACT:
                     GM.map.add_damage(
@@ -137,17 +138,37 @@ class Respawn(Action):
         GM = GAME.partie
         for player in GM.players:
             if player.name == self.player:
-                player.rect.topleft = GM.checkpoint
+                player.rect.topleft = GM.checkpoint()
+                player.visible = False
+                player.weapon_manager.visible = False
                 break
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
+        for event in pygame.event.get():
+            ...
+        GM.Draw()
+
+    def clean(self, GAME, CAMERA):
+        GM = GAME.partie
         for player in GM.players:
             if player.name == self.player:
-                player.rect.topleft = GM.checkpoint
+                player.visible = True
+                player.weapon_manager.visible = True
                 break
 
 
-transition = Action()
+class transition(Action):
+    def __init__(self, duration=None):
+        super().__init__(duration)
 
-death = Action(duration=1500)
+
+class Death(Action):
+    def __init__(self, player, duration=1500):
+        super().__init__(duration)
+        self.player = player
+
+    def __update__(self, GAME, CAMERA):
+        GM = GAME.partie
+        for event in pygame.event.get():
+            ...

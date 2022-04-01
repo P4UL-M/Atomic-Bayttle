@@ -9,6 +9,7 @@ from src.game_effect.particule import AnimatedParticule
 from src.weapons.physique import *
 from src.weapons.WEAPON import WEAPON
 from src.game_effect.cinematic import *
+import random
 
 GAME = None
 CAMERA = None
@@ -25,7 +26,7 @@ class Partie:
         self.group_object = pygame.sprite.Group()
 
         # the swpan point à remplacer après par le system
-        self.checkpoint = (100, 50)
+        self.checkpoint = Vector2(100, 50)
         pygame.mouse.set_visible(False)
         self.cooldown_tour = 15000
 
@@ -36,12 +37,10 @@ class Partie:
         return [mob for mob in self.mobs.sprites() if type(mob) == Player]
 
     def add_player(self, name, team, lock=False):
-        player = Player(name, self.checkpoint,
+        player = Player(name, self.checkpoint + Vector2(random.randint(0, 1200), 0),
                         tl.TEAM[team]["idle"], team, self.mobs, "sniper")
         player.lock = lock
         self.actual_player = cycle(*[mob.name for mob in self.mobs.sprites()])
-        if "j2" in player.name:
-            player.rect.topleft = (1200, 600)
         self.mobs.add(player)
         self.timeline.actions = []
         self.timeline.add_action(

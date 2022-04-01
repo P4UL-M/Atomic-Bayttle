@@ -9,6 +9,7 @@ class inventory:
     def __init__(self) -> None:
         self.weapon_list = [weapon() for weapon in wp._list_weapon]
         self.current_weapon: wp.WEAPON = choice(self.weapon_list)
+        self.visible = True
 
         self.cooldown = 200
         self.__cooldown = 0
@@ -32,4 +33,5 @@ class inventory:
                 self.current_weapon.clean()
                 self.current_weapon = self.weapon_list[self.index]
         self.current_weapon.update(
-            owner.rect.center, owner.right_direction, owner.y_axis*0.05, owner.lock)
+            owner.rect.center, owner.right_direction, owner.y_axis * 0.05, owner.lock)
+        self.current_weapon.visible = self.visible
