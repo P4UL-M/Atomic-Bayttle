@@ -6,12 +6,13 @@ from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio, cycle, Vector2, sprite_sheet
-from src.game_effect.particule import AnimatedParticule
+from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard
+from src.game_effect.particule import AnimatedParticule, Particule
 from src.weapons.physique import *
 from src.weapons.WEAPON import WEAPON
 
 FONT = pygame.font.SysFont("Arial", 24)
+INFO = pygame.display.Info()
 
 
 class Action:
@@ -21,18 +22,22 @@ class Action:
         self.__start_time = ...
         self.__update = ...
 
-    def update(self, *args, **kwargs):
-        if self.duration is not None:
-            if self.time is ...:
-                self.__start_time = pygame.time.get_ticks()
-            self.time = self.duration - \
-                (pygame.time.get_ticks() - self.__start_time)
-        else:
-            self.time = 1
-        if self.time <= 0:
-            raise EndAction()
-        else:
-            self.__update__(*args, **kwargs)
+    def update(self, *arg, **kargs):
+        def func(*arg, **kargs):
+            if self.duration is not None:
+                if self.time is ...:
+                    self.__start_time = pygame.time.get_ticks()
+                self.time = self.duration - \
+                    (pygame.time.get_ticks() - self.__start_time)
+            else:
+                self.time = 1
+            if self.time <= 0:
+                raise EndAction()
+            else:
+                self.__update__(*arg, **kargs)
+        self.setup(*arg, **kargs)
+        func(*arg, **kargs)
+        self.update = func
 
     def setup(self, *arg, **kargs): ...
 
@@ -44,63 +49,44 @@ class Action:
 class timeline:
     def __init__(self):
         self.actions: list[Action] = []
+        self.async_actions: list[Action] = []
         self.__current_action = None
 
-    def add_action(self, action):
-        self.actions.append(action)
+    def add_action(self, action, asyncron=False):
+        if not asyncron:
+            self.actions.append(action)
+        else:
+            self.async_actions.append(action)
 
     def update(self, *args, **kwargs):
         if self.__current_action is None:
             self.__current_action = self.actions.pop(0)
-            self.__current_action.setup(*args, **kwargs)
         try:
             self.__current_action.update(*args, **kwargs)
         except EndAction:
             self.__current_action.clean(*args, **kwargs)
             self.__current_action = None
+        for action in self.async_actions:
+            try:
+                action.update(*args, **kwargs)
+            except EndAction:
+                action.clean(*args, **kwargs)
+                self.async_actions.remove(action)
+
+    def next(self, GAME, CAMERA, _type=None):
+        if self.__current_action and (not _type or type(self.__current_action) == _type):
+            self.__current_action.clean(GAME, CAMERA)
+            self.__current_action = None
 
 
-class turn(Action):
+class Turn(Action):
     def __init__(self, player, duration=None):
         super().__init__(duration)
         self.player = player
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
-        pygame.event.post(pygame.event.Event(
-            tl.GRAVITY, {"serialized": GAME.serialized}))
-        # event
-        for event in pygame.event.get():
-            match event.type:
-                case pygame.QUIT:
-                    raise SystemExit
-                case tl.ENDTURN:
-                    raise EndAction
-                case tl.DEATH:
-                    GM.timeline.add_action(Death(str(GM.actual_player)))
-                    GM.timeline.add_action(Respawn(str(GM.actual_player)))
-                    raise EndAction
-                case tl.IMPACT:
-                    GM.map.add_damage(
-                        Vector2(event.x, event.y), event.radius)
-                    if event.particle:
-                        GM.group_particle.add(event.particle)
-                    for mob in GM.mobs:
-                        mob.handle(event, GAME, CAMERA)
-                    for obj in GM.group_object:
-                        obj.handle(event, GAME, CAMERA)
-                case _:
-                    for mob in GM.mobs:
-                        mob.handle(event, GAME, CAMERA)
-                    for obj in GM.group_object:
-                        obj.handle(event, GAME, CAMERA)
-
         GM.mobs.update(GAME, CAMERA)
-        GM.group_particle.update(GAME.serialized)
-
-        MixeurAudio.update_musique()
-
-        GM.map.update(GAME.serialized)
 
         # render
         CAMERA._screen_UI.fill((0, 0, 0, 0))
@@ -112,50 +98,63 @@ class turn(Action):
         for player in GM.mobs.sprites():
             if type(player) == Player:
                 if not player.lock:
-                    CAMERA._screen_UI.blit(FONT.render(
-                        str(int(player.life_multiplicator * 100)) + "%", 1, (255, 0, 0)), (50, 50))
+                    CAMERA._screen_UI.blit(FONT.render(str(int(player.life_multiplicator * 100)) + "%", 1, (255, 0, 0)), (50, 50))
 
         CAMERA.cache = False
-        GM.Draw()
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
+        self.player.visible = True
         for player in GM.players:
-            player.lock = not player.name == self.player
+            player.lock = player != self.player
 
     def clean(self, GAME, CAMERA):
         GM = GAME.partie
-        GM.actual_player += 1
-        GM.timeline.add_action(turn(str(GM.actual_player), duration=GM.cooldown_tour))
+        self.player.lock = True
+        GM.cycle_players += 1
+        GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
 
 
 class Respawn(Action):
     def __init__(self, player, duration=5000):
         super().__init__(duration)
-        self.player = player
+        self.player: Player = player
+        self.interract_up = False
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
-        for player in GM.players:
-            if player.name == self.player:
-                player.rect.topleft = GM.checkpoint()
-                player.visible = False
-                player.weapon_manager.visible = False
-                break
+        self.player.rect.topleft = GM.checkpoint()
+        self.player.visible = True
+        self.player.respawn()
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
-        for event in pygame.event.get():
-            ...
-        GM.Draw()
+        self.player.visible = True
 
-    def clean(self, GAME, CAMERA):
-        GM = GAME.partie
-        for player in GM.players:
-            if player.name == self.player:
-                player.visible = True
-                player.weapon_manager.visible = True
-                break
+        self.player.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
+        if self.player.x_axis.value > 0:
+            self.player.right_direction = True
+        elif self.player.x_axis.value < 0:
+            self.player.right_direction = False
+        self.player.rect.x += self.player.x_axis * 1 * GAME.serialized * 10
+        self.player.rect.x = min(max(self.player.rect.x, 100), GM.map.rect.width - self.player.rect.width - 100)
+
+        for mob in GM.mobs.sprites():
+            if mob is not self.player:
+                mob.update(GAME, CAMERA)
+
+        self.player.weapon_manager.update(self.player, GAME, CAMERA)
+        # * CAMERA Update of the player
+        x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
+        _x, _y = (self.player.rect.left, self.player.rect.top)
+        CAMERA.x += (_x - x) * 0.0001
+        CAMERA.y += (_y - y) * 0.0001
+
+        if Keyboard.interact.is_pressed:
+            if self.interract_up:
+                raise EndAction()
+        else:
+            self.interract_up = True
 
 
 class transition(Action):
@@ -164,11 +163,19 @@ class transition(Action):
 
 
 class Death(Action):
-    def __init__(self, player, duration=1500):
+    def __init__(self, player, duration=1000):
         super().__init__(duration)
-        self.player = player
+        self.player: Player = player
+
+    def setup(self, GAME, CAMERA):
+        self.player.visible = False
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
-        for event in pygame.event.get():
-            ...
+        if pygame.time.get_ticks() % 50 == 0:
+            GM.group_particle.add(Particule(40, Vector2(self.player.rect.centerx, self.player.rect.bottom), 2, Vector2(0, -1), 0.5, Color(0, 0, 0), False))
+
+
+class DeathTransition(Action):
+    def __init__(self, duration=1000):
+        super().__init__(duration)

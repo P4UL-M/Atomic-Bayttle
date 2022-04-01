@@ -32,4 +32,5 @@ def mydraw(self, surface):
     return dirty
 
 
-pygame.sprite.Group().draw = mydraw
+pygame.sprite.Group.draw = mydraw
+pygame.sprite.Sprite.visible = True

@@ -34,4 +34,4 @@ class inventory:
                 self.current_weapon = self.weapon_list[self.index]
         self.current_weapon.update(
             owner.rect.center, owner.right_direction, owner.y_axis * 0.05, owner.lock)
-        self.current_weapon.visible = self.visible
+        self.current_weapon.visible = self.visible and owner.visible
