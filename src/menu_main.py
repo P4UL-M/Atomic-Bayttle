@@ -960,8 +960,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.28, 0.1),
-                             parent=keybind_menu.get_sprite("panel"))
+        _sprite.set_position(Vector2(0.28, 0.1),parent=keybind_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(4.0, 4.0))
 
         return _sprite
@@ -2378,6 +2377,20 @@ def setup_manager():
         return _button
 
     @rules_menu.add_sprite
+    def scrollzone():
+        _panel = ScrollableBox(
+            name="panel",
+            size=(int(rules_menu._manager.screen.get_width() * 0.88),
+                  int(rules_menu._manager.screen.get_height() * 0.68)),
+            manager=game,
+            path=PATH / "assets" / "menu" / "keybinds" / "cursor.png"
+        )
+
+        _panel.set_position(Vector2(0.5, 0.45))
+
+        return _panel
+
+    @rules_menu.get_sprite("panel").add_sprite
     def title1():
         _sprite = sprite(
             name="title1",
@@ -2385,30 +2398,67 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.1))
+        _sprite.set_position(Vector2(0.5, 0.08), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
-    @rules_menu.add_sprite
+    @rules_menu.get_sprite("panel").add_sprite
     def text1():
         _text = textZone(
             name="text1",
-            size=Vector2(200, 200),
+            size=Vector2(1600,100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5, 0.3))
-        _text.set_text(
-            "You will play 2 characters that you\nwill chose before the game starts !")
+        _text.set_position(Vector2(0.23, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("You will play 2 characters that you\nwill chose before the game starts !")
         _text.fit_to_size()
         _text.render()
 
-        @_text.Event(None)
-        def update():
-            print(_text.rect, _text.get_size(), _text.FONT)
+        return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title2():
+        _sprite=sprite(
+            name="title2",
+            path=PATH / "assets" / "menu" / "rules" / "opponent.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,0.45), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text2():
+        _text = textZone(
+            name="text2",
+            size=Vector2(1000,300),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5, 0.56), parent=rules_menu.get_sprite("panel"))
+        _text.set_text("Within 15 seconds, you need to aim,\nchoose your weapon and shoot. The\ngame is in turn-by-turn, so it is\nstructured in turns, where you will\nalternately play one of your characters,\nand the player will change each turn")
+        _text.fit_to_size()
+        _text.render()
 
         return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title3():
+        _sprite=sprite(
+            name="title3",
+            path=PATH / "assets" / "menu" / "rules" / "shoot.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,0.84))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
 
     # endregion
