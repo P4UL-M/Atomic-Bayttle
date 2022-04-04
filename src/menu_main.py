@@ -1015,7 +1015,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.left.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1069,7 +1069,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.left.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1123,7 +1123,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.right.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
         return _button
 
     @keybind_menu.get_sprite("panel").add_sprite
@@ -1176,7 +1176,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.right.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1244,7 +1244,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.up.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1298,7 +1298,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.up.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1352,7 +1352,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.down.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1406,7 +1406,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.down.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1474,7 +1474,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.jump.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1528,7 +1528,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.jump.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1596,7 +1596,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.inventory.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1651,7 +1651,7 @@ def setup_manager():
             )
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1719,7 +1719,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.interact.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1773,7 +1773,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.interact.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1841,7 +1841,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.pause.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1895,7 +1895,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.pause.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -1963,7 +1963,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.end_turn.key].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -2017,7 +2017,7 @@ def setup_manager():
             _button.image = _button.spritesheet[Keyboard.end_turn.alias].copy()
             if _button.active:
                 _button.image.fill(
-                    (255, 255, 255, 200 + 55*sin(pygame.time.get_ticks()/200)), special_flags=BLEND_RGBA_MULT)
+                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
 
         return _button
 
@@ -2115,8 +2115,8 @@ def setup_manager():
 
         @explosion.add_on_end
         def func():
-            GAME.start_partie(str(play_menu.get_sprite("plateform1").cycle), str(
-                play_menu.get_sprite("plateform2").cycle))
+            GAME.start_partie(str(play_menu.get_sprite("plateform1").Cycle), str(
+                play_menu.get_sprite("plateform2").Cycle))
 
         manager.add_annimation("explosion", explosion, 1)
 
@@ -2147,12 +2147,12 @@ def setup_manager():
         _button.spritesheet = sprite_sheet(
             PATH / "assets" / "menu" / "play" / "plateform.png", (288, 96))
         _button.spritesheet.config(_button.image.get_size())
-        _button.cycle = cycle("perso_1", "perso_2", "perso_3", "perso_4")
-        _button.image = _button.spritesheet[int(_button.cycle)]
+        _button.Cycle = Cycle("perso_1", "perso_2", "perso_3", "perso_4")
+        _button.image = _button.spritesheet[int(_button.Cycle)]
 
         @_button.Event(None)
         def change_name1():
-            _button.image = _button.spritesheet[int(_button.cycle)]
+            _button.image = _button.spritesheet[int(_button.Cycle)]
 
         return _button
 
@@ -2170,11 +2170,11 @@ def setup_manager():
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def left_change1():
             _sprt = play_menu.get_sprite("plateform1")
-            _sprt.cycle -= 1
-            if int(_sprt.cycle) == int(play_menu.get_sprite("plateform2").cycle):
-                _sprt.cycle -= 1
+            _sprt.Cycle -= 1
+            if int(_sprt.Cycle) == int(play_menu.get_sprite("plateform2").Cycle):
+                _sprt.Cycle -= 1
             _sprt2 = play_menu.get_sprite("perso1")
-            _sprt2.manager.load(str(_sprt.cycle))
+            _sprt2.manager.load(str(_sprt.Cycle))
             _pos = Vector2(*_sprt.rect.center)
             _pos.y -= _sprt2.manager.actual_surface.get_height()
             _sprt2.set_position(_pos, TopLeft=False)
@@ -2195,11 +2195,11 @@ def setup_manager():
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def right_change1():
             _sprt = play_menu.get_sprite("plateform1")
-            _sprt.cycle += 1
-            if int(_sprt.cycle) == int(play_menu.get_sprite("plateform2").cycle):
-                _sprt.cycle += 1
+            _sprt.Cycle += 1
+            if int(_sprt.Cycle) == int(play_menu.get_sprite("plateform2").Cycle):
+                _sprt.Cycle += 1
             _sprt2 = play_menu.get_sprite("perso1")
-            _sprt2.manager.load(str(_sprt.cycle))
+            _sprt2.manager.load(str(_sprt.Cycle))
             _pos = Vector2(*_sprt.rect.center)
             _pos.y -= _sprt2.manager.actual_surface.get_height()
             _sprt2.set_position(_pos, TopLeft=False)
@@ -2251,13 +2251,13 @@ def setup_manager():
         _button.spritesheet = sprite_sheet(
             PATH / "assets" / "menu" / "play" / "plateform.png", (288, 96))
         _button.spritesheet.config(_button.image.get_size())
-        _button.cycle = cycle("perso_1", "perso_2",
+        _button.Cycle = Cycle("perso_1", "perso_2",
                               "perso_3", "perso_4", index=1)
-        _button.image = _button.spritesheet[int(_button.cycle)]
+        _button.image = _button.spritesheet[int(_button.Cycle)]
 
         @_button.Event(None)
         def change_name2():
-            _button.image = _button.spritesheet[int(_button.cycle)]
+            _button.image = _button.spritesheet[int(_button.Cycle)]
 
         return _button
 
@@ -2275,11 +2275,11 @@ def setup_manager():
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def left_change2():
             _sprt = play_menu.get_sprite("plateform2")
-            _sprt.cycle -= 1
-            if int(_sprt.cycle) == int(play_menu.get_sprite("plateform1").cycle):
-                _sprt.cycle -= 1
+            _sprt.Cycle -= 1
+            if int(_sprt.Cycle) == int(play_menu.get_sprite("plateform1").Cycle):
+                _sprt.Cycle -= 1
             _sprt2 = play_menu.get_sprite("perso2")
-            _sprt2.manager.load(str(_sprt.cycle))
+            _sprt2.manager.load(str(_sprt.Cycle))
             _pos = Vector2(*_sprt.rect.center)
             _pos.y -= _sprt2.manager.actual_surface.get_height()
             _sprt2.set_position(_pos, TopLeft=False)
@@ -2300,11 +2300,11 @@ def setup_manager():
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def right_change2():
             _sprt = play_menu.get_sprite("plateform2")
-            _sprt.cycle += 1
-            if int(_sprt.cycle) == int(play_menu.get_sprite("plateform1").cycle):
-                _sprt.cycle += 1
+            _sprt.Cycle += 1
+            if int(_sprt.Cycle) == int(play_menu.get_sprite("plateform1").Cycle):
+                _sprt.Cycle += 1
             _sprt2 = play_menu.get_sprite("perso2")
-            _sprt2.manager.load(str(_sprt.cycle))
+            _sprt2.manager.load(str(_sprt.Cycle))
             _pos = Vector2(*_sprt.rect.center)
             _pos.y -= _sprt2.manager.actual_surface.get_height()
             _sprt2.set_position(_pos, TopLeft=False)

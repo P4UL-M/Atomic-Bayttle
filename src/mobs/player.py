@@ -61,8 +61,8 @@ class Player(MOB):
         emote = sprite_sheet(PATH / "assets" / "perso" /
                              team / "emote.png", TEAM[team]["emote"])
         self.manager.add_annimation(
-            "idle", idle, 10*TEAM[team]["speed_factor"])
-        self.manager.add_annimation("run", run, 10*TEAM[team]["speed_factor"])
+            "idle", idle, 10 * TEAM[team]["speed_factor"])
+        self.manager.add_annimation("run", run, 10 * TEAM[team]["speed_factor"])
         self.manager.add_annimation("jump", jump, 10)
         self.manager.add_annimation("fall", fall, 10)
         self.manager.add_annimation("ground", ground, 15)
@@ -72,11 +72,9 @@ class Player(MOB):
         self.manager.add_link("emote", "idle")
         self.manager.load("idle")
 
-    def respawn(self, y):
+    def respawn(self):
         self.inertia.y = 0
         self.inertia.x = 0
-        self.rect.y = y
-        self.rect.x = 200
         self.life_multiplicator = 0
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
@@ -116,13 +114,11 @@ class Player(MOB):
                     self.manager.load("jump")
                     for i in range(5):
                         GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
-                        )//2, self.rect.bottom), self.image.get_width()//2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
+                        ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
             if Keyboard.interact.is_pressed:
                 ...
             if Keyboard.inventory.is_pressed:
                 ...
-            if Keyboard.pause.is_pressed:
-                raise EndPartie
 
             if self.x_axis.value > 0:  # tempo variable so keep in cache until real changement of direction
                 self.right_direction = True
@@ -133,18 +129,18 @@ class Player(MOB):
             if self.grounded:
                 self.double_jump = True
                 if self.actual_speed > 1 and pygame.time.get_ticks() % 7 == 0:
-                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width()//2, self.rect.bottom),
-                                          self.image.get_width()//2, Vector2(-self.x_axis.value*2, 0), 0.25*self.actual_speed, pygame.Color(20, 20, 0)))
+                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width() // 2, self.rect.bottom),
+                                          self.image.get_width() // 2, Vector2(-self.x_axis.value * 2, 0), 0.25 * self.actual_speed, pygame.Color(20, 20, 0)))
 
             # * CAMERA Update of the player
-            x, y = CAMERA.to_virtual(INFO.current_w/2, INFO.current_h/2)
+            x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
             _x, _y = (self.rect.left, self.rect.top)
-            CAMERA.x += (_x - x)*0.0001
-            CAMERA.y += (_y - y)*0.0001
+            CAMERA.x += (_x - x) * 0.0001
+            CAMERA.y += (_y - y) * 0.0001
             # * Effect of dezoom relatif to speed
-            zoom_target = 2.5*(1/(self.actual_speed*0.1 + 1)
-                               )*self.weapon_manager.zoom_factor
-            CAMERA.zoom += (zoom_target - CAMERA.zoom)*0.01
+            zoom_target = 2.5 * (1 / (self.actual_speed * 0.1 + 1)
+                                 ) * self.weapon_manager.zoom_factor
+            CAMERA.zoom += (zoom_target - CAMERA.zoom) * 0.01
         else:
             self.x_axis.update()
             self.y_axis.update()
@@ -158,7 +154,7 @@ class Player(MOB):
                     self.manager.load("ground")
                 else:
                     self.manager.load("run")
-                    self.manager.annim_speed_factor = 1 + self.actual_speed*0.05
+                    self.manager.annim_speed_factor = 1 + self.actual_speed * 0.05
             elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
                 if self.manager._loaded_name == "fall":
                     self.manager.load("ground")
@@ -169,12 +165,10 @@ class Player(MOB):
         if self.rect.bottom > GM.map.water_level:
             MixeurAudio.play_effect(
                 PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
-            ev = pygame.event.Event(
-                DEATH, {"name": self.name, "pos": self.rect.bottomleft})
+            ev = pygame.event.Event(DEATH, {"player": self})
             pygame.event.post(ev)
         elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
-            ev = pygame.event.Event(
-                DEATH, {"name": self.name, "pos": self.rect.bottomleft})
+            ev = pygame.event.Event(DEATH, {"player": self})
             pygame.event.post(ev)
         # * inertia and still update if inactive
         super().update(GAME, CAMERA)

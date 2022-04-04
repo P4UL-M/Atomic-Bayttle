@@ -33,7 +33,7 @@ class Axis:
     def update(self, x_press: bool = False, y_press: bool = False):
         if not x_press and not y_press:
             self.value = self.bound(
-                self.value - (self.increment)*self.sign(self.value)*1.25, (0, self.sign(self.value)))
+                self.value - (self.increment) * self.sign(self.value) * 1.25, (0, self.sign(self.value)))
         elif x_press and y_press:
             return
         else:
@@ -44,12 +44,12 @@ class Axis:
         self.value = self.bound(self.value, (0, self.sign(self.value)))
 
     def __mul__(self, other):
-        return self.get()*other
+        return self.get() * other
 
     def get(self):
         if self.value == 0 or abs(self.value) < self.deadzone[0]:
             return 0
-        return self.value if abs(self.value) < self.deadzone[1] else self.deadzone[1]*self.sign(self.value)
+        return self.value if abs(self.value) < self.deadzone[1] else self.deadzone[1] * self.sign(self.value)
 
     def set(self, value: int):
         self.value = value
@@ -71,15 +71,15 @@ class sprite_sheet(pygame.Surface):
 
         self.tile_size = size
         self.render_size = size
-        self.x_nb = (self.get_width()//self.tile_size[0])
-        self.y_nb = (self.get_height()//self.tile_size[1])
+        self.x_nb = (self.get_width() // self.tile_size[0])
+        self.y_nb = (self.get_height() // self.tile_size[1])
         self.images = list()
-        for i in range(self.x_nb*self.y_nb):
+        for i in range(self.x_nb * self.y_nb):
             self.images.append(self.get(i))
 
     def get(self, key):
-        x = (key % self.x_nb)*self.tile_size[0]
-        y = ((key//self.x_nb) % self.y_nb)*self.tile_size[1]
+        x = (key % self.x_nb) * self.tile_size[0]
+        y = ((key // self.x_nb) % self.y_nb) * self.tile_size[1]
 
         _surf = self.subsurface(pygame.Rect(x, y, *self.tile_size)).copy()
 
@@ -94,14 +94,14 @@ class sprite_sheet(pygame.Surface):
         elif type(key) != int:
             raise AttributeError(
                 "You must pass an integer or define a dictionary")
-        if key % self.x_nb*self.y_nb == 0 and key != 0:
+        if key % self.x_nb * self.y_nb == 0 and key != 0:
             self.__on_end()
-        return self.images[key % self.x_nb*self.y_nb]
+        return self.images[key % self.x_nb * self.y_nb]
 
     def config(self, size):
         self.render_size = size
         self.images = list()
-        for i in range(self.x_nb*self.y_nb):
+        for i in range(self.x_nb * self.y_nb):
             self.images.append(self.get(i))
 
     def __iter__(self):
@@ -127,9 +127,9 @@ class animation_Manager(object):
 
     @property
     def surface(self):
-        self.frame += self.incrementor*self.annim_speed_factor
-        if self.__loaded.x_nb*self.__loaded.y_nb < self.frame:
-            self.frame %= self.__loaded.x_nb*self.__loaded.y_nb
+        self.frame += self.incrementor * self.annim_speed_factor
+        if self.__loaded.x_nb * self.__loaded.y_nb < self.frame:
+            self.frame %= self.__loaded.x_nb * self.__loaded.y_nb
             if self._loaded_name in self.links.keys():
                 self.load(self.links[self._loaded_name])
         return self.__loaded[int(self.frame)].copy()
@@ -139,7 +139,7 @@ class animation_Manager(object):
         return self.__loaded[int(self.frame)]
 
     def add_annimation(self, name, spritesheet: sprite_sheet, _frame: int):
-        _increment = 1/_frame
+        _increment = 1 / _frame
         self.spritesheets[name or f"animation-{pygame.time.get_ticks()}"] = [
             spritesheet, _increment]
 
@@ -157,7 +157,7 @@ class animation_Manager(object):
         self.links[origin] = to
 
 
-class cycle:
+class Cycle:
     def __init__(self, *args: str, index=0) -> None:
         self.list = [*args]
         self.__i = index
