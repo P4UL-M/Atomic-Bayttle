@@ -67,12 +67,17 @@ class Partie:
                 case tl.ENDTURN:
                     self.timeline.next(GAME, CAMERA, _type=Turn)
                 case tl.DEATH:
-                    if event.player.visible:
+                    if event.player.life > 0:
                         self.map.water_target = self.map.rect.height - 30
                         self.timeline.add_action(Death(event.player), asyncron=True)
                         self.timeline.add_action(Respawn(event.player))
                         if event.player == self.actual_player:
                             self.timeline.next(GAME, CAMERA, _type=Turn)
+                    else:
+                        if event.player == self.actual_player:
+                            self.timeline.next(GAME, CAMERA, _type=Turn)
+                        event.player.kill()
+                        self.cycle_players.delete(name=event.player.name)
                 case tl.IMPACT:
                     self.map.add_damage(
                         Vector2(event.x, event.y), event.radius)

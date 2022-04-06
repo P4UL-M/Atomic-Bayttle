@@ -22,6 +22,7 @@ class Player(MOB):
         # initialisation de la classe mere permettant de faire de cette classe un sprite
         super().__init__(pos, size, group)
         self.name = name
+        self.life = 2
 
         self.manager: animation_Manager = animation_Manager()
         self.right_direction = True
@@ -76,6 +77,7 @@ class Player(MOB):
         self.inertia.y = 0
         self.inertia.x = 0
         self.life_multiplicator = 0
+        self.phatom = True
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -141,7 +143,7 @@ class Player(MOB):
             zoom_target = 2.5 * (1 / (self.actual_speed * 0.1 + 1)
                                  ) * self.weapon_manager.zoom_factor
             CAMERA.zoom += (zoom_target - CAMERA.zoom) * 0.01
-        else:
+        elif not self.phatom:
             self.x_axis.update()
             self.y_axis.update()
 
@@ -163,10 +165,10 @@ class Player(MOB):
                     self.manager.annim_speed_factor = 1
         # * death
         if self.rect.bottom > GM.map.water_level:
-            MixeurAudio.play_effect(
-                PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
-            ev = pygame.event.Event(DEATH, {"player": self})
-            pygame.event.post(ev)
+            if self.visible:
+                MixeurAudio.play_effect(tl.PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
+                ev = pygame.event.Event(DEATH, {"player": self})
+                pygame.event.post(ev)
         elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
             ev = pygame.event.Event(DEATH, {"player": self})
             pygame.event.post(ev)

@@ -52,6 +52,20 @@ class timeline:
         self.async_actions: list[Action] = []
         self.__current_action = None
 
+    @property
+    def next_action_type(self):
+        if len(self.actions):
+            return type(self.actions[0])
+        else:
+            return None
+
+    @property
+    def current_action_type(self):
+        if self.__current_action:
+            return type(self.__current_action)
+        else:
+            return None
+
     def add_action(self, action, asyncron=False):
         if not asyncron:
             self.actions.append(action)
@@ -105,12 +119,15 @@ class Turn(Action):
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.visible = True
+        self.player.weapon_manager.visible = True
+        self.player.weapon_manager.reload()
         for player in GM.players:
             player.lock = player != self.player
 
     def clean(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.lock = True
+        self.player.weapon_manager.visible = False
         GM.cycle_players += 1
         GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
 
@@ -140,10 +157,9 @@ class Respawn(Action):
         self.player.rect.x = min(max(self.player.rect.x, 100), GM.map.rect.width - self.player.rect.width - 100)
 
         for mob in GM.mobs.sprites():
-            if mob is not self.player:
-                mob.update(GAME, CAMERA)
+            mob.update(GAME, CAMERA)
 
-        self.player.weapon_manager.update(self.player, GAME, CAMERA)
+        #self.player.weapon_manager.update(self.player, GAME, CAMERA)
         # * CAMERA Update of the player
         x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
         _x, _y = (self.player.rect.left, self.player.rect.top)
@@ -155,6 +171,11 @@ class Respawn(Action):
                 raise EndAction()
         else:
             self.interract_up = True
+
+    def clean(self, GAME, CAMERA):
+        GM = GAME.partie
+        self.player.phatom = False
+        self.player.life -= 1
 
 
 class transition(Action):

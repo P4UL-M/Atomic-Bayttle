@@ -1,6 +1,7 @@
 import pygame
 import json
 from pygame_easy_menu import Vector2
+from typing import overload
 
 pygame.init()
 
@@ -177,6 +178,23 @@ class Cycle:
         self.__i -= other
         self.__i %= len(self.list)
         return self
+
+    @overload
+    def delete(self, name: str): ...
+    @overload
+    def delete(self, index: int): ...
+
+    def delete(self, index: int = None, name: str = None):
+        if index is not None:
+            if self.__i == index:
+                self.__i += 1
+            del self.list[index]
+        elif name is not None:
+            if self.__i == self.list.index(name):
+                self.__i += 1
+            del self.list[self.list.index(name)]
+        else:
+            raise AttributeError
 
 
 class Key:

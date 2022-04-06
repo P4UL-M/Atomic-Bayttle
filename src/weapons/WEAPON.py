@@ -142,6 +142,7 @@ class WEAPON(pygame.sprite.Sprite):
             topleft=(self.real_rect.x - self.pivot[0], self.real_rect.y - self.pivot[1]))
         self.l = self.real_rect.width
         self.__cooldown = 0
+        self.magazine = 0
         self.angle = 0
 
         self.lock = False
@@ -152,20 +153,24 @@ class WEAPON(pygame.sprite.Sprite):
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
                     self.__cooldown = pygame.time.get_ticks()
-                    self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle,
-                              force=self.v0 * event.value, speed=event.value * 0.3 + 0.9)
+                    self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle, force=self.v0 * event.value, speed=event.value * 0.3 + 0.9)
                     self.lock = False
 
     def fire(self, right_direction, group, particle_group, force=None, speed: int = 1):
         angle = self.angle
-        x = self.l * 0.4 * \
-            cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+        x = self.l * 0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
-        Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)),
-               self.rayon, self.v0, angle, right_direction, group)
+        Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, right_direction, group)
+        self.magazine -= 1
+        if self.magazine <= 0:
+            ev = pygame.event.Event(tl.ENDTURN)
+            pygame.event.post(ev)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+
+    def reload(self):
+        ...
 
     def update(self, pos: tuple, right: bool, _dangle: int, lock=False):
         self.angle += _dangle
@@ -175,27 +180,21 @@ class WEAPON(pygame.sprite.Sprite):
             self.angle = -pi / 2
         self.real_rect.topleft = pos
 
-        offset = (int(self.real_image.get_width() *
-                      self.pivot[0]), int(self.real_image.get_height() * self.pivot[1]))
+        offset = (int(self.real_image.get_width() * self.pivot[0]), int(self.real_image.get_height() * self.pivot[1]))
 
         if not right:
             image = pygame.transform.flip(self.real_image, True, False)
-            offset = (int(image.get_width() * (1 -
-                                               self.pivot[0])), int(image.get_height() * self.pivot[1]))
+            offset = (int(image.get_width() * (1 - self.pivot[0])), int(image.get_height() * self.pivot[1]))
             angle = self.angle * -1
         else:
             image = self.real_image.copy()
             angle = self.angle
 
-        image_rect = image.get_rect(
-            topleft=(self.real_rect.left - offset[0], self.real_rect.top - offset[1]))
-        offset_center_to_pivot = pygame.math.Vector2(
-            self.real_rect.topleft) - image_rect.center
+        image_rect = image.get_rect(topleft=(self.real_rect.left - offset[0], self.real_rect.top - offset[1]))
+        offset_center_to_pivot = pygame.math.Vector2(self.real_rect.topleft) - image_rect.center
         rotated_offset = offset_center_to_pivot.rotate(-angle * 180 / pi)
-        rotated_image_center = (
-            self.real_rect.left - rotated_offset.x, self.real_rect.top - rotated_offset.y)
-        self.image = pygame.transform.rotate(
-            image, angle * 180 / pi).convert_alpha()
+        rotated_image_center = (self.real_rect.left - rotated_offset.x, self.real_rect.top - rotated_offset.y)
+        self.image = pygame.transform.rotate(image, angle * 180 / pi).convert_alpha()
         self.rect = self.image.get_rect(center=rotated_image_center)
 
     def clean(self):
@@ -209,7 +208,11 @@ class Sniper(WEAPON):
         self.v0 = 100
         self.rayon = 30
         self.cooldown = 100
+        self.magazine_max = 4
         super().__init__(PATH / "assets" / "weapons" / "sniper.png")
+
+    def reload(self):
+        self.magazine = self.magazine_max
 
 
 @ add_weapon
@@ -222,6 +225,7 @@ class Launcher(WEAPON):
         self.__cooldown = 0
         super().__init__(PATH / "assets" / "weapons" / "launcher.png")
         self.pivot = (1 / 2, 1 / 2)
+        self.magazine_max = 1
 
         self.chargingsound = None
 
@@ -230,11 +234,10 @@ class Launcher(WEAPON):
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
-                    if Keyboard.interact.is_pressed and event.value <= 2:
+                    if Keyboard.interact.is_pressed and event.value <= 2 and not owner.lock:
                         if owner.weapon_manager.zoom_factor > 0.5:
                             owner.weapon_manager.zoom_factor -= 0.2
-                        pygame.event.post(pygame.event.Event(
-                            tl.CHARGING, {"weapon": self, "value": event.value + 0.016}))
+                        pygame.event.post(pygame.event.Event(tl.CHARGING, {"weapon": self, "value": event.value + 0.016}))
                         self.lock = True
                         if not self.chargingsound:
                             self.chargingsound = MixeurAudio.play_until_Stop(
@@ -242,25 +245,27 @@ class Launcher(WEAPON):
                     else:
                         owner.weapon_manager.zoom_factor = 1
                         self.__cooldown = pygame.time.get_ticks()
-                        self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle,
-                                  force=self.v0 * event.value, speed=event.value * 0.3 + 0.9)
+                        self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle, force=self.v0 * event.value, speed=event.value * 0.3 + 0.9)
                         self.lock = False
+                        self.magazine -= 1
+                        if self.magazine <= 0:
+                            pygame.event.post(pygame.event.Event(tl.ENDTURN, {"player": owner}))
                         if self.chargingsound:
                             self.chargingsound()
                             self.chargingsound = None
 
     def fire(self, right_direction, group, particle_group, force=None, speed: int = 1):
         angle = self.angle
-        x = self.l * 0.4 * \
-            cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+        x = self.l * 0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
-        Grenade((x, y), (14, 7), self.bullet, pygame.Surface(
-            (5, 3)), self.rayon, force or self.v0, speed, angle, right_direction, group)
-        MixeurAudio.play_effect(
-            PATH / "assets" / "sound" / "rocket_launch.wav", 0.5)
+        Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, force or self.v0, speed, angle, right_direction, group)
+        MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 0.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+
+    def reload(self):
+        self.magazine = self.magazine_max
 
 
 @ add_weapon
@@ -276,6 +281,7 @@ class Chainsaw(WEAPON):
         self.idle_sound = None
         super().__init__(PATH / "assets" / "weapons" / "chainsaw.png")
         self.pivot = (1 / 5, 1 / 2)
+        self.magazine_max = 15
 
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
         """methode appele a chaque event"""
@@ -283,23 +289,22 @@ class Chainsaw(WEAPON):
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
                     self.__cooldown = pygame.time.get_ticks()
-                    self.fire(owner.right_direction, GAME.partie.mobs,
-                              GAME.partie.group_particle)
+                    self.fire(owner.right_direction, GAME.partie.mobs, GAME.partie.group_particle)
+                    self.magazine -= 1
+                    if self.magazine <= 0:
+                        pygame.event.post(pygame.event.Event(tl.ENDTURN, {"player": owner}))
                     self.lock = False
 
     def fire(self, right_direction, group, particle_group):
         angle = self.angle
-        x = self.l * 0.4 * \
-            cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
+        x = self.l * 0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
-        pygame.event.post(pygame.event.Event(IMPACT, {
-                          "x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": None}))
+        pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": None}))
         if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
             self.__sound_cooldown = pygame.time.get_ticks()
             if self.idle_sound:
                 self.idle_sound()
-            self.idle_sound = MixeurAudio.play_effect(
-                PATH / "assets" / "sound" / "chainsaw_hit.wav", 0.5)
+            self.idle_sound = MixeurAudio.play_effect(PATH / "assets" / "sound" / "chainsaw_hit.wav", 0.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
@@ -308,8 +313,7 @@ class Chainsaw(WEAPON):
         super().update(pos, right, _dangle)
         if not lock:
             if not self.idle_sound:
-                self.idle_sound = MixeurAudio.play_until_Stop(
-                    PATH / "assets" / "sound" / "chainsaw_idle.wav", 1.2)
+                self.idle_sound = MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "chainsaw_idle.wav", 1.2)
         else:
             if self.idle_sound:
                 self.idle_sound()
@@ -318,3 +322,6 @@ class Chainsaw(WEAPON):
     def clean(self):
         self.idle_sound()
         self.idle_sound = None
+
+    def reload(self):
+        self.magazine = self.magazine_max

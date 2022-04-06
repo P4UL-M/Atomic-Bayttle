@@ -34,6 +34,7 @@ class MOB(pygame.sprite.Sprite):
     def __init__(self, pos, size, group):
         super().__init__(group)
         self.visible = True
+        self.phatom = False
 
         self.rect = pygame.Rect(*pos, *size)
         self.inertia = Vector2(0, 0)
@@ -71,8 +72,7 @@ class MOB(pygame.sprite.Sprite):
         _d = Vector2(_dx, _dy)
         self.actual_speed = _d.lenght
 
-        _movements = [self.rect.width // 4 for i in range(int(self.actual_speed / (
-            self.rect.width // 4)))] + [self.actual_speed % (self.rect.width // 4)]
+        _movements = [self.rect.width // 4 for i in range(int(self.actual_speed / (self.rect.width // 4)))] + [self.actual_speed % (self.rect.width // 4)]
 
         j = 0
         for i in _movements:
@@ -81,20 +81,17 @@ class MOB(pygame.sprite.Sprite):
                 __d = self.collide_reaction(__d, i, GM.map, GAME.serialized)
                 on_ground = self.grounded
                 for player in GM.players:
-                    if player is not self:
-                        __d = self.collide_reaction(
-                            __d, i, player, GAME.serialized)
+                    if player is not self and not player.phatom and "bullet" not in player.name:
+                        __d = self.collide_reaction(__d, i, player, GAME.serialized)
                 self.grounded = on_ground or self.grounded
                 self.rect.move_ip(*__d)
             else:
-                __d = self.collide_reaction(
-                    Vector2(0, 0), 0, GM.map, GAME.serialized)
+                __d = self.collide_reaction(Vector2(0, 0), 0, GM.map, GAME.serialized)
                 on_ground = self.grounded
                 for player in GM.players:
-                    if player is not self and "bullet" not in player.name:
-                        __d = self.collide_reaction(
-                            __d, i, player, GAME.serialized)
-                self.grounded = on_ground and not self.grounded
+                    if player is not self and not player.phatom and "bullet" not in player.name:
+                        __d = self.collide_reaction(__d, i, player, GAME.serialized)
+                self.grounded = on_ground or self.grounded
                 self.rect.move_ip(*__d)
 
     def collide_reaction(self, __d: Vector2, i: int, target, serialized):
@@ -178,4 +175,5 @@ class MOB(pygame.sprite.Sprite):
                 ...
 
     def update(self, GAME, CAMERA):
-        return self.move(GAME, CAMERA)
+        if not self.phatom:
+            self.move(GAME, CAMERA)
