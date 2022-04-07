@@ -178,6 +178,7 @@ class Player(MOB):
             pygame.event.post(ev)
             self.visible = False
         # * inertia and still update if inactive
-        super().update(GAME, CAMERA)
+        if self.visible:
+            super().update(GAME, CAMERA)
         # after move so in final
         self.weapon_manager.update(self, GAME, CAMERA)

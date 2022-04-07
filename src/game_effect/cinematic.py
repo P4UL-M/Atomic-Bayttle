@@ -229,7 +229,7 @@ class TurnTransition(Action):
         # * Effect of dezoom relatif to speed
         CAMERA.zoom += (1 - CAMERA.zoom) * 0.05
 
-        if Keyboard.end_turn.is_pressed or (check and self.check > 5):
+        if Keyboard.end_turn.is_pressed or (check and self.check > 1):
             raise EndAction()
         else:
             self.state = _state
