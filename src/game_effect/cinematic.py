@@ -19,18 +19,19 @@ class Action:
     def __init__(self, duration=None):
         self.duration = duration
         self.time = ...
-        self.__start_time = ...
+        self._start_time = ...
         self.__update = ...
 
     def update(self, *arg, **kargs):
         def func(*arg, **kargs):
+            # time calculation
             if self.duration is not None:
                 if self.time is ...:
-                    self.__start_time = pygame.time.get_ticks()
-                self.time = self.duration - \
-                    (pygame.time.get_ticks() - self.__start_time)
+                    self._start_time = pygame.time.get_ticks()
+                self.time = self.duration - (pygame.time.get_ticks() - self._start_time)
             else:
                 self.time = 1
+            # update
             if self.time <= 0:
                 raise EndAction()
             else:
@@ -102,6 +103,9 @@ class Turn(Action):
         GM = GAME.partie
         GM.mobs.update(GAME, CAMERA)
 
+        if self.player.input_lock:
+            self._start_time = pygame.time.get_ticks()
+
         # render
         CAMERA._screen_UI.fill((0, 0, 0, 0))
         timer = self.time // 1000 + 1
@@ -119,6 +123,7 @@ class Turn(Action):
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.visible = True
+        self.player.input_lock = True
         self.player.weapon_manager.visible = True
         self.player.weapon_manager.reload()
         for player in GM.players:
@@ -142,11 +147,11 @@ class Respawn(Action):
         GM = GAME.partie
         self.player.rect.topleft = GM.checkpoint()
         self.player.visible = True
+        self.player.phatom = True
         self.player.respawn()
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
-        self.player.visible = True
 
         self.player.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
         if self.player.x_axis.value > 0:
@@ -187,9 +192,6 @@ class Death(Action):
     def __init__(self, player, duration=1000):
         super().__init__(duration)
         self.player: Player = player
-
-    def setup(self, GAME, CAMERA):
-        self.player.visible = False
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie

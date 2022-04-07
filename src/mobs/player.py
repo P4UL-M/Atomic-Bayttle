@@ -34,6 +34,7 @@ class Player(MOB):
 
         # for action
         self.lock = False
+        self.input_lock = True
         self.weapon_manager = inventory()  # mettre travail de Joseph ici
 
         self.load_team(team)
@@ -77,7 +78,6 @@ class Player(MOB):
         self.inertia.y = 0
         self.inertia.x = 0
         self.life_multiplicator = 0
-        self.phatom = True
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
@@ -87,14 +87,17 @@ class Player(MOB):
             case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
                 pygame.event.post(pygame.event.Event(ENDTURN))
             case tl.IMPACT:
-                _dist = Vector2(self.rect.centerx - event.x,
-                                self.rect.centery - event.y)
-                if _dist.lenght < event.radius + self.rect.width and self.lock:
+                _dist = Vector2(self.rect.centerx - event.x, self.rect.centery - event.y)
+                if _dist.lenght < event.radius + self.rect.width:
+                    if not event.friendly_fire and not self.lock:
+                        return
                     _reaction = _dist
                     self.inertia += _reaction * self.life_multiplicator * event.multiplicator_repulsion
                     self.life_multiplicator += event.damage / 100
-                    MixeurAudio.play_effect(
-                        PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
+            case pygame.KEYDOWN:
+                if not self.lock:
+                    self.input_lock = False
         super().handle(event)
         self.weapon_manager.handle(event, self, GAME, CAMERA)
 
@@ -169,9 +172,11 @@ class Player(MOB):
                 MixeurAudio.play_effect(tl.PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
                 ev = pygame.event.Event(DEATH, {"player": self})
                 pygame.event.post(ev)
+                self.visible = False
         elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
             ev = pygame.event.Event(DEATH, {"player": self})
             pygame.event.post(ev)
+            self.visible = False
         # * inertia and still update if inactive
         super().update(GAME, CAMERA)
         # after move so in final

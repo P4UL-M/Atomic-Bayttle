@@ -21,7 +21,7 @@ class inventory:
         self.current_weapon.handle(event, owner, GAME, CAMERA)
 
     def update(self, owner, GAME, CAMERA):
-        if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock:
+        if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock and not owner.input_lock:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
         if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock:
             if self.__cooldown + self.cooldown < pygame.time.get_ticks():

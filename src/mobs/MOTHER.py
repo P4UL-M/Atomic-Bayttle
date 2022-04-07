@@ -74,24 +74,22 @@ class MOB(pygame.sprite.Sprite):
 
         _movements = [self.rect.width // 4 for i in range(int(self.actual_speed / (self.rect.width // 4)))] + [self.actual_speed % (self.rect.width // 4)]
 
+        # generation of the mask
+        _sprite = pygame.sprite.Sprite()
+        _sprite.rect = GM.map.image.get_rect(topleft=(0, 0))
+        _sprite.mask = GM.map.mask.copy()
+        for player in GM.players:
+            if not player.phatom and player is not self:
+                _sprite.mask.draw(player.mask, player.rect.topleft)
+
         j = 0
         for i in _movements:
             if _d.arg != None:  # arg is none we have no movement
                 __d = _d.unity * i
-                __d = self.collide_reaction(__d, i, GM.map, GAME.serialized)
-                on_ground = self.grounded
-                for player in GM.players:
-                    if player is not self and not player.phatom and "bullet" not in player.name:
-                        __d = self.collide_reaction(__d, i, player, GAME.serialized)
-                self.grounded = on_ground or self.grounded
+                __d = self.collide_reaction(__d, i, _sprite, GAME.serialized)
                 self.rect.move_ip(*__d)
             else:
-                __d = self.collide_reaction(Vector2(0, 0), 0, GM.map, GAME.serialized)
-                on_ground = self.grounded
-                for player in GM.players:
-                    if player is not self and not player.phatom and "bullet" not in player.name:
-                        __d = self.collide_reaction(__d, i, player, GAME.serialized)
-                self.grounded = on_ground or self.grounded
+                __d = self.collide_reaction(Vector2(0, 0), 0, _sprite, GAME.serialized)
                 self.rect.move_ip(*__d)
 
     def collide_reaction(self, __d: Vector2, i: int, target, serialized):

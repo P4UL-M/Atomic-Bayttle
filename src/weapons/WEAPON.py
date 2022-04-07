@@ -31,14 +31,14 @@ class Bullet(MOB):
         self.t0 = pygame.time.get_ticks()
         self.radius = radius
         self.name = f"bullet_{pygame.time.get_ticks()}"
-        _d = Vector2(self.trajectoire.get_x(1) - self.trajectoire.get_x(0),
-                     self.trajectoire.get_y(1) - self.trajectoire.get_y(0))
+        _d = Vector2(self.trajectoire.get_x(1) - self.trajectoire.get_x(0), self.trajectoire.get_y(1) - self.trajectoire.get_y(0))
         self.image, self.rect = self.rot_center(_d.arg)
 
         self.speed = 1
         self.path_sound = PATH / "assets" / "sound" / "kill_sound.wav"
         self.damage = 20
         self.multiplicator_repulsion = 0.8
+        self.friendly_fire = False
 
         self.particle_sprite = sprite_sheet(
             PATH / "assets" / "explosion" / "explosion-6.png", (48, 48))
@@ -70,14 +70,14 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": AnimatedParticule(
-                            self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False)}))
+                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                        GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                         self.kill()
                         MixeurAudio.play_effect(self.path_sound)
                         return
                 if self.mask.collide(self.real_rect.topleft, GM.map):
-                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": AnimatedParticule(
-                        self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False)}))
+                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                    GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                     self.kill()
                     MixeurAudio.play_effect(self.path_sound)
                     return
@@ -115,6 +115,7 @@ class Grenade(Bullet):
         self.path_sound = PATH / "assets" / "sound" / "grenade_sound.wav"
         self.multiplicator_repulsion = 1.2
         self.damage = 40
+        self.friendly_fire = True
 
         self.particle_sprite = sprite_sheet(
             PATH / "assets" / "explosion" / "explosion-1.png", (32, 32))
@@ -125,8 +126,7 @@ class Grenade(Bullet):
     def update(self, GAME, CAMERA):
         _d = super().update(GAME, CAMERA)
         _d = (_d if _d else Vector2(1, 1)) * -1
-        GAME.partie.group_particle.add(Particule(4, Vector2(
-            *self.real_rect.center), 1, _d, 2, pygame.Color(0, 0, 0), gravity=True, size=(2, 2)))
+        GAME.partie.group_particle.add(Particule(4, Vector2(*self.real_rect.center), 1, _d, 2, pygame.Color(0, 0, 0), gravity=True, size=(2, 2)))
         self.image, self.rect = self.rot_center(pygame.time.get_ticks() / 100)
 
 
@@ -299,7 +299,7 @@ class Chainsaw(WEAPON):
         angle = self.angle
         x = self.l * 0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
-        pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "particle": None}))
+        pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": False}))
         if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
             self.__sound_cooldown = pygame.time.get_ticks()
             if self.idle_sound:

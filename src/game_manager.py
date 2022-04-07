@@ -74,15 +74,13 @@ class Partie:
                         if event.player == self.actual_player:
                             self.timeline.next(GAME, CAMERA, _type=Turn)
                     else:
+                        print("wtttffff")
                         if event.player == self.actual_player:
                             self.timeline.next(GAME, CAMERA, _type=Turn)
                         event.player.kill()
                         self.cycle_players.delete(name=event.player.name)
                 case tl.IMPACT:
-                    self.map.add_damage(
-                        Vector2(event.x, event.y), event.radius)
-                    if event.particle:
-                        self.group_particle.add(event.particle)
+                    self.map.add_damage(Vector2(event.x, event.y), event.radius)
                     for mob in self.mobs:
                         mob.handle(event, GAME, CAMERA)
                     for obj in self.group_object:
