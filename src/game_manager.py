@@ -74,7 +74,6 @@ class Partie:
                         if event.player == self.actual_player:
                             self.timeline.next(GAME, CAMERA, _type=Turn)
                     else:
-                        print("wtttffff")
                         if event.player == self.actual_player:
                             self.timeline.next(GAME, CAMERA, _type=Turn)
                         event.player.kill()

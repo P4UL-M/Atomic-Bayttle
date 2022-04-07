@@ -132,8 +132,8 @@ class Turn(Action):
     def clean(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.lock = True
-        self.player.weapon_manager.visible = False
         GM.cycle_players += 1
+        GM.timeline.add_action(TurnTransition(self.player, duration=None))
         GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
 
 
@@ -199,6 +199,45 @@ class Death(Action):
             GM.group_particle.add(Particule(40, Vector2(self.player.rect.centerx, self.player.rect.bottom), 2, Vector2(0, -1), 0.5, Color(0, 0, 0), False))
 
 
-class DeathTransition(Action):
-    def __init__(self, duration=1000):
+class TurnTransition(Action):
+    def __init__(self, player, duration=1000):
         super().__init__(duration)
+        self.player: Player = player
+        self.state = {}
+        self.check = 0
+
+    def __update__(self, GAME, CAMERA):
+        GM = GAME.partie
+        _state = {}
+        for mob in GM.mobs:
+            _state[mob.name] = mob.rect.topleft
+
+        check = len(self.state) != 0
+        for key, value in _state.items():
+            if key not in self.state.keys():
+                check = False
+                break
+            elif value != self.state[key]:
+                check = False
+                break
+        check = len(GM.timeline.async_actions) == 0 and check
+
+        x, y = CAMERA.x, CAMERA.y
+        _x, _y = (0, 0)
+        CAMERA.x += (_x - x) * 0.0005
+        CAMERA.y += (_y - y) * 0.0005
+        # * Effect of dezoom relatif to speed
+        CAMERA.zoom += (1 - CAMERA.zoom) * 0.05
+
+        if Keyboard.end_turn.is_pressed or (check and self.check > 5):
+            raise EndAction()
+        else:
+            self.state = _state
+            GM.mobs.update(GAME, CAMERA)
+            if check:
+                self.check += 1
+            else:
+                self.check = 0
+
+    def clean(self, *arg, **kargs):
+        self.player.weapon_manager.visible = False
