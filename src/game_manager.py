@@ -35,7 +35,7 @@ class Partie:
         self.cycle_players = Cycle()
 
     @property
-    def players(self):
+    def players(self) -> list[Player]:
         return [mob for mob in self.mobs.sprites() if type(mob) == Player]
 
     @property
@@ -56,6 +56,7 @@ class Partie:
         self.group_object.add(Object_map(name, pos, path))
 
     def Update(self):
+        CAMERA._screen_UI.fill((0, 0, 0, 0))
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(
             tl.GRAVITY, {"serialized": GAME.serialized}))
@@ -97,7 +98,14 @@ class Partie:
         self.map.update(GAME.serialized)
         MixeurAudio.update_musique()
 
+        # check end game
+        names = ["j2" if ("j2" in mob.name) else "j1" for mob in self.players]
+        if "j1" not in names or "j2" not in names:
+            raise EndPartie
+
         self.Draw()
+        CAMERA._screen_UI.blit(FONT.render(str(self.timeline.current_action_type), True, (0, 0, 0)), (0, 0))
+        CAMERA.cache = False
 
     def Draw(self):
         _surf = pygame.Surface(self.map.image.get_size(), flags=pygame.SRCALPHA)

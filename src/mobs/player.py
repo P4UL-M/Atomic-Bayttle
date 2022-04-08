@@ -167,16 +167,16 @@ class Player(MOB):
                     self.manager.load("idle")
                     self.manager.annim_speed_factor = 1
         # * death
-        if self.rect.bottom > GM.map.water_level:
-            if self.visible:
+        if self.visible:
+            if self.rect.bottom > GM.map.water_level:
                 MixeurAudio.play_effect(tl.PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
                 ev = pygame.event.Event(DEATH, {"player": self})
                 pygame.event.post(ev)
                 self.visible = False
-        elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
-            ev = pygame.event.Event(DEATH, {"player": self})
-            pygame.event.post(ev)
-            self.visible = False
+            elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
+                ev = pygame.event.Event(DEATH, {"player": self})
+                pygame.event.post(ev)
+                self.visible = False
         # * inertia and still update if inactive
         if self.visible:
             super().update(GAME, CAMERA)

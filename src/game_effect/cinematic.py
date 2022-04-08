@@ -73,6 +73,13 @@ class timeline:
         else:
             self.async_actions.append(action)
 
+    # method to add action on top of the timeline
+    def add_next(self, action, asyncron=False):
+        if not asyncron:
+            self.actions.insert(0, action)
+        else:
+            self.async_actions.insert(0, action)
+
     def update(self, *args, **kwargs):
         if self.__current_action is None:
             self.__current_action = self.actions.pop(0)
@@ -92,6 +99,10 @@ class timeline:
         if self.__current_action and (not _type or type(self.__current_action) == _type):
             self.__current_action.clean(GAME, CAMERA)
             self.__current_action = None
+
+    def purge(self):
+        self.actions.clear()
+        self.async_actions.clear()
 
 
 class Turn(Action):
@@ -122,7 +133,20 @@ class Turn(Action):
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
-        self.player.visible = True
+
+        # verification if problem in turn
+        if not self.player.visible:
+            if self.player not in GM.players:
+                GM.cycle_players.delete(name=self.player.name)
+                GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
+                GM.timeline.add_action(TurnTransition(GM.actual_player))
+                raise EndAction()
+            GM.timeline.purge()
+            GM.timeline.add_action(Respawn(self.player))
+            GM.timeline.add_action(Turn(self.player, duration=GM.cooldown_tour))
+            GM.timeline.add_action(TurnTransition(self.player))
+            raise EndAction()
+
         self.player.input_lock = True
         self.player.weapon_manager.visible = True
         self.player.weapon_manager.reload()
@@ -133,7 +157,7 @@ class Turn(Action):
         GM = GAME.partie
         self.player.lock = True
         GM.cycle_players += 1
-        GM.timeline.add_action(TurnTransition(self.player, duration=None))
+        GM.timeline.add_next(TurnTransition(self.player, duration=None))
         GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
 
 
@@ -164,7 +188,7 @@ class Respawn(Action):
         for mob in GM.mobs.sprites():
             mob.update(GAME, CAMERA)
 
-        #self.player.weapon_manager.update(self.player, GAME, CAMERA)
+        # self.player.weapon_manager.update(self.player, GAME, CAMERA)
         # * CAMERA Update of the player
         x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
         _x, _y = (self.player.rect.left, self.player.rect.top)
@@ -189,9 +213,18 @@ class transition(Action):
 
 
 class Death(Action):
-    def __init__(self, player, duration=1000):
+    def __init__(self, player, duration=1500):
         super().__init__(duration)
         self.player: Player = player
+
+    def setup(self, GAME, CAMERA):
+        GM = GAME.partie
+        sp = sprite_sheet(tl.PATH / "assets" / "kraken" / "idle1.png", (32, 64))
+        sp.config((64, 128))
+        if self.player.rect.top > GM.map.rect.top:
+            GM.group_particle.add(AnimatedParticule(sp, 15, Vector2(self.player.rect.left, GM.map.water_level - 64), 1, Vector2(1, 1), 0, False))
+        else:
+            raise EndAction()
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
