@@ -22,7 +22,7 @@ class Player(MOB):
         # initialisation de la classe mere permettant de faire de cette classe un sprite
         super().__init__(pos, size, group)
         self.name = name
-        self.life = 2
+        self.life = 1
 
         self.manager: animation_Manager = animation_Manager()
         self.right_direction = True
@@ -173,7 +173,7 @@ class Player(MOB):
                 ev = pygame.event.Event(DEATH, {"player": self})
                 pygame.event.post(ev)
                 self.visible = False
-            elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500:
+            elif (Vector2(*self.rect.topleft) - Vector2(*GM.map.rect.center)).lenght > 2500 or self.rect.topleft[0] < GM.map.rect.left or self.rect.topleft[0] > GM.map.rect.right:
                 ev = pygame.event.Event(DEATH, {"player": self})
                 pygame.event.post(ev)
                 self.visible = False

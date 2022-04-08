@@ -28,6 +28,7 @@ class Partie:
 
         # the swpan point à remplacer après par le system
         self.checkpoint = Vector2(100, 50)
+        self.checkpoints = {"j1.1": Vector2(160, 50), "j1.2": Vector2(400, 50), "j2.1": Vector2(1030, 50), "j2.2": Vector2(1235, 50)}
         pygame.mouse.set_visible(False)
         self.cooldown_tour = 15000
 
@@ -45,7 +46,7 @@ class Partie:
                 return player
 
     def add_player(self, name, team, lock=False):
-        player = Player(name, self.checkpoint + Vector2(random.randint(0, 1200), 0), tl.TEAM[team]["idle"], team, self.mobs, "sniper")
+        player = Player(name, self.checkpoints[name], tl.TEAM[team]["idle"], team, self.mobs, "sniper")
         player.lock = lock
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
         self.mobs.add(player)
@@ -100,7 +101,7 @@ class Partie:
 
         # check end game
         names = ["j2" if ("j2" in mob.name) else "j1" for mob in self.players]
-        if "j1" not in names or "j2" not in names:
+        if "j1" not in names or "j2" not in names and self.timeline.current_action_type == Turn:
             raise EndPartie
 
         self.Draw()

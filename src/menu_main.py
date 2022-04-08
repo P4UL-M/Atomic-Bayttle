@@ -2451,7 +2451,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.84))
+        _sprite.set_position(Vector2(0.5, 2.0))
         _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite

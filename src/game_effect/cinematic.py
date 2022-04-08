@@ -137,7 +137,10 @@ class Turn(Action):
         # verification if problem in turn
         if not self.player.visible:
             if self.player not in GM.players:
-                GM.cycle_players.delete(name=self.player.name)
+                try:
+                    GM.cycle_players.delete(name=self.player.name)
+                except ValueError:
+                    pass
                 GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
                 GM.timeline.add_action(TurnTransition(GM.actual_player))
                 raise EndAction()

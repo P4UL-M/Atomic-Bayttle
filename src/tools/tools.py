@@ -164,7 +164,11 @@ class Cycle:
         self.__i = index
 
     def __str__(self) -> str:
-        return self.list[self.__i]
+        try:
+            return self.list[self.__i]
+        except IndexError:
+            self.__iadd__(1)
+            return self.__str__()
 
     def __int__(self) -> int:
         return self.__i
