@@ -50,16 +50,14 @@ sprite_sheet.dico = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3,
 
 def setup_manager():
     global game
-    CAMERA._off_screen = pygame.Surface(
-        (1920, 1080), flags=HWSURFACE + HWACCEL)
+    CAMERA._off_screen = pygame.Surface((1920, 1080), flags=HWSURFACE + HWACCEL)
     CAMERA.HUD = False
     CAMERA.zoom = 1
     CAMERA.maximise = False
     MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
     pygame.mouse.set_visible(True)
 
-    game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen,
-                        background=PATH / "assets" / "menu" / "background_sheet.png")
+    game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen,background=PATH / "assets" / "menu" / "background_sheet.png")
     game.play_effect = MixeurAudio.play_effect
     game.running = True
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
@@ -2407,13 +2405,13 @@ def setup_manager():
     def text1():
         _text = textZone(
             name="text1",
-            size=Vector2(1000, 100),
+            size=Vector2(1000,150),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.23, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("You will play 2 characters that you will chose before the game starts !")
+        _text.set_position(Vector2(0.22, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("You will play 2 characters that you will chose before the game starts!")
 
         return _text
 
@@ -2425,8 +2423,8 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.45), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1, 5.1))
+        _sprite.set_position(Vector2(0.5,0.40), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1,5.1))
 
         return _sprite
 
@@ -2434,13 +2432,14 @@ def setup_manager():
     def text2():
         _text = textZone(
             name="text2",
-            size=Vector2(1000, 260),
+            size=Vector2(1000,400),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.23, 0.53), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Within 15 seconds, you need to aim, choose your weapon and shoot. The game is in turn-by-turn, so it is structured in turns, where you will alternately play one of your characters, and the player will change each turn.")
+        _text.set_position(Vector2(0.22, 0.49), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Within 15 seconds, you need to aim,choose your weapon and shoot. The game is in turn-by-turn, so it is structured in turns, where you will alternately play one of your characters, and the player will change each turn", align=(True,False))
+
         return _text
 
     @rules_menu.get_sprite("panel").add_sprite
@@ -2451,9 +2450,49 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 2.0))
+        _sprite.set_position(Vector2(0.5, 0.89))
         _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text3():
+        _text=textZone(
+            name="text3",
+            size=Vector2(1000,533),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.22, 1.24), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't repel players, the sniper that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True,False))
+
+        return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title4():
+        _sprite=sprite(
+            name="title4",
+            path=PATH / "assets" / "menu" / "rules" / "water.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,1.45))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text4():
+        _text=textZone(
+            name="text4",
+            size=Vector2(1000,400),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.22, 1.54))
+        _text.set_text("You are not alone in the bay, and if you make too much explosions noises, the kraken that lives under the sea will wake up! To make him calm down, there exits only one way, he musts eat one of you... Alive! or not...", align=(True,False))
+        return _text
 
     # endregion
