@@ -40,6 +40,7 @@ class Game:
                 try:
                     Game.partie.Update()
                 except EndPartie:
+                    MixeurAudio.stop("all")
                     Game.partie = None
                     menu_main.setup_manager()
             else:
