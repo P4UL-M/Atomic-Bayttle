@@ -51,7 +51,7 @@ class Game:
                 Camera.render_bg()
             Camera.render()
 
-            # print(Game.clock.get_fps())
+            print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7

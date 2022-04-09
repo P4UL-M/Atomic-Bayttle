@@ -96,7 +96,6 @@ class Player(MOB):
                     x = self.rect.centerx
                     y = self.rect.centery
                     size = 5 + event.damage / 3
-                    print(size)
                     GAME.partie.group_particle.add(textParticle(30, (x, y), Vector2(0, -1), 1, int(str(event.damage)[0]), (size, size)))
                     GAME.partie.group_particle.add(textParticle(30, (x + size + 1, y), Vector2(0, -1), 1, int(str(event.damage)[1]), (size, size)))
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
@@ -115,9 +114,7 @@ class Player(MOB):
                                Keyboard.down.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown < pygame.time.get_ticks() and (self.grounded or self.double_jump):
-                    # this is like grounded but constant because sometime we are on the ground but not colliding because gravity too weak
-                    self.double_jump = (
-                        self.inertia.y < 1 and self.inertia.y > 0) or self.grounded
+                    self.double_jump = self.grounded
                     self.inertia.y = -self.jump_force
                     self.grounded = False
                     self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
@@ -158,14 +155,14 @@ class Player(MOB):
         # * annimation
         if self.manager._loaded_name not in ["jump", "ground", "emote"]:
             if self.actual_speed > 1:
-                if (self.inertia.y > 1.5 or self.inertia.y < 0) and not self.grounded:
+                if not self.grounded:
                     self.manager.load("fall")
                 elif self.manager._loaded_name == "fall":
                     self.manager.load("ground")
                 else:
                     self.manager.load("run")
                     self.manager.annim_speed_factor = 1 + self.actual_speed * 0.05
-            elif (self.inertia.y < 1.5 or self.inertia.y > 0) and self.grounded:
+            elif self.grounded:
                 if self.manager._loaded_name == "fall":
                     self.manager.load("ground")
                 else:
