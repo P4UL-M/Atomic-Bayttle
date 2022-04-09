@@ -45,7 +45,7 @@ class MOB(pygame.sprite.Sprite):
         self.speed = 5
         self.actual_speed = 0
         self.gravity = 0.05
-        self.life_multiplicator = 1
+        self.life_multiplicator = 0
 
         self.grounded = False  # vérification si au sol ou non
 

@@ -172,7 +172,7 @@ class WEAPON(pygame.sprite.Sprite):
     def reload(self):
         ...
 
-    def update(self, pos: tuple, right: bool, _dangle: int, lock=False):
+    def update(self, pos: tuple, right: bool, _dangle: int, lock, CAMERA):
         self.angle += _dangle
         if self.angle > pi / 2:
             self.angle = pi / 2
@@ -196,8 +196,13 @@ class WEAPON(pygame.sprite.Sprite):
         rotated_image_center = (self.real_rect.left - rotated_offset.x, self.real_rect.top - rotated_offset.y)
         self.image = pygame.transform.rotate(image, angle * 180 / pi).convert_alpha()
         self.rect = self.image.get_rect(center=rotated_image_center)
+        if self.visible:
+            self.drawUI(CAMERA)
 
     def clean(self):
+        ...
+
+    def drawUI(self, CAMERA):
         ...
 
 
@@ -214,6 +219,9 @@ class Sniper(WEAPON):
     def reload(self):
         self.magazine = self.magazine_max
 
+    def drawUI(self, CAMERA):
+        ...
+
 
 @ add_weapon
 class Launcher(WEAPON):
@@ -228,6 +236,12 @@ class Launcher(WEAPON):
         self.magazine_max = 1
 
         self.chargingsound = None
+        self.factor = 0.1
+
+        self.slider = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "force.png").convert()
+        self.slider = pygame.transform.scale(self.slider, (int(self.slider.get_width() * 3), int(self.slider.get_height() * 3)))
+        self.bar = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "ForceBar.png").convert_alpha()
+        self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 3), int(self.bar.get_height() * 3)))
 
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
         """methode appele a chaque event"""
@@ -239,6 +253,7 @@ class Launcher(WEAPON):
                             owner.weapon_manager.zoom_factor -= 0.2
                         pygame.event.post(pygame.event.Event(tl.CHARGING, {"weapon": self, "value": event.value + 0.016}))
                         self.lock = True
+                        self.factor = event.value + 0.016
                         if not self.chargingsound:
                             self.chargingsound = MixeurAudio.play_until_Stop(
                                 PATH / "assets" / "sound" / "weapon_charge.wav", volume=2)
@@ -266,6 +281,13 @@ class Launcher(WEAPON):
 
     def reload(self):
         self.magazine = self.magazine_max
+        self.factor = 0.1
+
+    def drawUI(self, CAMERA):
+        slider = self.slider.copy()
+        slider = pygame.transform.scale(slider, (int(self.bar.get_width() * (self.factor / 2) * 0.75), slider.get_height()))
+        CAMERA._screen_UI.blit(self.bar, (10, CAMERA._screen_UI.get_height() - self.bar.get_height() - 10))
+        CAMERA._screen_UI.blit(slider, (10 + 48, CAMERA._screen_UI.get_height() - 30 - 10))
 
 
 @ add_weapon
@@ -282,6 +304,11 @@ class Chainsaw(WEAPON):
         super().__init__(PATH / "assets" / "weapons" / "chainsaw.png")
         self.pivot = (1 / 5, 1 / 2)
         self.magazine_max = 15
+
+        self.slider = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "energy.png").convert_alpha()
+        self.slider = pygame.transform.scale(self.slider, (int(self.slider.get_width() * 3), int(self.slider.get_height() * 2)))
+        self.bar = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "EnergyBar.png").convert_alpha()
+        self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 3), int(self.bar.get_height() * 3)))
 
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
         """methode appele a chaque event"""
@@ -309,8 +336,8 @@ class Chainsaw(WEAPON):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
 
-    def update(self, pos, right, _dangle, lock):
-        super().update(pos, right, _dangle)
+    def update(self, pos, right, _dangle, lock, CAMERA):
+        super().update(pos, right, _dangle, lock, CAMERA)
         if not lock:
             if not self.idle_sound:
                 self.idle_sound = MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "chainsaw_idle.wav", 1.2)
@@ -325,3 +352,9 @@ class Chainsaw(WEAPON):
 
     def reload(self):
         self.magazine = self.magazine_max
+
+    def drawUI(self, CAMERA):
+        slider = self.slider.copy()
+        slider = pygame.transform.scale(slider, (int(self.bar.get_width() * (self.magazine / self.magazine_max) * 0.765), slider.get_height()))
+        CAMERA._screen_UI.blit(self.bar, (10, CAMERA._screen_UI.get_height() - self.bar.get_height() - 10))
+        CAMERA._screen_UI.blit(slider, (10 + 45, CAMERA._screen_UI.get_height() - 24 - 10))

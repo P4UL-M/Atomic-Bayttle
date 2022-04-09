@@ -57,6 +57,7 @@ class Partie:
 
     def Update(self):
         CAMERA._screen_UI.fill((0, 0, 0, 0))
+        CAMERA.cache = False
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(
             tl.GRAVITY, {"serialized": GAME.serialized}))
@@ -100,11 +101,10 @@ class Partie:
 
         # check end game
         names = ["j2" if ("j2" in mob.name) else "j1" for mob in self.players]
-        if "j1" not in names or "j2" not in names and self.timeline.current_action_type == Turn:
+        if "j1" not in names or "j2" not in names and self.timeline.current_action_type != TurnTransition:
             raise EndPartie
 
         self.Draw()
-        CAMERA.cache = False
 
     def Draw(self):
         _surf = pygame.Surface(self.map.image.get_size(), flags=pygame.SRCALPHA)
