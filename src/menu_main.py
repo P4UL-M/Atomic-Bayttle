@@ -2512,13 +2512,13 @@ def setup_manager():
     def text5():
         _text=textZone(
             name="text5",
-            size=Vector2(1000,267),
+            size=Vector2(1000,333),
             text_color="black",
             manager=game
         )
 
         _text.set_position(Vector2(0.21,2.7), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Each of your character has 2 lives and will revive when killed once. Pay attention, when you respawn, it is the other player that will play !", align=(True,False))
+        _text.set_text("Each of your character has 2 lives and will revive when killed once. Pay attention, when you respawn, the order of the turns will stay unchanged. Choose your location wisely...", align=(True,False))
 
         return _text
 
@@ -2530,7 +2530,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,3.13), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_position(Vector2(0.5,3.19), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1,5.1))
 
         return _sprite
@@ -2544,7 +2544,7 @@ def setup_manager():
             manager=game
         )
 
-        _text.set_position(Vector2(0.21,3.22), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_position(Vector2(0.21,3.28), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("In order to win, kill all of your opponents!", align=(True,False))
 
         return _text
@@ -2557,11 +2557,10 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,3.46), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_position(Vector2(0.5,3.52), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1,5.1))
 
         return _sprite
-
 
     @rules_menu.get_sprite("panel").add_sprite
     def text7():
@@ -2572,10 +2571,9 @@ def setup_manager():
             manager=game
         )
 
-        _text.set_position(Vector2(0.21,3.55), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_position(Vector2(0.21,3.61), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("Have fun!", align=(True,False))
 
         return _text
-
 
     # endregion
