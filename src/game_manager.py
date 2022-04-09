@@ -57,6 +57,7 @@ class Partie:
 
     def Update(self):
         CAMERA._screen_UI.fill((0, 0, 0, 0))
+        CAMERA.cache = False
         """ fonction qui update les informations du jeu"""
         pygame.event.post(pygame.event.Event(
             tl.GRAVITY, {"serialized": GAME.serialized}))
@@ -104,7 +105,6 @@ class Partie:
             raise EndPartie
 
         self.Draw()
-        CAMERA.cache = False
 
     def Draw(self):
         _surf = pygame.Surface(self.map.image.get_size(), flags=pygame.SRCALPHA)

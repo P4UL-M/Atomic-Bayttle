@@ -119,7 +119,6 @@ class Turn(Action):
             self._start_time = pygame.time.get_ticks()
 
         # render
-        CAMERA._screen_UI.fill((0, 0, 0, 0))
         CAMERA._screen_UI.blit(heart(self.player.life, 3).image, (12, 12))
 
         numbers = [int(a) for a in str(int(self.player.life_multiplicator * 100))]
@@ -133,8 +132,6 @@ class Turn(Action):
         timer = self.time // 1000 + 1
         CAMERA._screen_UI.blit(FONT.render(
             str(timer), 1, (0, 0, 0)), (640, 50))
-
-        CAMERA.cache = False
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
