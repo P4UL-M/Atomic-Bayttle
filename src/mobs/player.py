@@ -3,7 +3,7 @@ from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet, Keyboard, Vector2, MixeurAudio
 from src.tools.constant import TEAM, EndPartie, ENDTURN, DEATH, PATH
 import src.tools.constant as tl
-from src.game_effect.particule import Particule
+from src.game_effect.particule import Particule, textParticle
 from src.weapons.WEAPON import Sniper, Launcher, Chainsaw
 from src.weapons.manager import inventory
 
@@ -93,6 +93,10 @@ class Player(MOB):
                         return
                     self.inertia += _dist * self.life_multiplicator * event.multiplicator_repulsion
                     self.life_multiplicator += event.damage / 100
+                    x = self.rect.centerx
+                    y = self.rect.centery
+                    GAME.partie.group_particle.add(textParticle(30, (x, y), Vector2(0, -1), 1, int(str(event.damage)[0]), (10, 10)))
+                    GAME.partie.group_particle.add(textParticle(30, (x + 11, y), Vector2(0, -1), 1, int(str(event.damage)[1]), (10, 10)))
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
             case pygame.KEYDOWN:
                 if not self.lock and self.input_lock:

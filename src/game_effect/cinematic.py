@@ -127,9 +127,9 @@ class Turn(Action):
         if len(numbers) > 2:
             CAMERA._screen_UI.blit(digit(numbers[0], 3).image, (12, 45))
         if len(numbers) > 1:
-            CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 2], 3).image, (45, 45))
-        CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 1], 3).image, (82, 45))
-        CAMERA._screen_UI.blit(digit("%", 3).image, (117, 45))
+            CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 2], 3).image, (12 + (len(numbers) - 2) * 33, 45))
+        CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 1], 3).image, (45 + (len(numbers) - 2) * 33, 45))
+        CAMERA._screen_UI.blit(digit("%", 3).image, (78 + (len(numbers) - 2) * 33, 45))
         timer = self.time // 1000 + 1
         CAMERA._screen_UI.blit(FONT.render(
             str(timer), 1, (0, 0, 0)), (640, 50))
