@@ -10,7 +10,6 @@ from src.weapons.physique import *
 from src.tools.constant import EndPartie
 from src.weapons.WEAPON import WEAPON
 from src.game_effect.cinematic import *
-import random
 
 GAME = None
 CAMERA = None
@@ -105,7 +104,6 @@ class Partie:
             raise EndPartie
 
         self.Draw()
-        CAMERA._screen_UI.blit(FONT.render(str(self.timeline.current_action_type), True, (0, 0, 0)), (0, 0))
         CAMERA.cache = False
 
     def Draw(self):

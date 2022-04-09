@@ -10,6 +10,7 @@ from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard
 from src.game_effect.particule import AnimatedParticule, Particule
 from src.weapons.physique import *
 from src.weapons.WEAPON import WEAPON
+from src.game_effect.UI import *
 
 FONT = pygame.font.SysFont("Arial", 24)
 INFO = pygame.display.Info()
@@ -119,15 +120,19 @@ class Turn(Action):
 
         # render
         CAMERA._screen_UI.fill((0, 0, 0, 0))
+        CAMERA._screen_UI.blit(heart(self.player.life, 3).image, (12, 12))
+
+        numbers = [int(a) for a in str(int(self.player.life_multiplicator * 100))]
+
+        if len(numbers) > 2:
+            CAMERA._screen_UI.blit(digit(numbers[0], 3).image, (12, 45))
+        if len(numbers) > 1:
+            CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 2], 3).image, (45, 45))
+        CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 1], 3).image, (82, 45))
+        CAMERA._screen_UI.blit(digit("%", 3).image, (117, 45))
         timer = self.time // 1000 + 1
         CAMERA._screen_UI.blit(FONT.render(
             str(timer), 1, (0, 0, 0)), (640, 50))
-
-        # todo à virer après
-        for player in GM.mobs.sprites():
-            if type(player) == Player:
-                if not player.lock:
-                    CAMERA._screen_UI.blit(FONT.render(str(int(player.life_multiplicator * 100)) + "%", 1, (255, 0, 0)), (50, 50))
 
         CAMERA.cache = False
 

@@ -91,12 +91,11 @@ class Player(MOB):
                 if _dist.lenght < event.radius + self.rect.width:
                     if not event.friendly_fire and not self.lock:
                         return
-                    _reaction = _dist
-                    self.inertia += _reaction * self.life_multiplicator * event.multiplicator_repulsion
+                    self.inertia += _dist * self.life_multiplicator * event.multiplicator_repulsion
                     self.life_multiplicator += event.damage / 100
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
             case pygame.KEYDOWN:
-                if not self.lock:
+                if not self.lock and self.input_lock:
                     self.input_lock = False
         super().handle(event)
         self.weapon_manager.handle(event, self, GAME, CAMERA)
