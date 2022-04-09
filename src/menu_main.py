@@ -2410,8 +2410,8 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.22, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("You will play 2 characters that you will chose before the game starts!")
+        _text.set_position(Vector2(0.21, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("You will play 2 characters that you will chose before the game starts!", align=(True,False))
 
         return _text
 
@@ -2423,7 +2423,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,0.40), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_position(Vector2(0.5,0.43), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1,5.1))
 
         return _sprite
@@ -2437,7 +2437,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.22, 0.49), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_position(Vector2(0.21, 0.52), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("Within 15 seconds, you need to aim,choose your weapon and shoot. The game is in turn-by-turn, so it is structured in turns, where you will alternately play one of your characters, and the player will change each turn", align=(True,False))
 
         return _text
@@ -2450,7 +2450,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.89))
+        _sprite.set_position(Vector2(0.5, 1.07), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
@@ -2464,7 +2464,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.22, 1.24), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_position(Vector2(0.21, 1.16), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't repel players, the sniper that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True,False))
 
         return _text
@@ -2477,7 +2477,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,1.45))
+        _sprite.set_position(Vector2(0.5,1.95), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1,5.1))
 
         return _sprite
@@ -2491,8 +2491,91 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.22, 1.54))
+        _text.set_position(Vector2(0.21, 2.04), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("You are not alone in the bay, and if you make too much explosions noises, the kraken that lives under the sea will wake up! To make him calm down, there exits only one way, he musts eat one of you... Alive! or not...", align=(True,False))
         return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title5():
+        _sprite=sprite(
+            name="title5",
+            path=PATH / "assets" / "menu" / "rules" / "respawn.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,2.61), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text5():
+        _text=textZone(
+            name="text5",
+            size=Vector2(1000,267),
+            text_color="black",
+            manager=game
+        )
+
+        _text.set_position(Vector2(0.21,2.7), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Each of your character has 2 lives and will revive when killed once. Pay attention, when you respawn, it is the other player that will play !", align=(True,False))
+
+        return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title6():
+        _sprite=sprite(
+            name="title6",
+            path=PATH / "assets" / "menu" / "rules" / "game.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,3.13), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text6():
+        _text=textZone(
+            name="text6",
+            size=Vector2(1000,130),
+            text_color="black",
+            manager=game
+        )
+
+        _text.set_position(Vector2(0.21,3.22), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("In order to win, kill all of your opponents!", align=(True,False))
+
+        return _text
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def title7():
+        _sprite=sprite(
+            name="title7",
+            path=PATH / "assets" / "menu" / "rules" / "important.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,3.46), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1,5.1))
+
+        return _sprite
+
+
+    @rules_menu.get_sprite("panel").add_sprite
+    def text7():
+        _text=textZone(
+            name="text7",
+            size=Vector2(1000,100),
+            text_color="brown",
+            manager=game
+        )
+
+        _text.set_position(Vector2(0.21,3.55), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Have fun!", align=(True,False))
+
+        return _text
+
 
     # endregion
