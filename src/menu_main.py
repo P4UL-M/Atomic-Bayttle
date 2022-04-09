@@ -63,8 +63,7 @@ def setup_manager():
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
 
     principal = Menu("Principal", game, childs=["Settings", "Play", "Rules"])
-    settings_menu = Menu(
-        "Settings", game, parent="Principal", childs="Keybinds")
+    settings_menu = Menu("Settings", game, parent="Principal", childs="Keybinds")
     keybind_menu = Menu("Keybinds", game, parent="Settings")
     play_menu = Menu("Play", game, parent="Principal")
     rules_menu = Menu("Rules", game, parent="Principal")
@@ -2314,16 +2313,16 @@ def setup_manager():
         manager = animation_Manager()
         spritesheet1 = sprite_sheet(
             PATH / "assets" / "perso" / "perso_1" / "idle.png", (24, 28))
-        spritesheet1.config((120, 135))
+        spritesheet1.config((120, 140))
         spritesheet2 = sprite_sheet(
             PATH / "assets" / "perso" / "perso_2" / "idle.png", (42, 29))
         spritesheet2.config((210, 145))
         spritesheet3 = sprite_sheet(
             PATH / "assets" / "perso" / "perso_3" / "idle.png", (24, 28))
-        spritesheet3.config((120, 135))
+        spritesheet3.config((120, 140))
         spritesheet4 = sprite_sheet(
             PATH / "assets" / "perso" / "perso_4" / "idle.png", (31, 28))
-        spritesheet4.config((155, 135))
+        spritesheet4.config((155, 140))
         manager.add_annimation("perso_1", spritesheet1, 10)
         manager.add_annimation("perso_2", spritesheet2, 7)
         manager.add_annimation("perso_3", spritesheet3, 7)
