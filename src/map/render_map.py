@@ -38,13 +38,12 @@ class Map(pygame.sprite.Sprite):
         self.water_target -= 5
 
     def update(self, serialized):
-        MixeurAudio.gn.sound_factor.value = min(
-            - 2/self.rect.height * max(self.water_target, self.water_level) + 3, 3)
+        MixeurAudio.gn.sound_factor.value = min(- 2 / self.rect.height * max(self.water_target, self.water_level) + 3, 3)
         if self.water_target + 1 < self.water_level:
-            self.water_level -= 0.1*serialized
+            self.water_level -= 0.1 * serialized
             self.water_manager.load("agitated")
         elif self.water_target - 1 > self.water_level:
-            self.water_level += 0.3*serialized
+            self.water_level += 0.3 * serialized
             self.water_manager.load("agitated")
         else:
             self.water_manager.load("idle")
