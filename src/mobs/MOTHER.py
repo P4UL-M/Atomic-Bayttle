@@ -79,7 +79,7 @@ class MOB(pygame.sprite.Sprite):
         _sprite.rect = GM.map.image.get_rect(topleft=(0, 0))
         _sprite.mask = GM.map.mask.copy()
         for player in GM.players:
-            if not player.phatom and player is not self:
+            if not player.phatom and player.visible and player is not self:
                 _sprite.mask.draw(player.mask, player.rect.topleft)
 
         j = 0

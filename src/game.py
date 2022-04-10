@@ -14,6 +14,7 @@ import src.tools.opengl_pygame as gl  # nopep8
 from src.tools.tools import MixeurAudio  # nopep8
 from src.tools.constant import EndPartie  # nopep8
 import src.menu_main as menu_main  # nopep8
+import src.end_menu as end_menu  # nopep8
 #import test
 import src.game_manager as game_manager  # nopep8
 import src.map.Background as bg  # nopep8
@@ -26,6 +27,7 @@ class Game:
     clock = pygame.time.Clock()
     serialized = 0
     partie = None
+    menu = None
 
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
@@ -33,18 +35,23 @@ class Game:
         gl.config(INFO)
 
         menu_main.setup_manager()
+        Game.menu = menu_main.game
         Camera.maximise = False
 
         while Game.running:
             if Game.partie:
                 try:
                     Game.partie.Update()
-                except EndPartie:
-                    MixeurAudio.stop("all")
+                except EndPartie as e:
+                    if len(e.args) >= 1:
+                        end_menu.setup_manager(*e.args)
+                        Game.menu = end_menu.game
+                    else:
+                        menu_main.setup_manager()
+                        Game.menu = menu_main.game
                     Game.partie = None
-                    menu_main.setup_manager()
             else:
-                menu_main.game.Update()
+                Game.menu.Update()
 
             gl.cleangl()
             if Game.partie or True:
@@ -69,6 +76,10 @@ class Game:
         Camera.HUD = True
         Camera.maximise = True
         MixeurAudio.stop("music")
+
+    def start_menu():
+        menu_main.setup_manager()
+        Game.menu = menu_main.game
 
 
 class Camera:
@@ -122,5 +133,5 @@ class Camera:
 
 
 # class parent now accessible to childs too
-game_manager.GAME = menu_main.GAME = Game
-game_manager.CAMERA = menu_main.CAMERA = Camera
+game_manager.GAME = menu_main.GAME = end_menu.GAME = Game
+game_manager.CAMERA = menu_main.CAMERA = end_menu.CAMERA = Camera

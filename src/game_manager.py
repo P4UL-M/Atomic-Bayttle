@@ -15,6 +15,7 @@ GAME = None
 CAMERA = None
 
 FONT = pygame.font.SysFont("Arial", 24)
+TEAM = {}
 
 
 class Partie:
@@ -45,6 +46,7 @@ class Partie:
                 return player
 
     def add_player(self, name, team, lock=False):
+        TEAM[name] = team
         player = Player(name, self.checkpoints[name], tl.TEAM[team]["idle"], team, self.mobs, "sniper")
         player.lock = lock
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
@@ -74,10 +76,10 @@ class Partie:
                         self.timeline.add_action(Death(event.player), asyncron=True)
                         self.timeline.add_action(Respawn(event.player))
                         if event.player == self.actual_player:
-                            self.timeline.next(GAME, CAMERA, _type=Turn)
+                            self.timeline.next(GAME, CAMERA)
                     else:
                         if event.player == self.actual_player:
-                            self.timeline.next(GAME, CAMERA, _type=Turn)
+                            self.timeline.next(GAME, CAMERA)
                         event.player.kill()
                         self.cycle_players.delete(name=event.player.name)
                 case tl.IMPACT:
@@ -102,7 +104,7 @@ class Partie:
         # check end game
         names = ["j2" if ("j2" in mob.name) else "j1" for mob in self.players]
         if "j1" not in names or "j2" not in names and self.timeline.current_action_type != TurnTransition:
-            raise EndPartie
+            raise EndPartie(TEAM[self.players[0].name], [name for name in TEAM.values() if name != TEAM[self.players[0].name]][0])
 
         self.Draw()
 
