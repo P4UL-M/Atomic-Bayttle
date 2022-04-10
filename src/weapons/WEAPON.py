@@ -216,11 +216,16 @@ class Sniper(WEAPON):
         self.magazine_max = 4
         super().__init__(PATH / "assets" / "weapons" / "sniper.png")
 
+        self.bullet_UI = sprite_sheet(PATH / "assets" / "weapons" / "UI" / "red_bullet.png", (24, 24))
+        self.bullet_UI.config((24 * 3, 24 * 3))
+
     def reload(self):
         self.magazine = self.magazine_max
 
     def drawUI(self, CAMERA):
-        ...
+        for i in range(self.magazine):
+            _bullet: pygame.Surface = self.bullet_UI[pygame.time.get_ticks() // 100 + i]
+            CAMERA._screen_UI.blit(_bullet, (_bullet.get_width() * i + 6 * i + 10, CAMERA._screen_UI.get_height() - _bullet.get_height() - 10))
 
 
 @ add_weapon
