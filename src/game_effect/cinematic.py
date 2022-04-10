@@ -215,6 +215,16 @@ class Respawn(Action):
         self.player.phatom = False
         self.player.life -= 1
 
+        _sprite = pygame.sprite.Sprite()
+        _sprite.rect = GM.map.image.get_rect(topleft=(0, 0))
+        _sprite.mask = GM.map.mask.copy()
+        for player in GM.players:
+            if not player.phatom and player.visible and player is not self:
+                _sprite.mask.draw(player.mask, player.rect.topleft)
+
+        while self.player.body_mask.collide(self.player.rect, _sprite):
+            self.player.rect.x += 1
+
 
 class transition(Action):
     def __init__(self, duration=None):
