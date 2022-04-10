@@ -18,6 +18,7 @@ TEAM = {
         "fall": (25, 28),
         "ground": (26, 28),
         "emote": (64, 40),
+        "losed": (64, 40),
         "speed_factor": 1
     },
     "perso_2": {
@@ -27,6 +28,7 @@ TEAM = {
         "fall": (40, 29),
         "ground": (40, 29),
         "emote": (40, 29),
+        "losed": (72, 32),
         "speed_factor": 0.75
     },
     "perso_3": {
@@ -36,6 +38,7 @@ TEAM = {
         "jump": (27, 28),
         "ground": (26, 28),
         "emote": (31, 28),
+        "losed": (34, 30),
         "speed_factor": 1.25
     },
     "perso_4": {
@@ -45,6 +48,7 @@ TEAM = {
         "jump": (29, 28),
         "ground": (29, 28),
         "emote": (29, 28),
+        "losed": (34, 30),
         "speed_factor": 0.9
     }
 }
