@@ -54,13 +54,13 @@ def setup_manager(winner, loser):
     @principal.add_sprite
     def winner_sprite():
         manager = animation_Manager()
-        _spritesheet = sprite_sheet(PATH / "assets" / "perso" / winner / "emote.png", TEAM[winner]["emote"])
-        _spritesheet.config(tuple(i * 10 for i in TEAM[winner]["emote"]))
+        spritesheet = sprite_sheet(PATH / "assets" / "perso" / winner / "emote.png", TEAM[winner]["emote"])
+        spritesheet.config(tuple(i * 10 for i in TEAM[winner]["emote"]))
 
         if winner != "perso_1":
-            manager.add_annimation("winner", _spritesheet, 7)
+            manager.add_annimation("winner", spritesheet, 7)
         else:
-            manager.add_annimation("winner", _spritesheet, 10)
+            manager.add_annimation("winner", spritesheet, 10)
         manager.load("winner")
 
         _sprite = animated_sprite(
@@ -70,17 +70,16 @@ def setup_manager(winner, loser):
         )
 
         _sprite.set_position(Vector2(0.4, 0.25))
-        _sprite.i = 0
 
         return _sprite
 
     @principal.add_sprite
     def loser_sprite():
         manager = animation_Manager()
-        spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "emote.png", TEAM[loser]["emote"])
-        spritesheet.config(tuple(i * 8 for i in TEAM[loser]["emote"]))
+        spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "losed.png", TEAM[loser]["losed"])
+        spritesheet.config(tuple(i * 8 for i in TEAM[loser]["losed"]))
 
-        manager.add_annimation("loser", spritesheet, 7)
+        manager.add_annimation("loser", spritesheet, 5)
         manager.load("loser")
 
         _sprite = animated_sprite(
