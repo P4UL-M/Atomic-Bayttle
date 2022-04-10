@@ -141,8 +141,7 @@ class animation_Manager(object):
 
     def add_annimation(self, name, spritesheet: sprite_sheet, _frame: int):
         _increment = 1 / _frame
-        self.spritesheets[name or f"animation-{pygame.time.get_ticks()}"] = [
-            spritesheet, _increment]
+        self.spritesheets[name or f"animation-{pygame.time.get_ticks()}"] = [spritesheet, _increment]
 
     def load(self, name):
         if name in self.spritesheets.keys():

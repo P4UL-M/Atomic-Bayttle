@@ -40,12 +40,12 @@ class animated_sprite(sprite):  # class without surface set and annimated
     def set_scale(self, sca: Vector2, center=True): ...
 
 
-sprite_sheet.dico = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3, pygame.K_e: 4, pygame.K_f: 5, pygame.K_g: 6, pygame.K_h: 7, pygame.K_i: 8, pygame.K_j: 9,
-                     pygame.K_k: 10, pygame.K_l: 11, pygame.K_m: 12, pygame.K_n: 13, pygame.K_o: 14, pygame.K_p: 15, pygame.K_q: 16, pygame.K_r: 17, pygame.K_s: 18, pygame.K_t: 19, pygame.K_u: 20,
-                     pygame.K_v: 21, pygame.K_w: 22, pygame.K_x: 23, pygame.K_y: 24, pygame.K_z: 25, pygame.K_0: 26, pygame.K_1: 27, pygame.K_2: 28, pygame.K_3: 29, pygame.K_4: 30, pygame.K_5: 31,
-                     pygame.K_6: 32, pygame.K_7: 33, pygame.K_8: 34, pygame.K_9: 35, pygame.K_EXCLAIM: 36, pygame.K_COMMA: 37, pygame.K_SEMICOLON: 38, pygame.K_LALT: 39, pygame.K_BACKSPACE: 40,
-                     pygame.K_LCTRL: 41, pygame.K_COLON: 42, pygame.K_RETURN: 43, pygame.K_ESCAPE: 44, pygame.K_LSHIFT: 45, pygame.K_SPACE: 46, pygame.K_TAB: 47, pygame.K_DOWN: 48, pygame.K_LEFT: 49,
-                     pygame.K_RIGHT: 50, pygame.K_UP: 51}
+DICO = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3, pygame.K_e: 4, pygame.K_f: 5, pygame.K_g: 6, pygame.K_h: 7, pygame.K_i: 8, pygame.K_j: 9,
+        pygame.K_k: 10, pygame.K_l: 11, pygame.K_m: 12, pygame.K_n: 13, pygame.K_o: 14, pygame.K_p: 15, pygame.K_q: 16, pygame.K_r: 17, pygame.K_s: 18, pygame.K_t: 19, pygame.K_u: 20,
+        pygame.K_v: 21, pygame.K_w: 22, pygame.K_x: 23, pygame.K_y: 24, pygame.K_z: 25, pygame.K_0: 26, pygame.K_1: 27, pygame.K_2: 28, pygame.K_3: 29, pygame.K_4: 30, pygame.K_5: 31,
+        pygame.K_6: 32, pygame.K_7: 33, pygame.K_8: 34, pygame.K_9: 35, pygame.K_EXCLAIM: 36, pygame.K_COMMA: 37, pygame.K_SEMICOLON: 38, pygame.K_LALT: 39, pygame.K_BACKSPACE: 40,
+        pygame.K_LCTRL: 41, pygame.K_COLON: 42, pygame.K_RETURN: 43, pygame.K_ESCAPE: 44, pygame.K_LSHIFT: 45, pygame.K_SPACE: 46, pygame.K_TAB: 47, pygame.K_DOWN: 48, pygame.K_LEFT: 49,
+        pygame.K_RIGHT: 50, pygame.K_UP: 51}
 
 
 def setup_manager():
@@ -57,7 +57,7 @@ def setup_manager():
     MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
     pygame.mouse.set_visible(True)
 
-    game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen,background=PATH / "assets" / "menu" / "background_sheet.png")
+    game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")
     game.play_effect = MixeurAudio.play_effect
     game.running = True
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
@@ -974,9 +974,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.left.key]
         _button.active = False
 
@@ -996,7 +996,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeleft(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.left.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1028,9 +1028,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.left.alias]
         _button.active = False
 
@@ -1050,7 +1050,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeleft(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.left.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1082,9 +1082,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.right.alias]
         _button.active = False
 
@@ -1104,7 +1104,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeright(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.right.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1135,9 +1135,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.right.key]
         _button.active = False
 
@@ -1157,7 +1157,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeright(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.right.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1203,9 +1203,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.up.key]
         _button.active = False
 
@@ -1225,7 +1225,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeup(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.up.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1257,9 +1257,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.up.alias]
         _button.active = False
 
@@ -1279,7 +1279,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeup(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.up.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1311,9 +1311,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.down.key]
         _button.active = False
 
@@ -1333,7 +1333,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changedown(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.down.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1365,9 +1365,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.down.alias]
         _button.active = False
 
@@ -1387,7 +1387,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changedown(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.down.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1433,9 +1433,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.jump.key]
         _button.active = False
 
@@ -1455,7 +1455,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changejump(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.jump.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1487,9 +1487,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.jump.alias]
         _button.active = False
 
@@ -1509,7 +1509,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changejump(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.jump.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1555,9 +1555,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.inventory.key]
         _button.active = False
 
@@ -1577,7 +1577,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeinventory(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.inventory.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1609,9 +1609,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.inventory.alias]
         _button.active = False
 
@@ -1631,7 +1631,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeinventory(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.inventory.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1678,9 +1678,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.interact.key]
         _button.active = False
 
@@ -1700,7 +1700,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeshoot(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.interact.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1732,9 +1732,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.interact.alias]
         _button.active = False
 
@@ -1754,7 +1754,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeshoot(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.interact.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1800,9 +1800,9 @@ def setup_manager():
             Vector2(0.54, 1.), parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.pause.key]
         _button.active = False
 
@@ -1822,7 +1822,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changepause(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.pause.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1854,9 +1854,9 @@ def setup_manager():
             Vector2(0.62, 1.), parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.pause.alias]
         _button.active = False
 
@@ -1876,7 +1876,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changepause(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.pause.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1922,9 +1922,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.end_turn.key]
         _button.active = False
 
@@ -1944,7 +1944,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeendturn(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.end_turn.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1976,9 +1976,9 @@ def setup_manager():
                              parent=keybind_menu.get_sprite("panel"))
         _button.set_scale(Vector2(4.0, 4.0))
 
-        _button.spritesheet = sprite_sheet(
-            PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
+        _button.spritesheet = sprite_sheet(PATH / "assets" / "menu" / "keybinds" / "keybinds.png", (28, 28))
         _button.spritesheet.config(_button.image.get_size())
+        _button.spritesheet.dico = DICO
         _button.image = _button.spritesheet[Keyboard.end_turn.alias]
         _button.active = False
 
@@ -1998,7 +1998,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeendturn(event):
             if _button.active:
-                if event.key in sprite_sheet.dico.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.end_turn.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2404,13 +2404,13 @@ def setup_manager():
     def text1():
         _text = textZone(
             name="text1",
-            size=Vector2(1000,150),
+            size=Vector2(1000, 150),
             manager=game,
             text_color="black"
         )
 
         _text.set_position(Vector2(0.21, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("You will play 2 characters that you will chose before the game starts!", align=(True,False))
+        _text.set_text("You will play 2 characters that you will chose before the game starts!", align=(True, False))
 
         return _text
 
@@ -2422,8 +2422,8 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,0.43), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1,5.1))
+        _sprite.set_position(Vector2(0.5, 0.43), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
@@ -2431,13 +2431,13 @@ def setup_manager():
     def text2():
         _text = textZone(
             name="text2",
-            size=Vector2(1000,400),
+            size=Vector2(1000, 400),
             manager=game,
             text_color="black"
         )
 
         _text.set_position(Vector2(0.21, 0.52), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Within 15 seconds, you need to aim,choose your weapon and shoot. The game is in turn-by-turn, so it is structured in turns, where you will alternately play one of your characters, and the player will change each turn", align=(True,False))
+        _text.set_text("Within 15 seconds, you need to aim,choose your weapon and shoot. The game is in turn-by-turn, so it is structured in turns, where you will alternately play one of your characters, and the player will change each turn", align=(True, False))
 
         return _text
 
@@ -2456,122 +2456,122 @@ def setup_manager():
 
     @rules_menu.get_sprite("panel").add_sprite
     def text3():
-        _text=textZone(
+        _text = textZone(
             name="text3",
-            size=Vector2(1000,533),
+            size=Vector2(1000, 533),
             manager=game,
             text_color="black"
         )
 
         _text.set_position(Vector2(0.21, 1.16), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't repel players, the sniper that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True,False))
+        _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't repel players, the sniper that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True, False))
 
         return _text
 
     @rules_menu.get_sprite("panel").add_sprite
     def title4():
-        _sprite=sprite(
+        _sprite = sprite(
             name="title4",
             path=PATH / "assets" / "menu" / "rules" / "water.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,1.95), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1,5.1))
+        _sprite.set_position(Vector2(0.5, 1.95), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
     @rules_menu.get_sprite("panel").add_sprite
     def text4():
-        _text=textZone(
+        _text = textZone(
             name="text4",
-            size=Vector2(1000,400),
+            size=Vector2(1000, 400),
             manager=game,
             text_color="black"
         )
 
         _text.set_position(Vector2(0.21, 2.04), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("You are not alone in the bay, and if you make too much explosions noises, the kraken that lives under the sea will wake up! To make him calm down, there exits only one way, he musts eat one of you... Alive! or not...", align=(True,False))
+        _text.set_text("You are not alone in the bay, and if you make too much explosions noises, the kraken that lives under the sea will wake up! To make him calm down, there exits only one way, he musts eat one of you... Alive! or not...", align=(True, False))
         return _text
 
     @rules_menu.get_sprite("panel").add_sprite
     def title5():
-        _sprite=sprite(
+        _sprite = sprite(
             name="title5",
             path=PATH / "assets" / "menu" / "rules" / "respawn.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,2.61), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1,5.1))
+        _sprite.set_position(Vector2(0.5, 2.61), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
     @rules_menu.get_sprite("panel").add_sprite
     def text5():
-        _text=textZone(
+        _text = textZone(
             name="text5",
-            size=Vector2(1000,333),
+            size=Vector2(1000, 333),
             text_color="black",
             manager=game
         )
 
-        _text.set_position(Vector2(0.21,2.7), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Each of your character has 2 lives and will revive when killed once. Pay attention, when you respawn, the order of the turns will stay unchanged. Choose your location wisely...", align=(True,False))
+        _text.set_position(Vector2(0.21, 2.7), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Each of your character has 2 lives and will revive when killed once. Pay attention, when you respawn, the order of the turns will stay unchanged. Choose your location wisely...", align=(True, False))
 
         return _text
 
     @rules_menu.get_sprite("panel").add_sprite
     def title6():
-        _sprite=sprite(
+        _sprite = sprite(
             name="title6",
             path=PATH / "assets" / "menu" / "rules" / "game.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,3.19), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1,5.1))
+        _sprite.set_position(Vector2(0.5, 3.19), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
     @rules_menu.get_sprite("panel").add_sprite
     def text6():
-        _text=textZone(
+        _text = textZone(
             name="text6",
-            size=Vector2(1000,130),
+            size=Vector2(1000, 130),
             text_color="black",
             manager=game
         )
 
-        _text.set_position(Vector2(0.21,3.28), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("In order to win, kill all of your opponents!", align=(True,False))
+        _text.set_position(Vector2(0.21, 3.28), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("In order to win, kill all of your opponents!", align=(True, False))
 
         return _text
 
     @rules_menu.get_sprite("panel").add_sprite
     def title7():
-        _sprite=sprite(
+        _sprite = sprite(
             name="title7",
             path=PATH / "assets" / "menu" / "rules" / "important.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,3.52), parent=rules_menu.get_sprite("panel"))
-        _sprite.set_scale(Vector2(5.1,5.1))
+        _sprite.set_position(Vector2(0.5, 3.52), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
 
     @rules_menu.get_sprite("panel").add_sprite
     def text7():
-        _text=textZone(
+        _text = textZone(
             name="text7",
-            size=Vector2(1000,100),
+            size=Vector2(1000, 100),
             text_color="brown",
             manager=game
         )
 
-        _text.set_position(Vector2(0.21,3.61), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Have fun!", align=(True,False))
+        _text.set_position(Vector2(0.21, 3.61), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_text("Have fun!", align=(True, False))
 
         return _text
 
