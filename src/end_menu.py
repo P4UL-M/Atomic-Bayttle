@@ -12,7 +12,6 @@ game = None
 
 
 def setup_manager(winner, loser):
-    print(winner, loser)
     """Corresponding to the screen once the game is finished"""
     global game
     CAMERA._off_screen = pygame.Surface((1920, 1080), flags=HWSURFACE + HWACCEL)

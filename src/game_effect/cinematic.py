@@ -232,7 +232,6 @@ class Death(Action):
         size = (64, 128)
         factor = (GM.map.rect.height - GM.map.water_level) / size[1]
         sp.config((size[0] * factor, size[1] * factor))
-        print((size[0] * factor, size[1] * factor), GM.map.rect.height - size[1] * factor)
         if self.player.rect.top > GM.map.rect.top:
             GM.group_particle.add(AnimatedParticule(sp, 15, Vector2(self.player.rect.left, GM.map.rect.height - size[1] * factor), 1, Vector2(1, 1), 0, False))
         else:
