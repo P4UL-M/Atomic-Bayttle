@@ -74,12 +74,8 @@ class Partie:
                     if event.player.life > 0:
                         self.map.water_target = self.map.rect.height - 30
                         self.timeline.add_action(Death(event.player), asyncron=True)
-                        self.timeline.add_action(Respawn(event.player))
-                        if event.player == self.actual_player:
-                            self.timeline.next(GAME, CAMERA)
+                        self.timeline.add_next(Respawn(event.player), 1)
                     else:
-                        if event.player == self.actual_player:
-                            self.timeline.next(GAME, CAMERA)
                         event.player.kill()
                         self.cycle_players.delete(name=event.player.name)
                 case tl.IMPACT:

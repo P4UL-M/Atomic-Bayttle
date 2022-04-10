@@ -75,11 +75,11 @@ class timeline:
             self.async_actions.append(action)
 
     # method to add action on top of the timeline
-    def add_next(self, action, asyncron=False):
-        if not asyncron:
-            self.actions.insert(0, action)
+    def add_next(self, action, index=0):
+        if index > len(self.actions):
+            self.actions.append(action)
         else:
-            self.async_actions.insert(0, action)
+            self.actions.insert(index, action)
 
     def update(self, *args, **kwargs):
         if self.__current_action is None:
@@ -170,7 +170,7 @@ class Turn(Action):
 
 
 class Respawn(Action):
-    def __init__(self, player, duration=5000):
+    def __init__(self, player, duration=10000):
         super().__init__(duration)
         self.player: Player = player
         self.interract_up = False
@@ -181,6 +181,7 @@ class Respawn(Action):
         self.player.visible = True
         self.player.phatom = True
         self.player.respawn()
+        CAMERA.zoom = 1.1
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
