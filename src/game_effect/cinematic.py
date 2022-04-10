@@ -115,6 +115,9 @@ class Turn(Action):
         GM = GAME.partie
         GM.mobs.update(GAME, CAMERA)
 
+        if not self.player.visible:
+            raise EndAction()
+
         if self.player.input_lock:
             self._start_time = pygame.time.get_ticks()
 
