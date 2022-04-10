@@ -17,7 +17,7 @@ TEAM = {
         "jump":(26,30),
         "fall":(25,28),
         "ground":(26,28),
-        "emote":(42,31),
+        "emote":(64,40),
         "speed_factor":1
     },
     "perso_2":{

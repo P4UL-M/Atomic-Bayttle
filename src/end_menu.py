@@ -55,15 +55,8 @@ def setup_manager(winner, loser):
     @principal.add_sprite
     def winner_sprite():
         manager = animation_Manager()
-        if winner == "perso_2":
-            spritesheet = sprite_sheet(PATH / "assets" / "perso" / "perso_2" / "emote.png", TEAM["perso_2"]["emote"])
-            spritesheet.config((420, 290))
-        elif winner == "perso_4":
-            spritesheet = sprite_sheet(PATH / "assets" / "perso" / "perso_4" / "emote.png", TEAM["perso_4"]["emote"])
-            spritesheet.config((310, 280))
-        else:
-            spritesheet = sprite_sheet(PATH / "assets" / "perso" / winner / "emote.png", TEAM[winner]["emote"])
-            spritesheet.config((240, 280))
+        spritesheet = sprite_sheet(PATH / "assets" / "perso" / winner / "emote.png", TEAM[winner]["emote"])
+        spritesheet.config(tuple(i*10 for i in TEAM[winner]["emote"]))
 
         if winner != "perso_1":
             manager.add_annimation("winner", spritesheet, 7)
@@ -84,15 +77,8 @@ def setup_manager(winner, loser):
     @principal.add_sprite
     def loser_sprite():
         manager = animation_Manager()
-        if loser == "perso_1":
-            spritesheet = sprite_sheet(PATH / "assets" / "menu" / "end" / "perso_1_loser.png", (64, 40))
-            spritesheet.config((512, 320))
-        elif loser == "perso_2":
-            spritesheet = sprite_sheet(PATH / "assets" / "menu" / "end" / "perso_2_loser.png", (72, 32))
-            spritesheet.config((576, 256))
-        else:
-            spritesheet = sprite_sheet(PATH / "assets" / "menu" / "end" / "{}_loser.png".format(loser), (34, 30))
-            spritesheet.config((272, 240))
+        spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "emote.png", TEAM[loser]["emote"])
+        spritesheet.config(tuple(i*8 for i in TEAM[loser]["emote"]))
 
         manager.add_annimation("loser", spritesheet, 7)
         manager.load("loser")
