@@ -57,10 +57,7 @@ def setup_manager(winner, loser):
         spritesheet = sprite_sheet(PATH / "assets" / "perso" / winner / "emote.png", TEAM[winner]["emote"])
         spritesheet.config(tuple(i * 10 for i in TEAM[winner]["emote"]))
 
-        if winner != "perso_1":
-            manager.add_annimation("winner", spritesheet, 7)
-        else:
-            manager.add_annimation("winner", spritesheet, 10)
+        manager.add_annimation("winner", spritesheet, 7)
         manager.load("winner")
 
         _sprite = animated_sprite(
@@ -79,7 +76,7 @@ def setup_manager(winner, loser):
         spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "losed.png", TEAM[loser]["losed"])
         spritesheet.config(tuple(i * 8 for i in TEAM[loser]["losed"]))
 
-        manager.add_annimation("loser", spritesheet, 5)
+        manager.add_annimation("loser", spritesheet, 12)
         manager.load("loser")
 
         _sprite = animated_sprite(
@@ -125,5 +122,31 @@ def setup_manager(winner, loser):
             GAME.start_menu()
 
         return _button
+
+    @principal.add_sprite
+    def palmer1():
+        _sprite=sprite(
+            name="palmer1",
+            path=PATH / "assets" / "menu" / "end" / "palmer1.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.05,0.85))
+        _sprite.set_scale(Vector2(4.0,4.0))
+
+        return _sprite
+
+    @principal.add_sprite
+    def palmer2():
+        _sprite=sprite(
+            name="palmer2",
+            path=PATH / "assets" / "menu" / "end" / "palmer2.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.95,0.85))
+        _sprite.set_scale(Vector2(4.0,4.0))
+
+        return _sprite
 
     game.actual_menu = principal
