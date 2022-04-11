@@ -2231,6 +2231,7 @@ def setup_manager():
         )
 
         _button.set_position(Vector2(0.27, 0.5248))
+        _button.rect.y = play_menu.get_sprite("plateform1").rect.top -  _button.manager.actual_surface.get_height()
 
         return _button
 
@@ -2336,7 +2337,8 @@ def setup_manager():
         )
 
         _button.set_position(Vector2(0.73, 0.5248))
-
+        _button.rect.y = play_menu.get_sprite("plateform2").rect.top -  _button.manager.actual_surface.get_height()
+        
         return _button
 
     # endregion

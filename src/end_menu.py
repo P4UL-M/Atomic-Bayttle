@@ -25,6 +25,33 @@ def setup_manager(winner, loser):
 
     principal = Menu("Principal", game)
 
+
+    @principal.add_sprite
+    def plateform():
+        _sprite=sprite(
+            name="plateform",
+            path=PATH / "assets" / "menu" / "end" / "plateform.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,0.87))
+        _sprite.set_scale(Vector2(2.9,2.9))
+
+        return _sprite
+
+    @principal.add_sprite
+    def button_background():
+        _sprite=sprite(
+            name="button_background",
+            path=PATH / "assets" / "menu" / "end" / "panel.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,0.2))
+        _sprite.set_scale(Vector2(5.0,5.0))
+
+        return _sprite
+
     @principal.add_sprite
     def name():
         _sprite = sprite(
@@ -33,7 +60,7 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.6))
+        _sprite.set_position(Vector2(0.5, 0.15))
         _sprite.set_scale(Vector2(7.0, 7.0))
 
         return _sprite
@@ -46,8 +73,47 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.75))
+        _sprite.set_position(Vector2(0.5, 0.25))
         _sprite.set_scale(Vector2(7.0, 7.0))
+
+        return _sprite
+
+    @principal.add_sprite
+    def totem1():
+        _sprite=sprite(
+            name="totem1",
+            path=PATH / "assets" / "menu" / "end" / "totem1.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.1,0.45))
+        _sprite.set_scale(Vector2(5.0,5.0))
+
+        return _sprite
+
+    @principal.add_sprite
+    def totem2():
+        _sprite=sprite(
+            name="totem2",
+            path=PATH / "assets" / "menu" / "end" / "totem2.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.9,0.45))
+        _sprite.set_scale(Vector2(5.0,5.0))
+
+        return _sprite
+
+    @principal.add_sprite
+    def chest():
+        _sprite=sprite(
+            name="chest",
+            path=PATH / "assets" / "menu" / "end" / "chest.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.5,0.651))
+        _sprite.set_scale(Vector2(6.0,6.0))
 
         return _sprite
 
@@ -66,15 +132,16 @@ def setup_manager(winner, loser):
             animation_manager=manager
         )
 
-        _sprite.set_position(Vector2(0.4, 0.25))
+        _sprite.set_position(Vector2(0.32, 0.612))
+        _sprite.rect.y = principal.get_sprite("plateform").rect.top - _sprite.manager.actual_surface.get_height()
 
         return _sprite
 
     @principal.add_sprite
     def loser_sprite():
         manager = animation_Manager()
-        spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "losed.png", TEAM[loser]["losed"])
-        spritesheet.config(tuple(i * 8 for i in TEAM[loser]["losed"]))
+        spritesheet = sprite_sheet(PATH / "assets" / "perso" / loser / "losed.png", TEAM[loser]["losed"][:2])
+        spritesheet.config(tuple(i * 8 for i in TEAM[loser]["losed"][:2]))
 
         manager.add_annimation("loser", spritesheet, 12)
         manager.load("loser")
@@ -85,7 +152,8 @@ def setup_manager(winner, loser):
             animation_manager=manager
         )
 
-        _sprite.set_position(Vector2(0.6, 0.25))
+        _sprite.set_position(Vector2(0.75, 0.66))
+        _sprite.rect.y = principal.get_sprite("plateform").rect.top - _sprite.manager.actual_surface.get_height() + 8*TEAM[loser]["losed"][2]
 
         return _sprite
 
@@ -97,7 +165,7 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _button.set_position(Vector2(0.8, 0.85))
+        _button.set_position(Vector2(0.8, 0.87))
         _button.set_scale(Vector2(5.1, 5.1))
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
@@ -114,7 +182,7 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _button.set_position(Vector2(0.2, 0.85))
+        _button.set_position(Vector2(0.2, 0.87))
         _button.set_scale(Vector2(5.1, 5.1))
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
@@ -122,7 +190,7 @@ def setup_manager(winner, loser):
             GAME.start_menu()
 
         return _button
-
+    
     @principal.add_sprite
     def palmer1():
         _sprite=sprite(
@@ -144,9 +212,9 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.95,0.85))
+        _sprite.set_position(Vector2(0.96,0.85))
         _sprite.set_scale(Vector2(4.0,4.0))
 
         return _sprite
-
+    
     game.actual_menu = principal
