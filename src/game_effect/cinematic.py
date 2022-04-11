@@ -238,8 +238,8 @@ class Death(Action):
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
-        sp = sprite_sheet(tl.PATH / "assets" / "kraken" / "idle1.png", (32, 64))
-        size = (64, 128)
+        size = (28, 33)
+        sp = sprite_sheet(tl.PATH / "assets" / "kraken" / "idle1.png", size)
         factor = (GM.map.rect.height - GM.map.water_level) / size[1]
         sp.config((size[0] * factor, size[1] * factor))
         if self.player.rect.top > GM.map.rect.top:

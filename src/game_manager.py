@@ -71,8 +71,8 @@ class Partie:
                 case tl.ENDTURN:
                     self.timeline.next(GAME, CAMERA, _type=Turn)
                 case tl.DEATH:
+                    self.map.water_target = self.map.rect.height - 30
                     if event.player.life > 0:
-                        self.map.water_target = self.map.rect.height - 30
                         self.timeline.add_action(Death(event.player), asyncron=True)
                         self.timeline.add_next(Respawn(event.player), 1)
                     else:

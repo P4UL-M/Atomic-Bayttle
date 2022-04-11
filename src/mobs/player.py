@@ -97,7 +97,8 @@ class Player(MOB):
                     y = self.rect.centery
                     size = 5 + event.damage / 3
                     GAME.partie.group_particle.add(textParticle(30, (x, y), Vector2(0, -1), 1, int(str(event.damage)[0]), (size, size)))
-                    GAME.partie.group_particle.add(textParticle(30, (x + size + 1, y), Vector2(0, -1), 1, int(str(event.damage)[1]), (size, size)))
+                    if len(str(event.damage)) > 1:
+                        GAME.partie.group_particle.add(textParticle(30, (x + size + 1, y), Vector2(0, -1), 1, int(str(event.damage)[1]), (size, size)))
                     MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
             case pygame.KEYDOWN:
                 if not self.lock and self.input_lock:

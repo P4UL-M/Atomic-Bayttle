@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 from src.tools.tools import Vector2, sprite_sheet, animation_Manager, MixeurAudio
 from src.tools.constant import PATH
+from src.weapons.WEAPON import *
+from math import log
 
 
 class Map(pygame.sprite.Sprite):
@@ -35,12 +37,15 @@ class Map(pygame.sprite.Sprite):
         pygame.draw.circle(self.cave_bg.image, (0, 0, 0, 0),
                            (_pos - self.cave_bg.rect.topleft)(), radius)
         self.mask = pygame.mask.from_surface(self.image)
-        self.water_target -= 5
+        if radius == Chainsaw().rayon:
+            self.water_target -= 1
+        else:
+            self.water_target -= radius * 0.2
 
     def update(self, serialized):
         MixeurAudio.gn.sound_factor.value = min(- 2 / self.rect.height * max(self.water_target, self.water_level) + 3, 3)
         if self.water_target + 1 < self.water_level:
-            self.water_level -= 0.1 * serialized
+            self.water_level -= 0.14 * serialized
             self.water_manager.load("agitated")
         elif self.water_target - 1 > self.water_level:
             self.water_level += 0.3 * serialized
