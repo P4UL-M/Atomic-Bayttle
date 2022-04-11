@@ -36,7 +36,7 @@ class Bullet(MOB):
 
         self.speed = 1
         self.path_sound = PATH / "assets" / "sound" / "kill_sound.wav"
-        self.damage = 20
+        self.damage = 15
         self.multiplicator_repulsion = 0.8
         self.friendly_fire = False
 
@@ -166,8 +166,7 @@ class WEAPON(pygame.sprite.Sprite):
             ev = pygame.event.Event(tl.ENDTURN)
             pygame.event.post(ev)
         for i in range(5):
-            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
-                x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
 
     def reload(self):
         ...
@@ -299,7 +298,7 @@ class Launcher(WEAPON):
 class Chainsaw(WEAPON):
     def __init__(self) -> None:
         self.rayon = 35
-        self.damage = 15
+        self.damage = 5
         self.multiplicator_repulsion = 0.2
         self.cooldown = 100
         self.__cooldown = 0
