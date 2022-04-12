@@ -219,9 +219,9 @@ class Respawn(Action):
         _sprite.rect = GM.map.image.get_rect(topleft=(0, 0))
         _sprite.mask = GM.map.mask.copy()
         for player in GM.players:
-            if not player.phatom and player.visible and player is not self:
+            if not player.phatom and player.visible and player is not self.player:
                 _sprite.mask.draw(player.mask, player.rect.topleft)
-
+        CAMERA._screen_UI.blit(_sprite.mask.to_surface(), (0, 0))
         while self.player.body_mask.collide(self.player.rect, _sprite):
             self.player.rect.x += 1
 
@@ -241,6 +241,7 @@ class Death(Action):
         size = (28, 33)
         sp = sprite_sheet(tl.PATH / "assets" / "kraken" / "idle1.png", size)
         factor = (GM.map.rect.height - GM.map.water_level) / size[1]
+        factor = max(3, factor)
         sp.config((size[0] * factor, size[1] * factor))
         if self.player.rect.top > GM.map.rect.top:
             GM.group_particle.add(AnimatedParticule(sp, 15, Vector2(self.player.rect.left, GM.map.rect.height - size[1] * factor), 1, Vector2(1, 1), 0, False))
