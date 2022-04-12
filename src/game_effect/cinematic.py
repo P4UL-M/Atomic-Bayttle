@@ -221,7 +221,6 @@ class Respawn(Action):
         for player in GM.players:
             if not player.phatom and player.visible and player is not self.player:
                 _sprite.mask.draw(player.mask, player.rect.topleft)
-        CAMERA._screen_UI.blit(_sprite.mask.to_surface(), (0, 0))
         while self.player.body_mask.collide(self.player.rect, _sprite):
             self.player.rect.x += 1
 
