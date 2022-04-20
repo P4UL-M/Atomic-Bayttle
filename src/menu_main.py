@@ -987,7 +987,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1041,7 +1041,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1095,7 +1095,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1148,7 +1148,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1216,7 +1216,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1270,7 +1270,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1324,7 +1324,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1378,7 +1378,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1446,7 +1446,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1500,7 +1500,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1568,7 +1568,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 Keyboard.save(PATH)
@@ -1622,7 +1622,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1691,7 +1691,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1745,7 +1745,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1813,7 +1813,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1867,7 +1867,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1935,7 +1935,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -1989,7 +1989,7 @@ def setup_manager():
                 _button.image = _button.spritesheet[-1]
                 _button.active = True
                 for sprite in keybind_menu.get_sprite("panel").sprites:
-                    if type(sprite) == Button and hasattr(sprite, "active") and sprite is not _button:
+                    if type(sprite) is Button and hasattr(sprite, "active") and sprite is not _button:
                         sprite.active = False
             else:
                 _button.active = False
@@ -2231,7 +2231,7 @@ def setup_manager():
         )
 
         _button.set_position(Vector2(0.27, 0.5248))
-        _button.rect.y = play_menu.get_sprite("plateform1").rect.top -  _button.manager.actual_surface.get_height()
+        _button.rect.y = play_menu.get_sprite("plateform1").rect.top - _button.manager.actual_surface.get_height()
 
         return _button
 
@@ -2337,8 +2337,8 @@ def setup_manager():
         )
 
         _button.set_position(Vector2(0.73, 0.5248))
-        _button.rect.y = play_menu.get_sprite("plateform2").rect.top -  _button.manager.actual_surface.get_height()
-        
+        _button.rect.y = play_menu.get_sprite("plateform2").rect.top - _button.manager.actual_surface.get_height()
+
         return _button
 
     # endregion

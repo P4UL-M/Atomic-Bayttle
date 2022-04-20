@@ -4,7 +4,7 @@ import pathlib
 
 PATH = pathlib.Path(__file__).parent
 
-if __name__=="__main__":
+if __name__ == "__main__":
     gn = generator(PATH / "assets" / "music" / "Halloween LOOP.wav")
     gn.start()
 
@@ -15,7 +15,7 @@ if __name__=="__main__":
     # import the gamew
     import src.pygame_edit
     from src.game import Game as game
-    
+
     try:
         game.run()
     except SystemExit:

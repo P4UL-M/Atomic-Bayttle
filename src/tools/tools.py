@@ -26,10 +26,7 @@ class Axis:
 
     @staticmethod
     def same_sign(x, y):
-        if Axis.sign(x) == Axis.sign(y):
-            return True
-        else:
-            return False
+        return Axis.sign(x) == Axis.sign(y)
 
     def update(self, x_press: bool = False, y_press: bool = False):
         if not x_press and not y_press:
@@ -232,8 +229,8 @@ class Keyboard:
             if type(val) == Key:
                 if val.key == key or val.alias == key:
                     return True
-        else:
-            return False
+
+        return False
 
     @staticmethod
     def load(path):
@@ -298,7 +295,7 @@ class MixeurAudio:
 
     @staticmethod
     def update_musique():
-        if MixeurAudio.__musicMixer.get_queue() == None:
+        if MixeurAudio.__musicMixer.get_queue() is None:
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__musicMixer.queue(pygame.mixer.Sound(_buffer))
         elif not MixeurAudio.__musicMixer.get_busy() and not MixeurAudio.__musicMixer.get_queue():
