@@ -48,7 +48,6 @@ def returnSurfaceToTexture(pygame_surface:pygame.Surface,rgba=False):
     return Text
 
 def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:float,maximize=True) -> tuple[float,float,tuple[float,float]]:
-    global texID
     x,y = pos
 
     surf_ratio = pygame_surface.get_width()/pygame_surface.get_height() # 10/5 -> 2
@@ -81,7 +80,6 @@ def surfaceToScreen(pygame_surface:pygame.Surface,pos:tuple[float,float],zoom:fl
     return x,y,(x_zoom,y_zoom)
 
 def uiToScreen(pygame_surface:pygame.Surface):
-    global texUI
     if pygame_surface:
         surfaceToTexture(pygame_surface,texUI, True)
 
