@@ -63,7 +63,7 @@ class Game:
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7
-            
+
         raise SystemExit
 
     @staticmethod

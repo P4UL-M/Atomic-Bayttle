@@ -232,7 +232,7 @@ class Keyboard:
             if type(val) == Key:
                 if val.key == key or val.alias == key:
                     return True
-            
+
         return False
 
     @staticmethod
