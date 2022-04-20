@@ -26,10 +26,7 @@ class Axis:
 
     @staticmethod
     def same_sign(x, y):
-        if Axis.sign(x) == Axis.sign(y):
-            return True
-        else:
-            return False
+        return Axis.sign(x) == Axis.sign(y)
 
     def update(self, x_press: bool = False, y_press: bool = False):
         if not x_press and not y_press:
