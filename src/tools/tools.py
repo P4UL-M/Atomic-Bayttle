@@ -232,8 +232,8 @@ class Keyboard:
             if type(val) == Key:
                 if val.key == key or val.alias == key:
                     return True
-        else:
-            return False
+
+        return False
 
     @staticmethod
     def load(path):
