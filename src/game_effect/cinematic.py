@@ -1,6 +1,5 @@
 import pygame
 from src.tools.constant import EndAction
-import pygame
 from pygame.locals import *
 from src.map.render_map import Map
 from src.mobs.player import Player
