@@ -17,7 +17,7 @@ class BodyPartSprite(pygame.mask.Mask):
 
         x_off = target.rect.left - (pos[0] + self.pos.x)
         y_off = target.rect.top - (pos[1] + self.pos.y)
-        return self.overlap(target.mask, (x_off, y_off)) != None
+        return self.overlap(target.mask, (x_off, y_off)) is not None
 
     def collide_normal(self, pos: tuple, target: pygame.sprite.Sprite) -> Vector2:
         x = target.rect.left - (pos[0] + self.pos.x)
@@ -84,7 +84,7 @@ class MOB(pygame.sprite.Sprite):
 
         j = 0
         for i in _movements:
-            if _d.arg != None:  # arg is none we have no movement
+            if _d.arg is not None:  # arg is none we have no movement
                 __d = _d.unity * i
                 __d = self.collide_reaction(__d, i, _sprite, GAME.serialized)
                 self.rect.move_ip(*__d)
@@ -94,7 +94,7 @@ class MOB(pygame.sprite.Sprite):
 
     def collide_reaction(self, __d: Vector2, i: int, target, serialized):
         _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
-        if _n.arg != None:  # * arg is not none then we have collision
+        if _n.arg is not None:  # * arg is not none then we have collision
             if self.actual_speed / serialized > self.speed * 2 and __d.lenght > 0:  # boucing effect
                 _angle = 2 * _n.arg - __d.arg  # the absolute angle of our new vector
                 _dangle = __d.arg - _angle  # the diff of angle between the two

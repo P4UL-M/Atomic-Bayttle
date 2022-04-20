@@ -65,7 +65,7 @@ class Bullet(MOB):
             self.real_rect.width // 4)))] + [self.actual_speed % (self.real_rect.width // 4)]
 
         for i in _movements:
-            if _d.arg != None:  # arg is none we have no movement
+            if _d.arg is not None:  # arg is none we have no movement
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
