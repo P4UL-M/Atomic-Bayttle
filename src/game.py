@@ -63,8 +63,8 @@ class Game:
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7
-        else:
-            raise SystemExit
+            
+        raise SystemExit
 
     @staticmethod
     def start_partie(j1, j2):
