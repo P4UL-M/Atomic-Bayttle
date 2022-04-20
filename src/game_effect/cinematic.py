@@ -95,7 +95,7 @@ class timeline:
                 self.async_actions.remove(action)
 
     def next(self, GAME, CAMERA, _type=None):
-        if self.__current_action and (not _type or type(self.__current_action) == _type):
+        if self.__current_action and (not _type or type(self.__current_action) is _type):
             self.__current_action.clean(GAME, CAMERA)
             self.__current_action = None
 

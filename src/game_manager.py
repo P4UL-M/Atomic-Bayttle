@@ -37,7 +37,7 @@ class Partie:
 
     @property
     def players(self) -> list[Player]:
-        return [mob for mob in self.mobs.sprites() if type(mob) == Player]
+        return [mob for mob in self.mobs.sprites() if type(mob) is Player]
 
     @property
     def actual_player(self):
@@ -110,7 +110,7 @@ class Partie:
         _surf.blit(self.map.image, (0, 0))
         self.mobs.draw(_surf)
         for player in self.mobs.sprites():
-            if type(player) == Player:
+            if type(player) is Player:
                 if player.weapon_manager.current_weapon.visible:
                     _surf.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
         self.group_particle.draw(_surf)
