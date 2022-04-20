@@ -12,7 +12,6 @@ _list_weapon = []
 
 
 def add_weapon(_class):
-    global _list_weapon
     _list_weapon.append(_class)
     return _class
 
