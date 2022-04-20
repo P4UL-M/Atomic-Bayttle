@@ -53,10 +53,8 @@ def returnSurfaceToTexture(pygame_surface: pygame.Surface, rgba=False):
     glBindTexture(GL_TEXTURE_2D, 0)
     return Text
 
-
 def surfaceToScreen(pygame_surface: pygame.Surface, pos: tuple[float, float], zoom: float, maximize=True) -> tuple[float, float, tuple[float, float]]:
     x, y = pos
-
     surf_ratio = pygame_surface.get_width() / pygame_surface.get_height()  # 10/5 -> 2
     screen_ratio = info.current_w / info.current_h  # 9/5 -> 1.8
     if maximize:

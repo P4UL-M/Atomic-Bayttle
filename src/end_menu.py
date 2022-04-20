@@ -25,30 +25,29 @@ def setup_manager(winner, loser):
 
     principal = Menu("Principal", game)
 
-
     @principal.add_sprite
     def plateform():
-        _sprite=sprite(
+        _sprite = sprite(
             name="plateform",
             path=PATH / "assets" / "menu" / "end" / "plateform.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,0.87))
-        _sprite.set_scale(Vector2(2.9,2.9))
+        _sprite.set_position(Vector2(0.5, 0.87))
+        _sprite.set_scale(Vector2(2.9, 2.9))
 
         return _sprite
 
     @principal.add_sprite
     def button_background():
-        _sprite=sprite(
+        _sprite = sprite(
             name="button_background",
             path=PATH / "assets" / "menu" / "end" / "panel.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,0.2))
-        _sprite.set_scale(Vector2(5.0,5.0))
+        _sprite.set_position(Vector2(0.5, 0.2))
+        _sprite.set_scale(Vector2(5.0, 5.0))
 
         return _sprite
 
@@ -80,40 +79,40 @@ def setup_manager(winner, loser):
 
     @principal.add_sprite
     def totem1():
-        _sprite=sprite(
+        _sprite = sprite(
             name="totem1",
             path=PATH / "assets" / "menu" / "end" / "totem1.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.1,0.45))
-        _sprite.set_scale(Vector2(5.0,5.0))
+        _sprite.set_position(Vector2(0.1, 0.45))
+        _sprite.set_scale(Vector2(5.0, 5.0))
 
         return _sprite
 
     @principal.add_sprite
     def totem2():
-        _sprite=sprite(
+        _sprite = sprite(
             name="totem2",
             path=PATH / "assets" / "menu" / "end" / "totem2.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.9,0.45))
-        _sprite.set_scale(Vector2(5.0,5.0))
+        _sprite.set_position(Vector2(0.9, 0.45))
+        _sprite.set_scale(Vector2(5.0, 5.0))
 
         return _sprite
 
     @principal.add_sprite
     def chest():
-        _sprite=sprite(
+        _sprite = sprite(
             name="chest",
             path=PATH / "assets" / "menu" / "end" / "chest.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5,0.651))
-        _sprite.set_scale(Vector2(6.0,6.0))
+        _sprite.set_position(Vector2(0.5, 0.651))
+        _sprite.set_scale(Vector2(6.0, 6.0))
 
         return _sprite
 
@@ -153,7 +152,7 @@ def setup_manager(winner, loser):
         )
 
         _sprite.set_position(Vector2(0.75, 0.66))
-        _sprite.rect.y = principal.get_sprite("plateform").rect.top - _sprite.manager.actual_surface.get_height() + 8*TEAM[loser]["losed"][2]
+        _sprite.rect.y = principal.get_sprite("plateform").rect.top - _sprite.manager.actual_surface.get_height() + 8 * TEAM[loser]["losed"][2]
 
         return _sprite
 
@@ -190,31 +189,31 @@ def setup_manager(winner, loser):
             GAME.start_menu()
 
         return _button
-    
+
     @principal.add_sprite
     def palmer1():
-        _sprite=sprite(
+        _sprite = sprite(
             name="palmer1",
             path=PATH / "assets" / "menu" / "end" / "palmer1.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.05,0.85))
-        _sprite.set_scale(Vector2(4.0,4.0))
+        _sprite.set_position(Vector2(0.05, 0.85))
+        _sprite.set_scale(Vector2(4.0, 4.0))
 
         return _sprite
 
     @principal.add_sprite
     def palmer2():
-        _sprite=sprite(
+        _sprite = sprite(
             name="palmer2",
             path=PATH / "assets" / "menu" / "end" / "palmer2.png",
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.96,0.85))
-        _sprite.set_scale(Vector2(4.0,4.0))
+        _sprite.set_position(Vector2(0.96, 0.85))
+        _sprite.set_scale(Vector2(4.0, 4.0))
 
         return _sprite
-    
+
     game.actual_menu = principal
