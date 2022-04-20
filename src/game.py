@@ -15,7 +15,6 @@ from src.tools.tools import MixeurAudio  # nopep8
 from src.tools.constant import EndPartie  # nopep8
 import src.menu_main as menu_main  # nopep8
 import src.end_menu as end_menu  # nopep8
-#import test
 import src.game_manager as game_manager  # nopep8
 import src.map.Background as bg  # nopep8
 
@@ -59,7 +58,6 @@ class Game:
                 Camera.render_bg()
             Camera.render()
 
-            # print(Game.clock.get_fps())
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7
