@@ -29,6 +29,7 @@ class Game:
     partie = None
     menu = None
 
+    @staticmethod
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav", volume=0.35)
@@ -65,6 +66,7 @@ class Game:
         else:
             raise SystemExit
 
+    @staticmethod
     def start_partie(j1, j2):
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1.1", j1)
@@ -77,6 +79,7 @@ class Game:
         Camera.maximise = True
         MixeurAudio.stop("music")
 
+    @staticmethod
     def start_menu():
         menu_main.setup_manager()
         Game.menu = menu_main.game
@@ -94,6 +97,7 @@ class Camera:
     cache = False
     _bg = bg.background()
 
+    @staticmethod
     def render() -> None:
         Camera.zoom = max(1, Camera.zoom)
         Camera.x, Camera.y, Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen, (Camera.x, Camera.y), Camera.zoom, maximize=Camera.maximise)
@@ -102,6 +106,7 @@ class Camera:
             gl.uiToScreen(Camera._screen_UI if not Camera.cache else None)  # try to blit only if not null take more time to check than blit it anyway
             Camera.cache = True
 
+    @staticmethod
     def to_virtual(x, y) -> tuple[int, int]:
 
         x_zoom = Camera.zoom * Camera.zoom_offset[0]
@@ -114,6 +119,7 @@ class Camera:
 
         return (int(_x * Camera._off_screen.get_width()), int(_y * Camera._off_screen.get_height()))
 
+    @staticmethod
     def to_absolute(x, y) -> tuple[int, int]:
 
         x_zoom = Camera.zoom * Camera.zoom_offset[0]
@@ -124,6 +130,7 @@ class Camera:
 
         return (int(_x * INFO.current_w), int(_y * INFO.current_h))
 
+    @staticmethod
     def render_bg():
         Camera.zoom = max(1, Camera.zoom)
         _bg, _bgsize, _bcloud, _bx, _bsize, _ccloud, _cx, _csize = next(Camera._bg)  # background dynamique
