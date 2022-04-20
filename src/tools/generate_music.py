@@ -33,14 +33,14 @@ class generator:
         self.sound_offset = 500
 
     def start(self):
-        if self.p == None:
+        if self.p is None:
             self.p = Process(target=worker, args=(self.Sounds_buffer, self.sound_factor, self.musique_original, self.sound_offset))
             self.p.start()
         else:
             print(self.p)
 
     def reset(self):
-        if self.p != None:
+        if self.p is not None:
             self.p.terminate()
             self.p = None
         self.sound_factor.value = 1

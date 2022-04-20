@@ -298,7 +298,7 @@ class MixeurAudio:
 
     @staticmethod
     def update_musique():
-        if MixeurAudio.__musicMixer.get_queue() == None:
+        if MixeurAudio.__musicMixer.get_queue() is None:
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__musicMixer.queue(pygame.mixer.Sound(_buffer))
         elif not MixeurAudio.__musicMixer.get_busy() and not MixeurAudio.__musicMixer.get_queue():
