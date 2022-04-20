@@ -19,7 +19,6 @@ def setup_manager(winner, loser):
     CAMERA.HUD = False
     CAMERA.zoom = 1
     CAMERA.maximise = False
-    MixeurAudio.set_musique(PATH / "assets" / "music" / f"theme_{winner}.mp3",True)
     pygame.mouse.set_visible(True)
 
     game = Menu_Manager(name="end_screen", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")
@@ -27,6 +26,11 @@ def setup_manager(winner, loser):
     game.running = True
 
     principal = Menu("Principal", game)
+
+    @principal.set_setup
+    def setup():
+        MixeurAudio.stop("all")
+        MixeurAudio.set_musique(PATH / "assets" / "music" / f"theme_{winner}.mp3")
 
     @principal.add_sprite
     def plateform():
