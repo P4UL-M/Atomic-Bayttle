@@ -30,7 +30,8 @@ def setup_manager(winner, loser):
     @principal.set_setup
     def setup():
         MixeurAudio.stop("all")
-        MixeurAudio.set_musique(PATH / "assets" / "music" / f"theme_{winner}.mp3")
+        MixeurAudio.set_musique(PATH / "assets" / "music" / f"theme_{winner}.mp3", False)
+        MixeurAudio.set_musique(PATH / "assets" / "music" / "main-loop.wav", True, True)
 
     @principal.add_sprite
     def plateform():

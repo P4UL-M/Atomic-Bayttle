@@ -9,6 +9,7 @@ IMPACT = pygame.USEREVENT + 3
 ENDTURN = pygame.USEREVENT + 4
 GRAVITY = pygame.USEREVENT + 5
 INTERACT = pygame.USEREVENT + 6
+ENDMUSIC = pygame.USEREVENT + 7
 
 TEAM = {
     "perso_1": {

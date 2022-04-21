@@ -240,7 +240,7 @@ class Death(Action):
         factor = (GM.map.rect.height - GM.map.water_level) / size[1]
         factor = max(3, factor)
         sp.config((size[0] * factor, size[1] * factor))
-        if self.player.rect.top > GM.map.rect.top:
+        if self.player.body_mask.collide(self.player.rect.topleft, GM.map):
             GM.group_particle.add(AnimatedParticule(sp, 15, Vector2(self.player.rect.left, GM.map.rect.height - size[1] * factor), 1, Vector2(1, 1), 0, False))
         else:
             raise EndAction()
