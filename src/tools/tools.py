@@ -305,7 +305,7 @@ class MixeurAudio:
         if MixeurAudio.__inGameMixer.get_queue() is None:
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__inGameMixer.queue(pygame.mixer.Sound(_buffer))
-        elif not MixeurAudio.__inGameMixer.get_busy() and not MixeurAudio.__musicMixer.get_queue():
+        elif not MixeurAudio.__inGameMixer.get_busy() and not MixeurAudio.__inGameMixer.get_queue():
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
             MixeurAudio.__inGameMixer.play(pygame.mixer.Sound(_buffer))
 

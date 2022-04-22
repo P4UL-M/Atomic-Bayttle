@@ -92,7 +92,7 @@ class Bullet(MOB):
 
     def update(self, GAME, CAMERA):
         GM = GAME.partie
-        if not self.rect.colliderect(GM.map.rect):
+        if (self.rect.y > 0 and not self.rect.colliderect(GM.map.rect)) or self.rect.y < -GM.map.rect.height * 0.3:
             self.kill()
         return super().update(GAME, CAMERA)
 

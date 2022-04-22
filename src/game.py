@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+
 from src.tools.constant import PATH
 
 pygame.init()
@@ -10,13 +11,13 @@ pygame.display.set_mode((int(INFO.current_w), int(INFO.current_h)), OPENGL | DOU
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
-import src.tools.opengl_pygame as gl  # nopep8
-from src.tools.tools import MixeurAudio  # nopep8
-from src.tools.constant import EndPartie  # nopep8
-import src.menu_main as menu_main  # nopep8
 import src.end_menu as end_menu  # nopep8
 import src.game_manager as game_manager  # nopep8
 import src.map.Background as bg  # nopep8
+import src.menu_main as menu_main  # nopep8
+import src.tools.opengl_pygame as gl  # nopep8
+from src.tools.constant import EndPartie  # nopep8
+from src.tools.tools import MixeurAudio  # nopep8
 
 # there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
 

@@ -1,6 +1,7 @@
 # only library that the new process need
-from src.tools.generate_music import generator
 import pathlib
+
+from src.tools.generate_music import generator
 
 PATH = pathlib.Path(__file__).parent
 
