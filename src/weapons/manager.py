@@ -23,7 +23,7 @@ class inventory:
     def update(self, owner, GAME, CAMERA):
         if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock and not owner.input_lock:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
-        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock:
+        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Sniper or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max//2):
             if self.__cooldown + self.cooldown < pygame.time.get_ticks():
                 self.__cooldown = pygame.time.get_ticks()
                 self.index += 1

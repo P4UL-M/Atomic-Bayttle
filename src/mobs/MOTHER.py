@@ -9,7 +9,7 @@ class BodyPartSprite(pygame.mask.Mask):
         super().__init__(size, True)
         self.pos = Vector2(*[ceil(i) for i in pos])
 
-    def collide(self, pos: tuple, target: pygame.sprite.Sprite) -> bool:
+    def collide(self, pos: tuple, target: pygame.sprite.Sprite, coord=False) -> bool:
         try:
             target.__getattribute__("rect")
         except:
@@ -17,6 +17,8 @@ class BodyPartSprite(pygame.mask.Mask):
 
         x_off = target.rect.left - (pos[0] + self.pos.x)
         y_off = target.rect.top - (pos[1] + self.pos.y)
+        if coord:
+            return self.overlap(target.mask, (x_off, y_off))
         return self.overlap(target.mask, (x_off, y_off)) is not None
 
     def collide_normal(self, pos: tuple, target: pygame.sprite.Sprite) -> Vector2:

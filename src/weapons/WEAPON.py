@@ -7,6 +7,7 @@ from src.tools.tools import Vector2, MixeurAudio, Keyboard, sprite_sheet
 from src.weapons.physique import *
 from src.mobs.MOTHER import MOB
 from math import pi, cos, sin
+import random
 
 _list_weapon = []
 
@@ -35,13 +36,13 @@ class Bullet(MOB):
 
         self.speed = 1
         self.path_sound = PATH / "assets" / "sound" / "kill_sound.wav"
-        self.damage = 15
+        self.damage = 4
         self.multiplicator_repulsion = 0.8
         self.friendly_fire = False
 
         self.particle_sprite = sprite_sheet(
             PATH / "assets" / "explosion" / "explosion-6.png", (48, 48))
-        self.size_particule = 0.3
+        self.size_particule = 0.9
         self.particle_sprite.config(
             (self.radius * 2 * self.size_particule, self.radius * 2 * self.size_particule))
 
@@ -69,13 +70,15 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                        x,y = self.mask.collide(self.real_rect.topleft, player, True)
+                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
                         GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                         self.kill()
                         MixeurAudio.play_effect(self.path_sound)
                         return
                 if self.mask.collide(self.real_rect.topleft, GM.map):
-                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.centerx, "y": self.real_rect.centery, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                    x,y = self.mask.collide(self.real_rect.topleft, GM.map, True)
+                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
                     GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                     self.kill()
                     MixeurAudio.play_effect(self.path_sound)
@@ -143,6 +146,7 @@ class WEAPON(pygame.sprite.Sprite):
         self.__cooldown = 0
         self.magazine = 0
         self.angle = 0
+        self.angle_spread = 0.005*pi
 
         self.lock = False
 
@@ -156,7 +160,7 @@ class WEAPON(pygame.sprite.Sprite):
                     self.lock = False
 
     def fire(self, right_direction, group, particle_group, force=None, speed: int = 1):
-        angle = self.angle
+        angle = self.angle + random.uniform(-self.angle_spread, self.angle_spread)
         x = self.l * 0.4 * cos(angle) * (1.5 if right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
         Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, right_direction, group)
@@ -209,9 +213,9 @@ class Sniper(WEAPON):
     def __init__(self) -> None:
         self.bullet = PATH / "assets" / "laser" / "14.png"
         self.v0 = 100
-        self.rayon = 30
-        self.cooldown = 100
-        self.magazine_max = 4
+        self.rayon = 5
+        self.cooldown = 12
+        self.magazine_max = 16
         super().__init__(PATH / "assets" / "weapons" / "sniper.png")
 
         self.bullet_UI = sprite_sheet(PATH / "assets" / "weapons" / "UI" / "red_bullet.png", (24, 24))
@@ -221,7 +225,7 @@ class Sniper(WEAPON):
         self.magazine = self.magazine_max
 
     def drawUI(self, CAMERA):
-        for i in range(self.magazine):
+        for i in range(min(self.magazine,7)):
             _bullet: pygame.Surface = self.bullet_UI[pygame.time.get_ticks() // 100 + i]
             CAMERA._screen_UI.blit(_bullet, (_bullet.get_width() * i + 4 * i + 3, CAMERA._screen_UI.get_height() - _bullet.get_height() - 3))
 
@@ -297,7 +301,7 @@ class Launcher(WEAPON):
 class Chainsaw(WEAPON):
     def __init__(self) -> None:
         self.rayon = 35
-        self.damage = 5
+        self.damage = 2
         self.multiplicator_repulsion = 0.2
         self.cooldown = 100
         self.__cooldown = 0
@@ -336,8 +340,7 @@ class Chainsaw(WEAPON):
                 self.idle_sound()
             self.idle_sound = MixeurAudio.play_effect(PATH / "assets" / "sound" / "chainsaw_hit.wav", 0.5)
         for i in range(5):
-            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
-                x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
+            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
 
     def update(self, pos, right, _dangle, lock, CAMERA):
         super().update(pos, right, _dangle, lock, CAMERA)
