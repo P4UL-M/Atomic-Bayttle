@@ -170,8 +170,8 @@ class WEAPON(pygame.sprite.Sprite):
     def reload(self):
         ...
 
-    def update(self, pos: tuple, right: bool, _dangle: int, lock, CAMERA):
-        self.angle += _dangle
+    def update(self, pos: tuple, right: bool, _dangle: int, lock, CAMERA, serialized):
+        self.angle += _dangle * serialized
         if self.angle > pi / 2:
             self.angle = pi / 2
         elif self.angle < -pi / 2:
@@ -254,7 +254,7 @@ class Launcher(WEAPON):
                     if Keyboard.interact.is_pressed and event.value <= 2 and not owner.lock:
                         if owner.weapon_manager.zoom_factor > 0.5:
                             owner.weapon_manager.zoom_factor -= 0.2
-                        pygame.event.post(pygame.event.Event(tl.CHARGING, {"weapon": self, "value": event.value + 0.016}))
+                        pygame.event.post(pygame.event.Event(tl.CHARGING, {"weapon": self, "value": event.value + 0.016 * GAME.serialized}))
                         self.lock = True
                         self.factor = event.value + 0.016
                         if not self.chargingsound:
@@ -339,8 +339,8 @@ class Chainsaw(WEAPON):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
 
-    def update(self, pos, right, _dangle, lock, CAMERA):
-        super().update(pos, right, _dangle, lock, CAMERA)
+    def update(self, pos, right, _dangle, lock, CAMERA, serialized):
+        super().update(pos, right, _dangle, lock, CAMERA, serialized)
         if not lock:
             if not self.idle_sound:
                 self.idle_sound = MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "chainsaw_idle.wav", 1.2)

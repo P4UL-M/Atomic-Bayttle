@@ -1,4 +1,5 @@
 from multiprocessing import Process, Value, Manager, Queue
+import multiprocessing
 from pydub import AudioSegment
 from queue import Empty
 
@@ -33,6 +34,7 @@ class generator:
         self.sound_offset = 500
 
     def start(self):
+        multiprocessing.freeze_support()
         if self.p is None:
             self.p = Process(target=worker, args=(self.Sounds_buffer, self.sound_factor, self.musique_original, self.sound_offset))
             self.p.start()
