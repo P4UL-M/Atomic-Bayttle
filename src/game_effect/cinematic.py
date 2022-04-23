@@ -120,19 +120,21 @@ class Turn(Action):
             self._start_time = pygame.time.get_ticks()
 
         # render
-        CAMERA._screen_UI.blit(heart(self.player.life, 3).image, (12, 12))
+        CAMERA._screen_UI.blit(heart(self.player.life, 2).image, (12, 12))
 
         numbers = [int(a) for a in str(int(self.player.life_multiplicator * 100))]
 
         if len(numbers) > 2:
-            CAMERA._screen_UI.blit(digit(numbers[0], 3).image, (12, 45))
+            CAMERA._screen_UI.blit(digit(numbers[0], 2).image, (12, 34))
         if len(numbers) > 1:
-            CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 2], 3).image, (12 + (len(numbers) - 2) * 33, 45))
-        CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 1], 3).image, (45 + (len(numbers) - 2) * 33, 45))
-        CAMERA._screen_UI.blit(digit("%", 3).image, (78 + (len(numbers) - 2) * 33, 45))
-        timer = self.time // 1000 + 1
-        CAMERA._screen_UI.blit(FONT.render(
-            str(timer), 1, (0, 0, 0)), (640, 50))
+            CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 2], 2).image, (12 + (len(numbers) - 2) * 22, 34))
+        CAMERA._screen_UI.blit(digit(numbers[len(numbers) - 1], 2).image, (34 + (len(numbers) - 2) * 22, 34))
+        CAMERA._screen_UI.blit(digit("%", 2).image, (56 + (len(numbers) - 2) * 22, 34))
+        timer = [int(a) for a in str(self.time // 1000 + 1)]
+        if len(timer) > 1:
+            CAMERA._screen_UI.blit(digit(timer[len(timer) - 2], 2).image, (720//2 - 33 + (len(timer) - 1) * 22, 12))
+        CAMERA._screen_UI.blit(digit(timer[len(timer) - 1], 2).image, (720//2 + (len(timer) - 1) * 11, 12))
+        #CAMERA._screen_UI.blit(FONT.render(str(timer), 1, (0, 0, 0)), (640, 50))
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie

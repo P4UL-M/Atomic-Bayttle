@@ -92,7 +92,7 @@ class Camera:
     maximise = True
     HUD = True
     _off_screen: pygame.Surface = pygame.Surface((1536, 864), flags=SRCALPHA)
-    _screen_UI: pygame.Surface = pygame.Surface((1280, 720), flags=SRCALPHA)
+    _screen_UI: pygame.Surface = pygame.Surface((720, 480), flags=SRCALPHA)
     cache = False
     _bg = bg.background()
 
