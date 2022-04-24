@@ -198,6 +198,31 @@ class Cycle:
             raise AttributeError
 
 
+class SizedList:
+    def __init__(self,*arg) -> None:
+        self.__list = [*arg]
+        self.__size = len(arg)
+
+    @property
+    def size(self):
+        return self.__size
+    
+    @size.setter
+    def size(self,val):
+        self.__size = val
+        self.__list = self.__list[-val:]
+
+    def __iadd__(self,val):
+        self.__list.append(val)
+        self.__list = self.__list[-self.__size:]
+        return self
+    
+    def __getitem__(self, index):
+        return self.__list[index]
+
+    def __iter__(self):
+        return iter(self.__list)
+
 class Key:
     def __init__(self, key: int, alias: int = None):
         self.key = key

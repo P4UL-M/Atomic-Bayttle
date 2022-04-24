@@ -4,7 +4,7 @@ from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard
+from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
 from src.game_effect.particule import AnimatedParticule
 from src.weapons.physique import *
 from src.tools.constant import EndPartie
@@ -30,10 +30,13 @@ class Partie:
         self.checkpoint = Vector2(100, 50)
         self.checkpoints = {"j1.1": Vector2(160, 50), "j1.2": Vector2(400, 50), "j2.1": Vector2(1030, 50), "j2.2": Vector2(1235, 50)}
         pygame.mouse.set_visible(False)
-        self.cooldown_tour = 15000
 
         self.timeline = timeline()
-        self.cycle_players = Cycle()
+        self.timeline.add_link(Turn,TurnTransition)
+        self.timeline.add_link(TurnTransition,Turn)
+        self.last_players = SizedList(4)
+
+        self.turn_length = 15000
 
     @property
     def players(self) -> list[Player]:
@@ -51,8 +54,10 @@ class Partie:
         player.lock = lock
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
         self.mobs.add(player)
-        self.timeline.actions = []
-        self.timeline.add_action(Turn(self.actual_player, duration=self.cooldown_tour))
+        self.last_players.size = len(self.players)
+        self.last_players += player
+        self.timeline.purge()
+        self.timeline.add_action(Turn(GAME,CAMERA))
 
     def add_object(self, name, pos, path):
         self.group_object.add(Object_map(name, pos, path))
