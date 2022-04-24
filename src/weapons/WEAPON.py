@@ -70,14 +70,14 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        x,y = self.mask.collide(self.real_rect.topleft, player, True)
+                        x, y = self.mask.collide(self.real_rect.topleft, player, True)
                         pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
                         GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                         self.kill()
                         MixeurAudio.play_effect(self.path_sound)
                         return
                 if self.mask.collide(self.real_rect.topleft, GM.map):
-                    x,y = self.mask.collide(self.real_rect.topleft, GM.map, True)
+                    x, y = self.mask.collide(self.real_rect.topleft, GM.map, True)
                     pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
                     GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                     self.kill()
@@ -146,7 +146,7 @@ class WEAPON(pygame.sprite.Sprite):
         self.__cooldown = 0
         self.magazine = 0
         self.angle = 0
-        self.angle_spread = 0.005*pi
+        self.angle_spread = 0.005 * pi
 
         self.lock = False
 
@@ -225,7 +225,7 @@ class Sniper(WEAPON):
         self.magazine = self.magazine_max
 
     def drawUI(self, CAMERA):
-        for i in range(min(self.magazine,7)):
+        for i in range(min(self.magazine, 7)):
             _bullet: pygame.Surface = self.bullet_UI[pygame.time.get_ticks() // 100 + i]
             CAMERA._screen_UI.blit(_bullet, (_bullet.get_width() * i + 4 * i + 3, CAMERA._screen_UI.get_height() - _bullet.get_height() - 3))
 
