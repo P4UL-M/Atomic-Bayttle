@@ -342,7 +342,7 @@ class Chainsaw(WEAPON):
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
 
-    def update(self, pos, right, _dangle, lock, CAMERA,serialized):
+    def update(self, pos, right, _dangle, lock, CAMERA, serialized):
         super().update(pos, right, _dangle, lock, CAMERA, serialized)
         if not lock:
             if not self.idle_sound:
