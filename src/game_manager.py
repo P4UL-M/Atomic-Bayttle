@@ -32,8 +32,8 @@ class Partie:
         pygame.mouse.set_visible(False)
 
         self.timeline = timeline()
-        self.timeline.add_link(Turn,TurnTransition)
-        self.timeline.add_link(TurnTransition,Turn)
+        self.timeline.add_link(Turn, TurnTransition)
+        self.timeline.add_link(TurnTransition, Turn)
         self.last_players = SizedList(4)
 
         self.turn_length = 15000
@@ -57,7 +57,7 @@ class Partie:
         self.last_players.size = len(self.players)
         self.last_players += player
         self.timeline.purge()
-        self.timeline.add_action(Turn(GAME,CAMERA))
+        self.timeline.add_action(Turn(GAME, CAMERA))
 
     def add_object(self, name, pos, path):
         self.group_object.add(Object_map(name, pos, path))
