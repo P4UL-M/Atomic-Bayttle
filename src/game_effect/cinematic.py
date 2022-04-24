@@ -88,7 +88,7 @@ class timeline:
         except EndAction:
             self.__current_action.clean(*args, **kwargs)
             if type(self.__current_action) in self.__links:
-                self.add_action(self.__links[type(self.__current_action)](*args,**kwargs))
+                self.add_action(self.__links[type(self.__current_action)](*args, **kwargs))
             self.__current_action = None
         for action in self.async_actions:
             try:
@@ -99,9 +99,9 @@ class timeline:
 
     def next(self, GAME, CAMERA, _type=None):
         if self.__current_action and (not _type or type(self.__current_action) is _type):
-            self.__current_action.clean(GAME,CAMERA)
+            self.__current_action.clean(GAME, CAMERA)
             if type(self.__current_action) in self.__links:
-                self.add_action(self.__links[type(self.__current_action)](GAME,CAMERA))
+                self.add_action(self.__links[type(self.__current_action)](GAME, CAMERA))
             self.__current_action = None
 
     def purge(self):
@@ -122,7 +122,6 @@ class Turn(Action):
                 break
         else:
             self.player = GM.last_players[0]
-        
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
@@ -149,7 +148,7 @@ class Turn(Action):
         if len(timer) > 1:
             CAMERA._screen_UI.blit(digit(timer[len(timer) - 2], 2).image, (720 // 2 - 33 + (len(timer) - 1) * 22, 12))
         CAMERA._screen_UI.blit(digit(timer[len(timer) - 1], 2).image, (720 // 2 + (len(timer) - 1) * 11, 12))
-        
+
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.input_lock = True
