@@ -63,7 +63,8 @@ def setup_manager():
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
 
     principal = Menu("Principal", game, childs=["Settings", "Play", "Rules"])
-    settings_menu = Menu("Settings", game, parent="Principal", childs="Keybinds")
+    settings_menu = Menu("Settings", game, parent="Principal", childs=["Keybinds", "Credits"])
+    credits_menu = Menu("Credits", game, parent="Settings")
     keybind_menu = Menu("Keybinds", game, parent="Settings")
     play_menu = Menu("Play", game, parent="Principal")
     rules_menu = Menu("Rules", game, parent="Principal")
@@ -210,6 +211,23 @@ def setup_manager():
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
         def goback():
             game.actual_menu = settings_menu.get_parent()
+
+        return _button
+
+    @settings_menu.add_sprite
+    def credits_button():
+        _button=Button(
+            name="credits_button",
+            path=PATH / "assets" / "menu" / "settings" / "credits.png",
+            manager=game
+        )
+
+        _button.set_position(Vector2(0.82, 0.85))
+        _button.set_scale(Vector2(2.0, 2.0))
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def credits_change():
+            game.actual_menu = settings_menu.get_child("Credits")
 
         return _button
 
@@ -902,6 +920,111 @@ def setup_manager():
         return _button
 
     # endregion
+
+    # region Credits menu
+
+    @credits_menu.add_sprite
+    def gobackbutton():
+        _button=Button(
+            name="goback",
+            path=PATH / "assets" / "menu" / "rules" / "goback.png",
+            manager=game
+        )
+
+        _button.set_position(Vector2(0.17, 0.86))
+        _button.set_scale(Vector2(4.7, 4.7))
+
+        @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
+        def goback():
+            game.actual_menu = credits_menu.get_parent()
+
+        return _button
+
+    @credits_menu.add_sprite
+    def producers():
+        _text=textZone(
+            name="producers",
+            size=Vector2(1900,150),
+            manager=game,
+            text_color="brown"
+        )
+
+        _text.set_position(Vector2(0.5,0.15))
+        _text.set_text("This game was produced by:", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def Poool():
+        _text=textZone(
+            name="Poool",
+            size=Vector2(1500,100),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5,0.21))
+        _text.set_text("Paul Mairesse", align=(True,False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def Axell():
+        _text=textZone(
+            name="Axell",
+            size=Vector2(1500,100),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5,0.28))
+        _text.set_text("Axel Loones", align=(True,False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def Looki():
+        _text=textZone(
+            name="Looki",
+            size=Vector2(1500,100),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5,0.35))
+        _text.set_text("Louis Le Meilleur", align=(True,False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def Roquetteur_2():
+        _text=textZone(
+            name="Roquetteur_2",
+            size=Vector2(1500,100),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5,0.42))
+        _text.set_text("Joseph Benard", align=(True,False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def Unicorn():
+        _text=textZone(
+            name="Unicorn",
+            size=Vector2(1500,100),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.set_position(Vector2(0.5,0.49))
+        _text.set_text("Theo de Aranjo", align=(True,False))
+
+        return _text
+
+    #endregion
 
     # region Keybinds_menu
 
