@@ -216,7 +216,7 @@ def setup_manager():
 
     @settings_menu.add_sprite
     def credits_button():
-        _button=Button(
+        _button = Button(
             name="credits_button",
             path=PATH / "assets" / "menu" / "settings" / "credits.png",
             manager=game
@@ -925,7 +925,7 @@ def setup_manager():
 
     @credits_menu.add_sprite
     def gobackbutton():
-        _button=Button(
+        _button = Button(
             name="goback",
             path=PATH / "assets" / "menu" / "rules" / "goback.png",
             manager=game
@@ -942,89 +942,89 @@ def setup_manager():
 
     @credits_menu.add_sprite
     def producers():
-        _text=textZone(
+        _text = textZone(
             name="producers",
-            size=Vector2(1900,150),
+            size=Vector2(1900, 150),
             manager=game,
             text_color="brown"
         )
 
-        _text.set_position(Vector2(0.5,0.15))
+        _text.set_position(Vector2(0.5, 0.15))
         _text.set_text("This game was produced by:", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
     def Poool():
-        _text=textZone(
+        _text = textZone(
             name="Poool",
-            size=Vector2(1500,100),
+            size=Vector2(1500, 100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5,0.21))
-        _text.set_text("Paul Mairesse", align=(True,False))
+        _text.set_position(Vector2(0.5, 0.21))
+        _text.set_text("Paul Mairesse", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
     def Axell():
-        _text=textZone(
+        _text = textZone(
             name="Axell",
-            size=Vector2(1500,100),
+            size=Vector2(1500, 100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5,0.28))
-        _text.set_text("Axel Loones", align=(True,False))
+        _text.set_position(Vector2(0.5, 0.28))
+        _text.set_text("Axel Loones", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
     def Looki():
-        _text=textZone(
+        _text = textZone(
             name="Looki",
-            size=Vector2(1500,100),
+            size=Vector2(1500, 100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5,0.35))
-        _text.set_text("Louis Le Meilleur", align=(True,False))
+        _text.set_position(Vector2(0.5, 0.35))
+        _text.set_text("Louis Le Meilleur", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
     def Roquetteur_2():
-        _text=textZone(
+        _text = textZone(
             name="Roquetteur_2",
-            size=Vector2(1500,100),
+            size=Vector2(1500, 100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5,0.42))
-        _text.set_text("Joseph Benard", align=(True,False))
+        _text.set_position(Vector2(0.5, 0.42))
+        _text.set_text("Joseph Benard", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
     def Unicorn():
-        _text=textZone(
+        _text = textZone(
             name="Unicorn",
-            size=Vector2(1500,100),
+            size=Vector2(1500, 100),
             manager=game,
             text_color="black"
         )
 
-        _text.set_position(Vector2(0.5,0.49))
-        _text.set_text("Theo de Aranjo", align=(True,False))
+        _text.set_position(Vector2(0.5, 0.49))
+        _text.set_text("Theo de Aranjo", align=(True, False))
 
         return _text
 
-    #endregion
+    # endregion
 
     # region Keybinds_menu
 
