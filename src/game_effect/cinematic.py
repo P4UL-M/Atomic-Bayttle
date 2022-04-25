@@ -51,6 +51,7 @@ class timeline:
         self.actions: list[Action] = []
         self.async_actions: list[Action] = []
         self.__current_action = None
+        self.__links = {}
 
     @property
     def next_action_type(self):
@@ -86,6 +87,8 @@ class timeline:
             self.__current_action.update(*args, **kwargs)
         except EndAction:
             self.__current_action.clean(*args, **kwargs)
+            if type(self.__current_action) in self.__links:
+                self.add_action(self.__links[type(self.__current_action)](*args, **kwargs))
             self.__current_action = None
         for action in self.async_actions:
             try:
@@ -97,17 +100,28 @@ class timeline:
     def next(self, GAME, CAMERA, _type=None):
         if self.__current_action and (not _type or type(self.__current_action) is _type):
             self.__current_action.clean(GAME, CAMERA)
+            if type(self.__current_action) in self.__links:
+                self.add_action(self.__links[type(self.__current_action)](GAME, CAMERA))
             self.__current_action = None
 
     def purge(self):
         self.actions.clear()
         self.async_actions.clear()
 
+    def add_link(self, _from, _to):
+        self.__links[_from] = _to
+
 
 class Turn(Action):
-    def __init__(self, player, duration=None):
-        super().__init__(duration)
-        self.player = player
+    def __init__(self, GAME, CAMERA):
+        GM = GAME.partie
+        super().__init__(GM.turn_length)
+        for player in GM.players:
+            if player not in GM.last_players:
+                self.player = player
+                break
+        else:
+            self.player = GM.last_players[0]
 
     def __update__(self, GAME, CAMERA):
         GM = GAME.partie
@@ -134,27 +148,9 @@ class Turn(Action):
         if len(timer) > 1:
             CAMERA._screen_UI.blit(digit(timer[len(timer) - 2], 2).image, (720 // 2 - 33 + (len(timer) - 1) * 22, 12))
         CAMERA._screen_UI.blit(digit(timer[len(timer) - 1], 2).image, (720 // 2 + (len(timer) - 1) * 11, 12))
-        #CAMERA._screen_UI.blit(FONT.render(str(timer), 1, (0, 0, 0)), (640, 50))
 
     def setup(self, GAME, CAMERA):
         GM = GAME.partie
-
-        # verification if problem in turn
-        if not self.player.visible:
-            if self.player not in GM.players:
-                try:
-                    GM.cycle_players.delete(name=self.player.name)
-                except ValueError:
-                    pass
-                GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
-                GM.timeline.add_action(TurnTransition(GM.actual_player))
-                raise EndAction()
-            GM.timeline.purge()
-            GM.timeline.add_action(Respawn(self.player))
-            GM.timeline.add_action(Turn(self.player, duration=GM.cooldown_tour))
-            GM.timeline.add_action(TurnTransition(self.player))
-            raise EndAction()
-
         self.player.input_lock = True
         self.player.weapon_manager.visible = True
         self.player.weapon_manager.reload()
@@ -164,9 +160,7 @@ class Turn(Action):
     def clean(self, GAME, CAMERA):
         GM = GAME.partie
         self.player.lock = True
-        GM.cycle_players += 1
-        GM.timeline.add_next(TurnTransition(self.player, duration=None))
-        GM.timeline.add_action(Turn(GM.actual_player, duration=GM.cooldown_tour))
+        GM.last_players += self.player
 
 
 class Respawn(Action):
@@ -225,11 +219,6 @@ class Respawn(Action):
             self.player.rect.x += 1
 
 
-class transition(Action):
-    def __init__(self, duration=None):
-        super().__init__(duration)
-
-
 class Death(Action):
     def __init__(self, player, duration=1500):
         super().__init__(duration)
@@ -254,9 +243,9 @@ class Death(Action):
 
 
 class TurnTransition(Action):
-    def __init__(self, player, duration=1000):
-        super().__init__(duration)
-        self.player: Player = player
+    def __init__(self, GAME, CAMERA):
+        super().__init__()
+        self.player: Player = GAME.partie.last_players[-1]
         self.state = {}
         self.check = 0
 
