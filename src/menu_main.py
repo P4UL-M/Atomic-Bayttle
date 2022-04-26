@@ -934,14 +934,19 @@ def setup_manager():
 
         _button.set_position(Vector2(0.09, 0.95))
         _button.set_scale(Vector2(4.7, 4.7))
+        _button.start = 0
 
         @_button.Event(None)
         def auto_scroll():
             for sprite in credits_menu.sprites():
-                if _button.name != sprite.name:
-                    x,y=sprite.rect.center
-                    sprite.set_position(Vector2(x,y-1))
+                if _button.start < 1500:
+                    _button.start += 1
+                else:
+                    if _button.name != sprite.name:
+                        x,y=sprite.rect.center
+                        sprite.set_position(Vector2(x,y-1))
             if credits_menu.get_sprite("assets").rect.center[1] < 15:
+                _button.start = 0
                 for sprite in credits_menu.sprites():
                     if _button.name != sprite.name:
                         sprite.set_position(sprite.base_position)
