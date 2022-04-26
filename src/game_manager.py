@@ -116,8 +116,17 @@ class Partie:
         self.mobs.draw(_surf)
         for player in self.mobs.sprites():
             if type(player) is Player:
+                c=-15
                 if player.weapon_manager.current_weapon.visible:
                     _surf.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
+            
+                for w in player.weapon_manager.weapon_list:
+                    if w==player.weapon_manager.current_weapon:
+                        _surf.blit(w.icon, (player.rect.x+c, player.rect.y-18))
+                        c+=18
+                    else:
+                        _surf.blit(w.icon_opac, (player.rect.x+c, player.rect.y-18))
+                        c+=18
         self.group_particle.draw(_surf)
         self.group_object.draw(_surf)
         _surf.blit(self.map.water_manager.surface, (0, self.map.water_level))
