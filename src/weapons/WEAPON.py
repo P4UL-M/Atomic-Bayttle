@@ -136,13 +136,13 @@ class WEAPON(pygame.sprite.Sprite):
     def __init__(self, path):
         super().__init__()
         self.visible = True
-        self.real_image = pygame.image.load(path/"image.png").convert_alpha()
-        self.icon=pygame.image.load(path/"icon.png").convert_alpha()
-        transColor = self.icon.get_at((0,0))
+        self.real_image = pygame.image.load(path / "image.png").convert_alpha()
+        self.icon = pygame.image.load(path / "icon.png").convert_alpha()
+        transColor = self.icon.get_at((0, 0))
         self.icon.set_colorkey(transColor)
-        self.icon_opac=self.icon.copy()
+        self.icon_opac = self.icon.copy()
         self.icon_opac.set_alpha(80)
-        transColor = self.icon_opac.get_at((0,0))
+        transColor = self.icon_opac.get_at((0, 0))
         self.icon_opac.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
