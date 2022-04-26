@@ -1,13 +1,17 @@
+from __future__ import annotations
 import pygame
 from .MOTHER import MOB
-from src.tools.tools import animation_Manager, sprite_sheet, Keyboard, Vector2, MixeurAudio
+from src.tools.tools import animation_Manager, sprite_sheet, Keyboard, Vector2, MixeurAudio, ScreenSize
 from src.tools.constant import TEAM, EndPartie, ENDTURN, DEATH, PATH
 import src.tools.constant as tl
 from src.game_effect.particule import Particule, textParticle
 from src.weapons.WEAPON import Sniper, Launcher, Chainsaw
 from src.weapons.manager import inventory
 
-INFO = pygame.display.Info()
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.game import *
 
 
 class Player(MOB):
@@ -106,7 +110,7 @@ class Player(MOB):
         super().handle(event)
         self.weapon_manager.handle(event, self, GAME, CAMERA)
 
-    def update(self, GAME, CAMERA):
+    def update(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed,
@@ -141,7 +145,7 @@ class Player(MOB):
                                           self.image.get_width() // 2, Vector2(-self.x_axis.value * 2, 0), 0.25 * self.actual_speed, pygame.Color(20, 20, 0)))
 
             # * CAMERA Update of the player
-            x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
+            x, y = CAMERA.to_virtual(ScreenSize.resolution.x / 2, ScreenSize.resolution.y / 2)
             _x, _y = (self.rect.left, self.rect.top)
             CAMERA.x += (_x - x) * 0.0001
             CAMERA.y += (_y - y) * 0.0001

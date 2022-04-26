@@ -1,4 +1,4 @@
-"""class mother des armes"""
+from __future__ import annotations
 import pygame
 from src.game_effect.particule import Particule, AnimatedParticule
 from src.tools.constant import PATH, IMPACT
@@ -8,6 +8,11 @@ from src.weapons.physique import *
 from src.mobs.MOTHER import MOB
 from math import pi, cos, sin
 import random
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.game import *
 
 _list_weapon = []
 
@@ -317,7 +322,7 @@ class Chainsaw(WEAPON):
         self.bar = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "EnergyBar.png").convert_alpha()
         self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 2), int(self.bar.get_height() * 2)))
 
-    def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
+    def handle(self, event: pygame.event.Event, owner, GAME: Game, CAMERA: Camera):
         """methode appele a chaque event"""
         match event.type:
             case tl.CHARGING:
@@ -359,7 +364,7 @@ class Chainsaw(WEAPON):
     def reload(self):
         self.magazine = self.magazine_max
 
-    def drawUI(self, CAMERA):
+    def drawUI(self, CAMERA: Camera):
         slider = self.slider.copy()
         slider = pygame.transform.scale(slider, (int(self.bar.get_width() * (self.magazine / self.magazine_max) * 0.765), slider.get_height()))
         CAMERA._screen_UI.blit(self.bar, (10, CAMERA._screen_UI.get_height() - self.bar.get_height() - 10))

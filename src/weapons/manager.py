@@ -1,8 +1,13 @@
+from __future__ import annotations
 import src.weapons.WEAPON as wp
 from src.tools.tools import Keyboard
 from src.tools.constant import CHARGING
 import pygame
 from random import choice
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.game import *
 
 
 class inventory:
@@ -17,10 +22,14 @@ class inventory:
         self.index = self.weapon_list.index(self.current_weapon)
         self.zoom_factor = 1
 
-    def handle(self, event, owner, GAME, CAMERA):
+    def handle(self, event, owner, GAME: Game, CAMERA: Camera):
         self.current_weapon.handle(event, owner, GAME, CAMERA)
 
-    def update(self, owner, GAME, CAMERA):
+    def update(self, owner, GAME: Game, CAMERA: Camera):
+        """
+        :param GAME: the Game constant
+        :type GAME: Game
+        """
         if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock and not owner.input_lock:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
         if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Sniper or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):

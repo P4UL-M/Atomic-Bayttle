@@ -368,3 +368,18 @@ class MixeurAudio:
         MixeurAudio.__inGameMixer.set_volume(MixeurAudio.volume_effect)
         for mixer in MixeurAudio.__listEffectChannel:
             mixer.set_volume(MixeurAudio.volume_effect)
+
+
+class ScreenSize:
+    resolution = Vector2(0, 0)
+
+    @staticmethod
+    def load(path):
+        settings = json.load(open(path / "data" / "settings.json"))
+        ScreenSize.resolution = Vector2(*settings["resolution"]) if settings["resolution"] else Vector2(pygame.display.Info().current_w, pygame.display.Info().current_h)
+
+    @staticmethod
+    def save(path):
+        settings = json.load(open(path / "data" / "settings.json"))
+        settings["resolution"] = [*ScreenSize.resolution]
+        json.dump(settings, open(path / "data" / "settings.json", "w"))

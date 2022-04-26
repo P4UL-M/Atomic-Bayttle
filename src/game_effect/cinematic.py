@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pygame
 from src.tools.constant import EndAction
 from pygame.locals import *
@@ -5,14 +6,17 @@ from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard
+from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard, ScreenSize
 from src.game_effect.particule import AnimatedParticule, Particule
 from src.weapons.physique import *
 from src.weapons.WEAPON import WEAPON
 from src.game_effect.UI import *
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.game import *
 
 FONT = pygame.font.SysFont("Arial", 24)
-INFO = pygame.display.Info()
 
 
 class Action:
@@ -113,7 +117,7 @@ class timeline:
 
 
 class Turn(Action):
-    def __init__(self, GAME, CAMERA):
+    def __init__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         super().__init__(GM.turn_length)
         for player in GM.players:
@@ -123,7 +127,7 @@ class Turn(Action):
         else:
             self.player = GM.last_players[0]
 
-    def __update__(self, GAME, CAMERA):
+    def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         GM.mobs.update(GAME, CAMERA)
 
@@ -149,7 +153,7 @@ class Turn(Action):
             CAMERA._screen_UI.blit(digit(timer[len(timer) - 2], 2).image, (720 // 2 - 33 + (len(timer) - 1) * 22, 12))
         CAMERA._screen_UI.blit(digit(timer[len(timer) - 1], 2).image, (720 // 2 + (len(timer) - 1) * 11, 12))
 
-    def setup(self, GAME, CAMERA):
+    def setup(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         self.player.input_lock = True
         self.player.weapon_manager.visible = True
@@ -157,19 +161,19 @@ class Turn(Action):
         for player in GM.players:
             player.lock = player != self.player
 
-    def clean(self, GAME, CAMERA):
+    def clean(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         self.player.lock = True
         GM.last_players += self.player
 
 
 class Respawn(Action):
-    def __init__(self, player, duration=10000):
+    def __init__(self, player: Player, duration=10000):
         super().__init__(duration)
         self.player: Player = player
         self.interract_up = False
 
-    def setup(self, GAME, CAMERA):
+    def setup(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         self.player.rect.topleft = GM.checkpoint()
         self.player.visible = True
@@ -177,7 +181,7 @@ class Respawn(Action):
         self.player.respawn()
         CAMERA.zoom = 1.1
 
-    def __update__(self, GAME, CAMERA):
+    def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
 
         self.player.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
@@ -193,7 +197,7 @@ class Respawn(Action):
 
         # self.player.weapon_manager.update(self.player, GAME, CAMERA)
         # * CAMERA Update of the player
-        x, y = CAMERA.to_virtual(INFO.current_w / 2, INFO.current_h / 2)
+        x, y = CAMERA.to_virtual(ScreenSize.resolution.x / 2, ScreenSize.resolution.y / 2)
         _x, _y = (self.player.rect.left, self.player.rect.top)
         CAMERA.x += (_x - x) * 0.0001
         CAMERA.y += (_y - y) * 0.0001
@@ -204,7 +208,7 @@ class Respawn(Action):
         else:
             self.interract_up = True
 
-    def clean(self, GAME, CAMERA):
+    def clean(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         self.player.phatom = False
         self.player.life -= 1
@@ -220,11 +224,11 @@ class Respawn(Action):
 
 
 class Death(Action):
-    def __init__(self, player, duration=1500):
+    def __init__(self, player: Player, duration=1500):
         super().__init__(duration)
         self.player: Player = player
 
-    def setup(self, GAME, CAMERA):
+    def setup(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         size = (28, 33)
         sp = sprite_sheet(tl.PATH / "assets" / "kraken" / "idle1.png", size)
@@ -236,20 +240,20 @@ class Death(Action):
         else:
             raise EndAction()
 
-    def __update__(self, GAME, CAMERA):
+    def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         if pygame.time.get_ticks() % 50 == 0:
             GM.group_particle.add(Particule(40, Vector2(self.player.rect.centerx, self.player.rect.bottom), 2, Vector2(0, -1), 0.5, Color(0, 0, 0), False))
 
 
 class TurnTransition(Action):
-    def __init__(self, GAME, CAMERA):
+    def __init__(self, GAME: Game, CAMERA: Camera):
         super().__init__()
         self.player: Player = GAME.partie.last_players[-1]
         self.state = {}
         self.check = 0
 
-    def __update__(self, GAME, CAMERA):
+    def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         _state = {}
         for mob in GM.mobs:

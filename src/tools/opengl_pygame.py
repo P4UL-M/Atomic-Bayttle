@@ -1,13 +1,12 @@
 from OpenGL.GL import *
+from src.tools.tools import ScreenSize
 import pygame
-
-info = pygame.display.Info()
 
 # basic opengl configuration
 
 
-def config(info):
-    glViewport(0, 0, info.current_w, info.current_h)
+def config():
+    glViewport(0, 0, ScreenSize.resolution.x, ScreenSize.resolution.y)
     glDepthRange(0, 1)
     glMatrixMode(GL_PROJECTION)
     glMatrixMode(GL_MODELVIEW)
@@ -57,7 +56,7 @@ def returnSurfaceToTexture(pygame_surface: pygame.Surface, rgba=False):
 def surfaceToScreen(pygame_surface: pygame.Surface, pos: tuple[float, float], zoom: float, maximize=True) -> tuple[float, float, tuple[float, float]]:
     x, y = pos
     surf_ratio = pygame_surface.get_width() / pygame_surface.get_height()  # 10/5 -> 2
-    screen_ratio = info.current_w / info.current_h  # 9/5 -> 1.8
+    screen_ratio = ScreenSize.resolution.x / ScreenSize.resolution.y  # 9/5 -> 1.8
     if maximize:
         if surf_ratio > screen_ratio:
             y_zoom = 1
@@ -111,7 +110,7 @@ def simpleRender(text, pos: tuple[float, float], size, zoom: float, maximize=Tru
     x, y = pos
 
     surf_ratio = size[0] / size[1]  # 10/5 -> 2
-    screen_ratio = info.current_w / info.current_h  # 9/5 -> 1.8
+    screen_ratio = ScreenSize.resolution.x / ScreenSize.resolution.y  # 9/5 -> 1.8
     if maximize:
         if surf_ratio > screen_ratio:
             y_zoom = 1

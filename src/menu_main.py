@@ -2628,7 +2628,7 @@ def setup_manager():
         )
 
         _text.set_position(Vector2(0.21, 0.17), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("You will play 2 characters that you will chose before the game starts!", align=(True, False))
+        _text.set_text("""You will play 2 characters that you will chose before the game starts!""", align=(True, False))
 
         return _text
 

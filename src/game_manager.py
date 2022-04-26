@@ -54,7 +54,6 @@ class Partie:
         player.lock = lock
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
         self.mobs.add(player)
-        self.last_players.size = len(self.players)
         self.last_players += player
         self.timeline.purge()
         self.timeline.add_action(Turn(GAME, CAMERA))

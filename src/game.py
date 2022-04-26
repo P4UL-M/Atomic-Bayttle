@@ -2,12 +2,14 @@ import pygame
 from pygame.locals import *
 
 from src.tools.constant import PATH
+from src.tools.tools import ScreenSize
 
 pygame.init()
-INFO = pygame.display.Info()
-INFO = pygame.display.Info()
+ScreenSize.load(PATH)
+print(ScreenSize.resolution)
 
-pygame.display.set_mode((int(INFO.current_w), int(INFO.current_h)), OPENGL | DOUBLEBUF | FULLSCREEN, depth=16)
+
+pygame.display.set_mode(ScreenSize.resolution(), OPENGL | DOUBLEBUF | FULLSCREEN, depth=16)
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 
@@ -33,7 +35,7 @@ class Game:
     def run():
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav", volume=0.35)
-        gl.config(INFO)
+        gl.config()
 
         menu_main.setup_manager()
         Game.menu = menu_main.game
@@ -53,13 +55,12 @@ class Game:
                     Game.partie = None
             else:
                 Game.menu.Update()
-
             gl.cleangl()
             if Game.partie or True:
                 Camera.render_bg()
             Camera.render()
 
-            print(f"FPS: {Game.clock.get_fps()}")
+            #print(f"FPS: {Game.clock.get_fps()}")
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7
@@ -110,11 +111,11 @@ class Camera:
     def to_virtual(x, y) -> tuple[int, int]:
 
         x_zoom = Camera.zoom * Camera.zoom_offset[0]
-        local = x / INFO.current_w - 0.5
+        local = x / ScreenSize.resolution.x - 0.5
         _x = local / x_zoom + Camera.x + 0.5
 
         y_zoom = Camera.zoom * Camera.zoom_offset[1]
-        local = y / INFO.current_h - 0.5
+        local = y / ScreenSize.resolution.y - 0.5
         _y = local / y_zoom + Camera.y + 0.5
 
         return (int(_x * Camera._off_screen.get_width()), int(_y * Camera._off_screen.get_height()))
@@ -128,7 +129,7 @@ class Camera:
         y_zoom = Camera.zoom * Camera.zoom_offset[1]
         _y = (y / Camera._off_screen.get_height() - 0.5 - Camera.y) * y_zoom + 0.5
 
-        return (int(_x * INFO.current_w), int(_y * INFO.current_h))
+        return (int(_x * ScreenSize.resolution.x), int(_y * ScreenSize.resolution.y))
 
     @staticmethod
     def render_bg():
