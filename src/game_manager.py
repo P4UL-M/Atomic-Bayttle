@@ -10,6 +10,7 @@ from src.weapons.physique import *
 from src.tools.constant import EndPartie
 from src.weapons.WEAPON import WEAPON
 from src.game_effect.cinematic import *
+import time
 
 GAME = None
 CAMERA = None
@@ -119,13 +120,14 @@ class Partie:
                 if player.weapon_manager.current_weapon.visible:
                     _surf.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
             
-                for w in player.weapon_manager.weapon_list:
-                    if w==player.weapon_manager.current_weapon:
-                        _surf.blit(w.icon, (player.rect.x+c, player.rect.y-18))
-                        c+=18
-                    else:
-                        _surf.blit(w.icon_opac, (player.rect.x+c, player.rect.y-18))
-                        c+=18
+                if time.time()-player.weapon_manager.last_switch<1.5:
+                    for w in player.weapon_manager.weapon_list:
+                        if w==player.weapon_manager.current_weapon:
+                            _surf.blit(w.icon, (player.rect.x+c, player.rect.y-18))
+                            c+=18
+                        else:
+                            _surf.blit(w.icon_opac, (player.rect.x+c, player.rect.y-18))
+                            c+=18
         self.group_particle.draw(_surf)
         self.group_object.draw(_surf)
         _surf.blit(self.map.water_manager.surface, (0, self.map.water_level))

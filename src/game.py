@@ -9,7 +9,7 @@ ScreenSize.load(PATH)
 print(ScreenSize.resolution)
 
 
-pygame.display.set_mode(ScreenSize.resolution(), OPENGL | DOUBLEBUF | FULLSCREEN, depth=16)
+pygame.display.set_mode(ScreenSize.resolution(), OPENGL | DOUBLEBUF, depth=16)
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
 

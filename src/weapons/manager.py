@@ -5,6 +5,7 @@ from src.tools.constant import CHARGING
 import pygame
 from random import choice
 from typing import TYPE_CHECKING
+import time
 
 if TYPE_CHECKING:
     from src.game import *
@@ -21,6 +22,8 @@ class inventory:
 
         self.index = self.weapon_list.index(self.current_weapon)
         self.zoom_factor = 1
+
+        self.last_switch=0
 
     def handle(self, event, owner, GAME: Game, CAMERA: Camera):
         self.current_weapon.handle(event, owner, GAME, CAMERA)
@@ -40,6 +43,7 @@ class inventory:
                     self.index = 0
                 self.current_weapon.clean()
                 self.current_weapon = self.weapon_list[self.index]
+                self.last_switch=time.time()
         self.current_weapon.update(owner.rect.center, owner.right_direction, owner.y_axis * 0.05, owner.lock, CAMERA, GAME.serialized)
         self.current_weapon.visible = self.visible and owner.visible
 
