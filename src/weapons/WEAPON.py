@@ -141,7 +141,14 @@ class WEAPON(pygame.sprite.Sprite):
     def __init__(self, path):
         super().__init__()
         self.visible = True
-        self.real_image = pygame.image.load(path).convert_alpha()
+        self.real_image = pygame.image.load(path/"image.png").convert_alpha()
+        self.icon=pygame.image.load(path/"icon.png").convert_alpha()
+        transColor = self.icon.get_at((0,0))
+        self.icon.set_colorkey(transColor)
+        self.icon_opac=self.icon.copy()
+        self.icon_opac.set_alpha(80)
+        transColor = self.icon_opac.get_at((0,0))
+        self.icon_opac.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
         self.real_rect = self.real_image.get_rect(topleft=(0, 0))
@@ -221,7 +228,7 @@ class Sniper(WEAPON):
         self.rayon = 5
         self.cooldown = 12
         self.magazine_max = 16
-        super().__init__(PATH / "assets" / "weapons" / "sniper.png")
+        super().__init__(PATH / "assets" / "weapons" / "sniper")
 
         self.bullet_UI = sprite_sheet(PATH / "assets" / "weapons" / "UI" / "red_bullet.png", (24, 24))
         self.bullet_UI.config((24 * 2, 24 * 2))
@@ -243,7 +250,7 @@ class Launcher(WEAPON):
         self.rayon = 50
         self.cooldown = 500
         self.__cooldown = 0
-        super().__init__(PATH / "assets" / "weapons" / "launcher.png")
+        super().__init__(PATH / "assets" / "weapons" / "launcher")
         self.pivot = (1 / 2, 1 / 2)
         self.magazine_max = 1
 
@@ -313,7 +320,7 @@ class Chainsaw(WEAPON):
         self.sound_cooldown = 1000
         self.__sound_cooldown = 0
         self.idle_sound = None
-        super().__init__(PATH / "assets" / "weapons" / "chainsaw.png")
+        super().__init__(PATH / "assets" / "weapons" / "chainsaw")
         self.pivot = (1 / 5, 1 / 2)
         self.magazine_max = 15
 
