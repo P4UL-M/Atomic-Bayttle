@@ -2,16 +2,19 @@ import pygame
 from pygame.locals import *
 
 from src.tools.constant import PATH
-from src.tools.tools import ScreenSize
+from src.tools.tools import ScreenSize, Vector2
+
 
 pygame.init()
-ScreenSize.load(PATH)
-print(ScreenSize.resolution)
 
-
-pygame.display.set_mode(ScreenSize.resolution(), OPENGL | DOUBLEBUF, depth=16)
+pygame.display.set_mode(flags=OPENGL | DOUBLEBUF, depth=16)
+ScreenSize.resolution = Vector2(*pygame.display.get_window_size())
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
+img = pygame.image.load(PATH / "assets" / "menu" / "mouse.png").convert_alpha()  # you could also load an image
+img = pygame.transform.scale(img, (img.get_width() * 1.3, img.get_height() * 1.3))
+color = pygame.cursors.Cursor((0, 0), img)
+pygame.mouse.set_cursor(*color)
 
 import src.end_menu as end_menu  # nopep8
 import src.game_manager as game_manager  # nopep8
