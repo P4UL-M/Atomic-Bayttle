@@ -942,13 +942,13 @@ def setup_manager():
                 if _button.start < 1500:
                     _button.start += 1
                 else:
-                    if _button.name != sprite.name:
+                    if _button.name != sprite.name and "palmer" not in sprite.name:
                         x,y=sprite.rect.center
                         sprite.set_position(Vector2(x,y-1))
             if credits_menu.get_sprite("assets").rect.center[1] < 15:
                 _button.start = 0
                 for sprite in credits_menu.sprites():
-                    if _button.name != sprite.name:
+                    if _button.name != sprite.name or "palmer" not in sprite.name:
                         sprite.set_position(sprite.base_position)
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
@@ -956,6 +956,32 @@ def setup_manager():
             game.actual_menu = credits_menu.get_parent()
 
         return _button
+
+    @credits_menu.add_sprite
+    def palmer1():
+        _sprite = sprite(
+            name="palmer1",
+            path=PATH / "assets" / "menu" / "end" / "palmer1.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.05, 0.85))
+        _sprite.set_scale(Vector2(4.0, 4.0))
+
+        return _sprite
+
+    @credits_menu.add_sprite
+    def palmer2():
+        _sprite = sprite(
+            name="palmer2",
+            path=PATH / "assets" / "menu" / "end" / "palmer2.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.96, 0.85))
+        _sprite.set_scale(Vector2(4.0, 4.0))
+
+        return _sprite
 
     @credits_menu.add_sprite
     def producers():
