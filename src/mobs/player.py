@@ -2,10 +2,9 @@ from __future__ import annotations
 import pygame
 from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet, Keyboard, Vector2, MixeurAudio, ScreenSize
-from src.tools.constant import TEAM, EndPartie, ENDTURN, DEATH, PATH
+from src.tools.constant import TEAM, EndPartie, ENDTURN, DEATH, PATH, INTERACT
 import src.tools.constant as tl
 from src.game_effect.particule import Particule, textParticle
-from src.weapons.WEAPON import Sniper, Launcher, Chainsaw
 from src.weapons.manager import inventory
 
 from typing import TYPE_CHECKING
@@ -16,7 +15,7 @@ if TYPE_CHECKING:
 
 class Player(MOB):
 
-    def __init__(self, name, pos, size, team, group, id_weapon):
+    def __init__(self, name, pos, size, team, group):
         """parametres :
             - pos : les position de base
             - size : la taille du sprite
@@ -26,6 +25,7 @@ class Player(MOB):
         # initialisation de la classe mere permettant de faire de cette classe un sprite
         super().__init__(pos, size, group)
         self.name = name
+        self.team = team
         self.life = 1
 
         self.manager: animation_Manager = animation_Manager()
@@ -39,7 +39,7 @@ class Player(MOB):
         # for action
         self.lock = False
         self.input_lock = True
-        self.weapon_manager = inventory()  # mettre travail de Joseph ici
+        self.weapon_manager = inventory(team)  # mettre travail de Joseph ici
 
         self.load_team(team)
 
@@ -92,10 +92,12 @@ class Player(MOB):
                 pygame.event.post(pygame.event.Event(ENDTURN))
             case tl.IMPACT:
                 _dist = Vector2(self.rect.centerx - event.x, self.rect.centery - event.y)
-                if _dist.lenght < event.radius + self.rect.width:
+                if _dist.lenght < event.radius + self.rect.width // 2:
                     if not event.friendly_fire and not self.lock:
                         return
-                    self.inertia += _dist * self.life_multiplicator * event.multiplicator_repulsion
+                    vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 2
+                    vector.x *= 1.5
+                    self.inertia += vector
                     self.life_multiplicator += event.damage / 100
                     x = self.rect.centerx
                     y = self.rect.centery
@@ -113,10 +115,8 @@ class Player(MOB):
     def update(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         if not self.lock:
-            self.x_axis.update(Keyboard.right.is_pressed,
-                               Keyboard.left.is_pressed)
-            self.y_axis.update(Keyboard.up.is_pressed,
-                               Keyboard.down.is_pressed)
+            self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
+            self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown < pygame.time.get_ticks() and (self.grounded or self.double_jump):
                     self.double_jump = self.grounded
@@ -127,10 +127,9 @@ class Player(MOB):
                     for i in range(5):
                         GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
                         ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
-            if Keyboard.interact.is_pressed:
-                ...
-            if Keyboard.inventory.is_pressed:
-                ...
+            if self.actual_speed > 0.2 and self.life_multiplicator > 0.35:
+                ev = pygame.event.Event(INTERACT, {"rect": self.rect, "player": self})
+                pygame.event.post(ev)
 
             if self.x_axis.value > 0:  # tempo variable so keep in cache until real changement of direction
                 self.right_direction = True
@@ -147,12 +146,12 @@ class Player(MOB):
             # * CAMERA Update of the player
             x, y = CAMERA.to_virtual(ScreenSize.resolution.x / 2, ScreenSize.resolution.y / 2)
             _x, _y = (self.rect.left, self.rect.top)
-            CAMERA.x += (_x - x) * 0.0001
-            CAMERA.y += (_y - y) * 0.0001
+            Cx = CAMERA.x + (_x - x) * 0.0001
+            Cy = CAMERA.y + (_y - y) * 0.0001
             # * Effect of dezoom relatif to speed
-            zoom_target = 2.5 * (1 / (self.actual_speed * 0.1 + 1)
-                                 ) * self.weapon_manager.zoom_factor
-            CAMERA.zoom += (zoom_target - CAMERA.zoom) * 0.01
+            zoom_target = 2.5 * (1 / (self.actual_speed * 0.1 + 1)) * self.weapon_manager.zoom_factor
+            Cz = CAMERA.zoom + (zoom_target - CAMERA.zoom) * 0.01
+            CAMERA.Update(Cx, Cy, Cz)
         elif not self.phatom:
             self.x_axis.update()
             self.y_axis.update()

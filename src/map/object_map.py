@@ -18,7 +18,8 @@ class Object_map(pygame.sprite.Sprite):
         match event.type:
             case tools.INTERACT:
                 if self.rect.colliderect(event.rect):
-                    print("interraction")
+                    event.player.life_multiplicator = 0
+                    self.kill()
             case tools.IMPACT:
                 _dist = Vector2(self.rect.centerx - event.x, self.rect.centery - event.y)
                 if _dist.lenght < event.radius * 2:

@@ -120,12 +120,7 @@ class Turn(Action):
     def __init__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         super().__init__(GM.turn_length)
-        for player in GM.players:
-            if player not in GM.last_players:
-                self.player = player
-                break
-        else:
-            self.player = GM.last_players[0]
+        self.player = GM.last_players[0]
 
     def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
@@ -271,10 +266,11 @@ class TurnTransition(Action):
 
         x, y = CAMERA.x, CAMERA.y
         _x, _y = (0, 0)
-        CAMERA.x += (_x - x) * 0.0005
-        CAMERA.y += (_y - y) * 0.0005
+        Cx = CAMERA.x + (_x - x) * 0.0005
+        Cy = CAMERA.y + (_y - y) * 0.0005
         # * Effect of dezoom relatif to speed
-        CAMERA.zoom += (1 - CAMERA.zoom) * 0.05
+        Cz = CAMERA.zoom + (1 - CAMERA.zoom) * 0.05
+        CAMERA.Update(Cx, Cy, Cz)
 
         if Keyboard.end_turn.is_pressed or (check and self.check > 1):
             raise EndAction()

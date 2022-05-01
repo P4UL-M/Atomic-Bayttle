@@ -89,6 +89,26 @@ def surfaceToScreen(pygame_surface: pygame.Surface, pos: tuple[float, float], zo
     return x, y, (x_zoom, y_zoom)
 
 
+def checkCoord(x, y, zoom, surface, maximize=True):
+    surf_ratio = surface.get_width() / surface.get_height()  # 10/5 -> 2
+    screen_ratio = ScreenSize.resolution.x / ScreenSize.resolution.y  # 9/5 -> 1.8
+    if maximize:
+        if surf_ratio > screen_ratio:
+            y_zoom = 1
+            x_zoom = surf_ratio / screen_ratio
+        else:
+            x_zoom = 1
+            y_zoom = screen_ratio / surf_ratio
+    else:
+        y_zoom = 1
+        x_zoom = 1
+
+    zoom = max(zoom, 1)
+    x = max(min((zoom - 1) / (zoom * 2) + (x_zoom - 1) / 2 / zoom, x), -(zoom - 1) / (zoom * 2) - (x_zoom - 1) / 2 / zoom)
+    y = max(min((zoom - 1) / (zoom * 2) + (y_zoom - 1) / 2 / zoom, y), -(zoom - 1) / (zoom * 2) - (y_zoom - 1) / 2 / zoom)
+    return x, y, zoom
+
+
 def uiToScreen(pygame_surface: pygame.Surface):
     if pygame_surface:
         surfaceToTexture(pygame_surface, texUI, True)

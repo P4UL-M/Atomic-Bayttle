@@ -328,12 +328,16 @@ class MixeurAudio:
     @staticmethod
     def update_musique():
         MixeurAudio.__inGameMixer.set_volume(MixeurAudio.volume_musique)
-        if MixeurAudio.__inGameMixer.get_queue() is None:
+        if MixeurAudio.__inGameMixer.get_sound() is not None:
+            if MixeurAudio.__inGameMixer.get_sound().get_length() > 0.5:
+                MixeurAudio.__inGameMixer.stop()
+        if MixeurAudio.__inGameMixer.get_queue() is None or not MixeurAudio.__inGameMixer.get_busy():
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
-            MixeurAudio.__inGameMixer.queue(pygame.mixer.Sound(_buffer))
-        elif not MixeurAudio.__inGameMixer.get_busy() and not MixeurAudio.__inGameMixer.get_queue():
-            _buffer = MixeurAudio.gn.Sounds_buffer.get()
-            MixeurAudio.__inGameMixer.play(pygame.mixer.Sound(_buffer))
+            sound = pygame.mixer.Sound(_buffer)
+            if not MixeurAudio.__inGameMixer.get_busy():
+                MixeurAudio.__inGameMixer.play(sound)
+            else:
+                MixeurAudio.__inGameMixer.queue(sound)
 
     @staticmethod
     def play_effect(path, volume=1):
@@ -359,7 +363,7 @@ class MixeurAudio:
         if channel in ["all", "music"]:
             MixeurAudio.__musicMixer.stop()
             MixeurAudio.__inGameMixer.stop()
-        if channel == ["all", "effect"]:
+        if channel in ["all", "effect"]:
             pygame.mixer.stop()
 
     @staticmethod
@@ -372,14 +376,3 @@ class MixeurAudio:
 
 class ScreenSize:
     resolution = Vector2(0, 0)
-
-    @staticmethod
-    def load(path):
-        settings = json.load(open(path / "data" / "settings.json"))
-        ScreenSize.resolution = Vector2(*settings["resolution"]) if settings["resolution"] else Vector2(pygame.display.Info().current_w, pygame.display.Info().current_h)
-
-    @staticmethod
-    def save(path):
-        settings = json.load(open(path / "data" / "settings.json"))
-        settings["resolution"] = [*ScreenSize.resolution]
-        json.dump(settings, open(path / "data" / "settings.json", "w"))

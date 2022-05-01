@@ -20,7 +20,10 @@ TEAM = {
         "ground": (26, 28),
         "emote": (64, 40),
         "losed": (64, 34, 2),
-        "speed_factor": 1
+        "speed_factor": 1,
+        "launcher_pivot": (1 / 2, 1 / 2),
+        "melee_pivot": (1 / 5, 1 / 2),
+        "auto_pivot": (1 / 2, 1 / 2),
     },
     "perso_2": {
         "idle": (42, 29),
@@ -30,7 +33,10 @@ TEAM = {
         "ground": (40, 29),
         "emote": (72, 29),
         "losed": (72, 32, 3),
-        "speed_factor": 0.75
+        "speed_factor": 0.75,
+        "launcher_pivot": (1 / 2, 1 / 2),
+        "melee_pivot": (1 / 5, 1 / 2),
+        "auto_pivot": (1 / 3, 1 / 2),
     },
     "perso_3": {
         "idle": (24, 28),
@@ -40,7 +46,10 @@ TEAM = {
         "ground": (26, 28),
         "emote": (31, 28),
         "losed": (34, 30, 2),
-        "speed_factor": 1.25
+        "speed_factor": 1.25,
+        "launcher_pivot": (1 / 3, 1 / 2),
+        "melee_pivot": (1 / 5, 1 / 2),
+        "auto_pivot": (1 / 4, 1 / 2),
     },
     "perso_4": {
         "idle": (31, 28),
@@ -50,7 +59,10 @@ TEAM = {
         "ground": (29, 28),
         "emote": (29, 28),
         "losed": (34, 30, 1),
-        "speed_factor": 0.9
+        "speed_factor": 0.9,
+        "launcher_pivot": (1 / 2, 1 / 2),
+        "melee_pivot": (1 / 5, 1 / 2),
+        "auto_pivot": (1 / 5, 1 / 5),
     }
 }
 

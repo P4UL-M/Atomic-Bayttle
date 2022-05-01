@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pygame
 from pygame.locals import *
 from src.map.render_map import Map
@@ -7,13 +8,16 @@ import src.tools.constant as tl
 from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
 from src.game_effect.particule import AnimatedParticule
 from src.weapons.physique import *
-from src.tools.constant import EndPartie
+import src.tools.constant as tl
 from src.weapons.WEAPON import WEAPON
 from src.game_effect.cinematic import *
 import time
 
-GAME = None
-CAMERA = None
+if TYPE_CHECKING:
+    from src.game import *
+
+GAME: Game = None
+CAMERA: Camera = None
 
 FONT = pygame.font.SysFont("Arial", 24)
 TEAM = {}
@@ -35,7 +39,7 @@ class Partie:
         self.timeline = timeline()
         self.timeline.add_link(Turn, TurnTransition)
         self.timeline.add_link(TurnTransition, Turn)
-        self.last_players = SizedList(4)
+        self.last_players = SizedList()
 
         self.turn_length = 15000
 
@@ -51,11 +55,11 @@ class Partie:
 
     def add_player(self, name, team, lock=False):
         TEAM[name] = team
-        player = Player(name, self.checkpoints[name], tl.TEAM[team]["idle"], team, self.mobs, "sniper")
+        player = Player(name, self.checkpoints[name], tl.TEAM[team]["idle"], team, self.mobs)
         player.lock = lock
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
+        self.last_players = SizedList(*self.players)
         self.mobs.add(player)
-        self.last_players += player
         self.timeline.purge()
         self.timeline.add_action(Turn(GAME, CAMERA))
 
@@ -95,7 +99,7 @@ class Partie:
                     for obj in self.group_object:
                         obj.handle(event, GAME, CAMERA)
         if Keyboard.pause.is_pressed:
-            raise EndPartie
+            raise tl.EndPartie
 
         self.timeline.update(GAME, CAMERA)
         self.group_particle.update(GAME.serialized)
@@ -105,7 +109,7 @@ class Partie:
         # check end game
         names = ["j2" if ("j2" in mob.name) else "j1" for mob in self.players]
         if "j1" not in names or "j2" not in names and self.timeline.current_action_type != TurnTransition:
-            raise EndPartie(TEAM[self.players[0].name], [name for name in TEAM.values() if name != TEAM[self.players[0].name]][0])
+            raise tl.EndPartie(TEAM[self.players[0].name], [name for name in TEAM.values() if name != TEAM[self.players[0].name]][0])
 
         self.Draw()
 
@@ -116,18 +120,8 @@ class Partie:
         self.mobs.draw(_surf)
         for player in self.mobs.sprites():
             if type(player) is Player:
-                c=-15
                 if player.weapon_manager.current_weapon.visible:
                     _surf.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
-            
-                if time.time()-player.weapon_manager.last_switch<1.5:
-                    for w in player.weapon_manager.weapon_list:
-                        if w==player.weapon_manager.current_weapon:
-                            _surf.blit(w.icon, (player.rect.x+c, player.rect.y-18))
-                            c+=18
-                        else:
-                            _surf.blit(w.icon_opac, (player.rect.x+c, player.rect.y-18))
-                            c+=18
         self.group_particle.draw(_surf)
         self.group_object.draw(_surf)
         _surf.blit(self.map.water_manager.surface, (0, self.map.water_level))
