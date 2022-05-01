@@ -948,7 +948,8 @@ def setup_manager():
             if credits_menu.get_sprite("assets").rect.center[1] < 15:
                 _button.start = 0
                 for sprite in credits_menu.sprites():
-                    if _button.name != sprite.name or "palmer" not in sprite.name:
+                    if _button.name != sprite.name and "palmer" not in sprite.name:
+                        print(sprite.name)
                         sprite.set_position(sprite.base_position)
 
         @_button.on_click(PATH / "assets" / "sound" / "button-menu.wav")
