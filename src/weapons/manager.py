@@ -4,7 +4,7 @@ from src.tools.tools import Keyboard, ScreenSize, MixeurAudio, Vector2, Axis
 from src.tools.constant import CHARGING, PATH
 import pygame
 from random import choice
-from math import cos, sin, pi
+from math import pi
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

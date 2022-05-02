@@ -1,4 +1,3 @@
-from multiprocessing import Event
 import webbrowser
 import pygame
 from pygame.locals import *

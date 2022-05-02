@@ -6,10 +6,8 @@ from src.mobs.player import Player
 from src.map.object_map import Object_map
 import src.tools.constant as tl
 from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
-from src.game_effect.particule import AnimatedParticule
 from src.weapons.physique import *
 import src.tools.constant as tl
-from src.weapons.WEAPON import WEAPON
 from src.game_effect.cinematic import *
 import time
 
