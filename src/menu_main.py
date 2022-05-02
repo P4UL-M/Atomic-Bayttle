@@ -163,7 +163,7 @@ def setup_manager():
 
         return _button
 
-    game.actual_menu = principal
+    game.actual_menu = credits_menu
 
     # endregion
 
@@ -945,7 +945,7 @@ def setup_manager():
                     if _button.name != sprite.name and "palmer" not in sprite.name:
                         x, y = sprite.rect.center
                         sprite.set_position(Vector2(x, y - 1))
-            if credits_menu.get_sprite("assets").rect.center[1] < 15:
+            if credits_menu.get_sprite("itch.io").rect.center[1] < 15:
                 _button.start = 0
                 for sprite in credits_menu.sprites():
                     if _button.name != sprite.name and "palmer" not in sprite.name:
@@ -1107,14 +1107,14 @@ def setup_manager():
     def music():
         _text = textZone(
             name="music",
-            size=Vector2(1500, 150),
+            size=Vector2(1900, 150),
             manager=game,
-            text_color="black"
+            text_color="brown"
         )
 
         _text.base_position = Vector2(0.5, 0.9)
         _text.set_position(_text.base_position)
-        _text.set_text("Musics for the end menu by Jason Shaw on Audionautix.com", align=(True, False))
+        _text.set_text("Musics from:", align=(True, False))
 
         return _text
 
@@ -1127,24 +1127,234 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.1)
+        _text.base_position = Vector2(0.5, 0.97)
         _text.set_position(_text.base_position)
-        _text.set_text("In game musics with Unity under deway-developpement license", align=(True, False))
+        _text.set_text("Ultimate game collection from unity assets store", align=(True, False))
 
         return _text
 
     @credits_menu.add_sprite
-    def assets():
+    def heroes():
         _text = textZone(
-            name="assets",
-            size=Vector2(1500, 150),
+            name="heroes",
+            size=Vector2(1500, 70),
             manager=game,
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.3)
+        _text.base_position = Vector2(0.5, 1.07)
         _text.set_position(_text.base_position)
-        _text.set_text("Assets coming from pixelfrog-assets.itch.io/treasure-hunters", align=(True, False))
+        _text.set_text("Remember The Heroes from audionautix", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def kilcoo():
+        _text = textZone(
+            name="kilcoo",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.14)
+        _text.set_position(_text.base_position)
+        _text.set_text("RoadToKilcoo from audionautix", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def epictv():
+        _text = textZone(
+            name="epictv",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.21)
+        _text.set_position(_text.base_position)
+        _text.set_text("EpicTVTheme from audionautix", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def essence():
+        _text = textZone(
+            name="essence",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.28)
+        _text.set_position(_text.base_position)
+        _text.set_text("Essence2 from audionautix", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def sound():
+        _text = textZone(
+            name="sound",
+            size=Vector2(1900, 150),
+            manager=game,
+            text_color="brown"
+        )
+
+        _text.base_position = Vector2(0.5, 1.40)
+        _text.set_position(_text.base_position)
+        _text.set_text("Sound FX from:", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def universal_sound():
+        _text = textZone(
+            name="universal_sound",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.43)
+        _text.set_position(_text.base_position)
+        _text.set_text("Universal Sound FX", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def sprites():
+        _text = textZone(
+            name="sprites",
+            size=Vector2(1900, 150),
+            manager=game,
+            text_color="brown"
+        )
+
+        _text.base_position = Vector2(0.5, 1.55)
+        _text.set_position(_text.base_position)
+        _text.set_text("Game sprites from:", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def pixel_frog():
+        _text = textZone(
+            name="sprites",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.58)
+        _text.set_position(_text.base_position)
+        _text.set_text("treasure-hunters by pixel-frog", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def jestanpixels():
+        _text = textZone(
+            name="jestanpixels",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.65)
+        _text.set_position(_text.base_position)
+        _text.set_text("TheUltimateWeaponsPack by jestanpixels", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def ansimuz():
+        _text = textZone(
+            name="ansimuz",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.72)
+        _text.set_position(_text.base_position)
+        _text.set_text("Explosion Animations Pack by ansimuz", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def wenrexa():
+        _text = textZone(
+            name="wenrexa",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.79)
+        _text.set_position(_text.base_position)
+        _text.set_text("assets-free-laser-bullets-pack-2020 by Wenrexa", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def special_thanks():
+        _text = textZone(
+            name="special_thanks",
+            size=Vector2(1900, 150),
+            manager=game,
+            text_color="brown"
+        )
+
+        _text.base_position = Vector2(0.5, 1.91)
+        _text.set_position(_text.base_position)
+        _text.set_text("Special thanks to", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def libresprite():
+        _text = textZone(
+            name="libresprite",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 1.94)
+        _text.set_position(_text.base_position)
+        _text.set_text("libresprite", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def tiled():
+        _text = textZone(
+            name="tiled",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 2.01)
+        _text.set_position(_text.base_position)
+        _text.set_text("tiled", align=(True, False))
+
+        return _text
+
+    @credits_menu.add_sprite
+    def itchio():
+        _text = textZone(
+            name="itch.io",
+            size=Vector2(1500, 70),
+            manager=game,
+            text_color="black"
+        )
+
+        _text.base_position = Vector2(0.5, 2.08)
+        _text.set_position(_text.base_position)
+        _text.set_text("itch.io", align=(True, False))
 
         return _text
 
