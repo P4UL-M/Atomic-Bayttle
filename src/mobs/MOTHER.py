@@ -1,5 +1,5 @@
 import pygame
-from math import sqrt, ceil, pi, sin, cos
+from math import ceil, pi, sin, cos
 from src.tools.tools import Vector2, Axis
 import src.tools.constant as tl
 

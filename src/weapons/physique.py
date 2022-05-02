@@ -1,4 +1,4 @@
-from math import cos, tan, pi
+from math import cos, tan
 
 g = 9.806
 

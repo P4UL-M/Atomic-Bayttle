@@ -1,7 +1,6 @@
 import pygame
 import json
 from pygame_easy_menu import Vector2
-from src.tools.constant import ENDMUSIC
 from typing import overload
 
 pygame.init()

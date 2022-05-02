@@ -2,14 +2,11 @@ from __future__ import annotations
 import pygame
 from src.tools.constant import EndAction
 from pygame.locals import *
-from src.map.render_map import Map
 from src.mobs.player import Player
-from src.map.object_map import Object_map
 import src.tools.constant as tl
-from src.tools.tools import MixeurAudio, Cycle, Vector2, sprite_sheet, Keyboard, ScreenSize
+from src.tools.tools import Vector2, sprite_sheet, Keyboard, ScreenSize
 from src.game_effect.particule import AnimatedParticule, Particule
 from src.weapons.physique import *
-from src.weapons.WEAPON import WEAPON
 from src.game_effect.UI import *
 from typing import TYPE_CHECKING
 

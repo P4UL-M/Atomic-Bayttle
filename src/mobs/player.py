@@ -2,7 +2,7 @@ from __future__ import annotations
 import pygame
 from .MOTHER import MOB
 from src.tools.tools import animation_Manager, sprite_sheet, Keyboard, Vector2, MixeurAudio, ScreenSize
-from src.tools.constant import TEAM, EndPartie, ENDTURN, DEATH, PATH, INTERACT
+from src.tools.constant import TEAM, ENDTURN, DEATH, PATH, INTERACT
 import src.tools.constant as tl
 from src.game_effect.particule import Particule, textParticle
 from src.weapons.manager import inventory

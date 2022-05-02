@@ -1,4 +1,3 @@
-from numpy import True_
 import pygame
 from pygame.locals import *
 from pygame_easy_menu import *
