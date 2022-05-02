@@ -1,4 +1,5 @@
 from multiprocessing import Event
+import webbrowser
 import pygame
 from pygame.locals import *
 from pygame_easy_menu import *
@@ -996,6 +997,12 @@ def setup_manager():
         _text.set_position(_text.base_position)
         _text.set_text("This game was produced by:", align=(True, False))
 
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
+                if _text.isactive:
+                    webbrowser.open("https://cutt.ly/DFbWjeT", new=1, autoraise=True)
+
         return _text
 
     @credits_menu.add_sprite
@@ -1146,6 +1153,12 @@ def setup_manager():
         _text.set_position(_text.base_position)
         _text.set_text("Remember The Heroes from audionautix", align=(True, False))
 
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
+                if _text.isactive:
+                    webbrowser.open("https://audionautix.com/Music/RememberTheHeroes.mp3", new=1, autoraise=True)
+
         return _text
 
     @credits_menu.add_sprite
@@ -1160,6 +1173,12 @@ def setup_manager():
         _text.base_position = Vector2(0.5, 1.14)
         _text.set_position(_text.base_position)
         _text.set_text("RoadToKilcoo from audionautix", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
+                if _text.isactive:
+                    webbrowser.open("https://audionautix.com/Music/RoadToKilcoo.mp3", new=1, autoraise=True)
 
         return _text
 
@@ -1176,6 +1195,12 @@ def setup_manager():
         _text.set_position(_text.base_position)
         _text.set_text("EpicTVTheme from audionautix", align=(True, False))
 
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
+                if _text.isactive:
+                    webbrowser.open("https://audionautix.com/Music/EpicTVTheme.mp3", new=1, autoraise=True)
+
         return _text
 
     @credits_menu.add_sprite
@@ -1190,6 +1215,12 @@ def setup_manager():
         _text.base_position = Vector2(0.5, 1.28)
         _text.set_position(_text.base_position)
         _text.set_text("Essence2 from audionautix", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
+                if _text.isactive:
+                    webbrowser.open("https://audionautix.com/Music/Essence2.mp3", new=1, autoraise=True)
 
         return _text
 
