@@ -252,7 +252,7 @@ class Keyboard:
     @staticmethod
     def key_used(key: int):
         for val in Keyboard.__dict__.values():
-            if type(val) == Key:
+            if type(val) is Key:
                 if val.key == key or val.alias == key:
                     return True
 
@@ -274,7 +274,7 @@ class Keyboard:
         settings = json.load(open(path / "data" / "settings.json"))
         settings["keys"] = dict()
         for key, val in Keyboard.__dict__.items():
-            if type(val) == Key:
+            if type(val) is Key:
                 settings["keys"][key] = [
                     getattr(Keyboard, key).key, getattr(Keyboard, key).alias or -1]
         json.dump(settings, open(path / "data" / "settings.json", "w"))
