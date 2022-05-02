@@ -253,7 +253,7 @@ class TurnTransition(Action):
 
         check = len(self.state) != 0
         for key, value in _state.items():
-            if key not in self.state.keys():
+            if key not in self.state:
                 check = False
                 break
             elif value != self.state[key]:
