@@ -253,7 +253,7 @@ class Keyboard:
     def key_used(key: int):
         for val in Keyboard.__dict__.values():
             if type(val) is Key:
-                if val.key == key or val.alias == key:
+                if key in (val.key, val.alias):
                     return True
 
         return False
