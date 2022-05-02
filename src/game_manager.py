@@ -42,7 +42,7 @@ class Partie:
         self.start_time = time.time()
 
         if GAME.rcp:
-            GAME.rcp.update(details=f"in game : 2 - 2", large_image="ico", start=self.start_time)
+            GAME.rcp.update(details="in game : 2 - 2", large_image="ico", start=self.start_time)
 
     @property
     def players(self) -> list[Player]:
