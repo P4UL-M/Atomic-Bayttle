@@ -251,11 +251,7 @@ class Keyboard:
 
     @staticmethod
     def key_used(key: int):
-        for val in Keyboard.__dict__.values():
-            if type(val) is Key and key in (val.key, val.alias):
-                return True
-
-        return False
+        return any(type(val) is Key and key in (val.key, val.alias) for val in Keyboard.__dict__.values())
 
     @staticmethod
     def load(path):
