@@ -1483,7 +1483,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeleft(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.left.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1537,7 +1537,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeleft(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.left.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1591,7 +1591,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeright(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.right.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1644,7 +1644,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeright(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.right.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1712,7 +1712,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeup(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.up.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1766,7 +1766,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeup(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.up.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1820,7 +1820,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changedown(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.down.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1874,7 +1874,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changedown(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.down.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1942,7 +1942,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changejump(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.jump.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -1996,7 +1996,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changejump(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.jump.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2064,7 +2064,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeinventory(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.inventory.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2118,7 +2118,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeinventory(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.inventory.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2187,7 +2187,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeshoot(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.interact.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2241,7 +2241,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeshoot(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.interact.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2309,7 +2309,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changepause(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.pause.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2363,7 +2363,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changepause(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.pause.alias = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2431,7 +2431,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeendturn(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.end_turn.key = event.key
                     _button.image = _button.spritesheet[event.key]
@@ -2485,7 +2485,7 @@ def setup_manager():
         @_button.Event(pygame.KEYDOWN)
         def changeendturn(event):
             if _button.active:
-                if event.key in DICO.keys() and not Keyboard.key_used(event.key):
+                if event.key in DICO and not Keyboard.key_used(event.key):
                     _button.active = False
                     Keyboard.end_turn.alias = event.key
                     _button.image = _button.spritesheet[event.key]

@@ -87,7 +87,7 @@ class sprite_sheet(pygame.Surface):
         return _surf
 
     def __getitem__(self, key: str):
-        if key in self.dico.keys():
+        if key in self.dico:
             key = self.dico[key]
         elif type(key) != int:
             raise AttributeError(
@@ -128,7 +128,7 @@ class animation_Manager(object):
         self.frame += self.incrementor * self.annim_speed_factor
         if self.__loaded.x_nb * self.__loaded.y_nb < self.frame:
             self.frame %= self.__loaded.x_nb * self.__loaded.y_nb
-            if self._loaded_name in self.links.keys():
+            if self._loaded_name in self.links:
                 self.load(self.links[self._loaded_name])
         return self.__loaded[int(self.frame)].copy()
 
@@ -141,7 +141,7 @@ class animation_Manager(object):
         self.spritesheets[name or f"animation-{pygame.time.get_ticks()}"] = [spritesheet, _increment]
 
     def load(self, name):
-        if name in self.spritesheets.keys():
+        if name in self.spritesheets:
             if name != self._loaded_name:
                 self.__loaded = self.spritesheets[name][0]
                 self._loaded_name = name
