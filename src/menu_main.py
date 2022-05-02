@@ -998,9 +998,12 @@ def setup_manager():
 
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
-            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
-                if _text.isactive:
-                    webbrowser.open("https://cutt.ly/DFbWjeT", new=1, autoraise=True)
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://cutt.ly/DFbWjeT", new=1, autoraise=True)
 
         return _text
 
@@ -1154,9 +1157,12 @@ def setup_manager():
 
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
-            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
-                if _text.isactive:
-                    webbrowser.open("https://audionautix.com/Music/RememberTheHeroes.mp3", new=1, autoraise=True)
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://audionautix.com/Music/RememberTheHeroes.mp3", new=1, autoraise=True)
 
         return _text
 
@@ -1175,9 +1181,12 @@ def setup_manager():
 
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
-            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
-                if _text.isactive:
-                    webbrowser.open("https://audionautix.com/Music/RoadToKilcoo.mp3", new=1, autoraise=True)
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://audionautix.com/Music/RoadToKilcoo.mp3", new=1, autoraise=True)
 
         return _text
 
@@ -1196,9 +1205,12 @@ def setup_manager():
 
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
-            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
-                if _text.isactive:
-                    webbrowser.open("https://audionautix.com/Music/EpicTVTheme.mp3", new=1, autoraise=True)
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://audionautix.com/Music/EpicTVTheme.mp3", new=1, autoraise=True)
 
         return _text
 
@@ -1217,9 +1229,12 @@ def setup_manager():
 
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
-            if _text.rect.collidepoint(pygame.mouse.get_pos()) and _event.button == 1:
-                if _text.isactive:
-                    webbrowser.open("https://audionautix.com/Music/Essence2.mp3", new=1, autoraise=True)
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://audionautix.com/Music/Essence2.mp3", new=1, autoraise=True)
 
         return _text
 
