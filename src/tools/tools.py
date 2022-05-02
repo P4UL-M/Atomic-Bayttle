@@ -252,9 +252,8 @@ class Keyboard:
     @staticmethod
     def key_used(key: int):
         for val in Keyboard.__dict__.values():
-            if type(val) is Key:
-                if key in (val.key, val.alias):
-                    return True
+            if type(val) is Key and key in (val.key, val.alias):
+                return True
 
         return False
 
@@ -327,9 +326,11 @@ class MixeurAudio:
     @staticmethod
     def update_musique():
         MixeurAudio.__inGameMixer.set_volume(MixeurAudio.volume_musique)
-        if MixeurAudio.__inGameMixer.get_sound() is not None:
-            if MixeurAudio.__inGameMixer.get_sound().get_length() > 0.5:
-                MixeurAudio.__inGameMixer.stop()
+        if (
+            MixeurAudio.__inGameMixer.get_sound() is not None
+            and MixeurAudio.__inGameMixer.get_sound().get_length() > 0.5
+        ):
+            MixeurAudio.__inGameMixer.stop()
         if MixeurAudio.__inGameMixer.get_queue() is None or not MixeurAudio.__inGameMixer.get_busy():
             _buffer = MixeurAudio.gn.Sounds_buffer.get()
             sound = pygame.mixer.Sound(_buffer)

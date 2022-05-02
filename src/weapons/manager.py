@@ -40,17 +40,19 @@ class inventory:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
         if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
             _vect = Vector2(self.x_axis.value, self.y_axis.value)
-            if _vect.arg is not None:
-                if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-                    self.__cooldown = pygame.time.get_ticks()
-                    if _vect.arg >= 0 and _vect.arg < pi * 1 / 4:
-                        self.index = 2
-                    elif _vect.arg > pi * 3 / 4 and _vect.arg <= pi:
-                        self.index = 0
-                    elif _vect.arg >= pi * 1 / 4 and _vect.arg <= pi * 3 / 4:
-                        self.index = 1
-                    self.current_weapon.clean()
-                    self.current_weapon = self.weapon_list[self.index]
+            if (
+                _vect.arg is not None
+                and self.__cooldown + self.cooldown < pygame.time.get_ticks()
+            ):
+                self.__cooldown = pygame.time.get_ticks()
+                if _vect.arg >= 0 and _vect.arg < pi * 1 / 4:
+                    self.index = 2
+                elif _vect.arg > pi * 3 / 4 and _vect.arg <= pi:
+                    self.index = 0
+                elif _vect.arg >= pi * 1 / 4 and _vect.arg <= pi * 3 / 4:
+                    self.index = 1
+                self.current_weapon.clean()
+                self.current_weapon = self.weapon_list[self.index]
         if Keyboard.inventory.is_pressed and not owner.lock:
             self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
             self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)

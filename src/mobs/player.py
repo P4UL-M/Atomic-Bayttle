@@ -120,16 +120,19 @@ class Player(MOB):
             else:
                 self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
                 self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
-            if Keyboard.jump.is_pressed:
-                if self.jump_cooldown < pygame.time.get_ticks() and (self.grounded or self.double_jump):
-                    self.double_jump = self.grounded
-                    self.inertia.y = -self.jump_force
-                    self.grounded = False
-                    self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
-                    self.manager.load("jump")
-                    for i in range(5):
-                        GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
-                        ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
+            if (
+                Keyboard.jump.is_pressed
+                and self.jump_cooldown < pygame.time.get_ticks()
+                and (self.grounded or self.double_jump)
+            ):
+                self.double_jump = self.grounded
+                self.inertia.y = -self.jump_force
+                self.grounded = False
+                self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
+                self.manager.load("jump")
+                for i in range(5):
+                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
+                    ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
             if self.actual_speed > 0.2 and self.life_multiplicator > 0.35:
                 ev = pygame.event.Event(INTERACT, {"rect": self.rect, "player": self})
                 pygame.event.post(ev)
