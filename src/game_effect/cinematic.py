@@ -56,7 +56,7 @@ class timeline:
 
     @property
     def next_action_type(self):
-        if len(self.actions):
+        if self.actions:
             return type(self.actions[0])
         else:
             return None
