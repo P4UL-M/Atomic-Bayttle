@@ -60,7 +60,6 @@ class inventory:
                 _y = _y / ScreenSize.resolution.y * CAMERA._screen_UI.get_height()
                 i = CAMERA._screen_UI.get_height() * 0.1
                 j = i // 2
-                #pygame.draw.circle(CAMERA._screen_UI, (175, 175, 225, 150), (_x, _y), i)
                 tab = [(-20, -20), (0, -35), (20, -20)]
                 for i, weapon in enumerate(self.weapon_list):
                     img = weapon.icon.copy()
