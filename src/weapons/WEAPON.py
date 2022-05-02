@@ -142,8 +142,8 @@ class WEAPON(pygame.sprite.Sprite):
         super().__init__()
         self.visible = True
         self.real_image = pygame.image.load(path / img_name).convert_alpha()
-        self.icon=pygame.image.load(path / 'icon.png').convert_alpha()
-        transColor = self.icon.get_at((0,0))
+        self.icon = pygame.image.load(path / 'icon.png').convert_alpha()
+        transColor = self.icon.get_at((0, 0))
         self.icon.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
@@ -329,7 +329,7 @@ class Chainsaw(WEAPON):
         self.__sound_cooldown = 0
         self.idle_sound = None
         self.path = PATH / "assets" / "perso" / team / "weapon" / "chainsaw"
-        super().__init__(self.path,"chainsaw.png")
+        super().__init__(self.path, "chainsaw.png")
         self.pivot = TEAM[team]["melee_pivot"]
         self.magazine_max = 15
 

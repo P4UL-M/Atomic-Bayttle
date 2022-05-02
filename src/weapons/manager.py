@@ -48,9 +48,9 @@ class inventory:
                     self.__cooldown = pygame.time.get_ticks()
                     self.index -= 1
                     if self.index < 0:
-                        self.index = len(self.weapon_list)-1
+                        self.index = len(self.weapon_list) - 1
             self.current_weapon.clean()
-            self.current_weapon = self.weapon_list[self.index]    
+            self.current_weapon = self.weapon_list[self.index]
         if Keyboard.inventory.is_pressed and not owner.lock:
             if not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
                 _x, _y = CAMERA.to_absolute(owner.rect.centerx, owner.rect.centery)
@@ -59,11 +59,11 @@ class inventory:
                 i = CAMERA._screen_UI.get_height() * 0.1
                 j = i // 2
                 #pygame.draw.circle(CAMERA._screen_UI, (175, 175, 225, 150), (_x, _y), i)
-                tab=[(-20, -20), (0, -35), (20, -20)]
+                tab = [(-20, -20), (0, -35), (20, -20)]
                 for i, weapon in enumerate(self.weapon_list):
                     img = weapon.icon.copy()
                     img.set_alpha(255 * (1 if weapon is self.current_weapon else 0.35))
-                    CAMERA._screen_UI.blit(img, (_x-img.get_width()/2+tab[i][0], _y-img.get_height()/2+tab[i][1]))
+                    CAMERA._screen_UI.blit(img, (_x - img.get_width() / 2 + tab[i][0], _y - img.get_height() / 2 + tab[i][1]))
             else:
                 MixeurAudio.play_effect(PATH / "assets" / "sound" / "error.wav")
 
