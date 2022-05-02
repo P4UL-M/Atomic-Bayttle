@@ -111,7 +111,7 @@ class sprite_sheet(pygame.Surface):
     def __on_end(self): ...
 
 
-class animation_Manager(object):
+class animation_Manager():
 
     def __init__(self):
         self.frame = 0

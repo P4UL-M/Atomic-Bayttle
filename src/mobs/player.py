@@ -130,7 +130,7 @@ class Player(MOB):
                 self.grounded = False
                 self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
                 self.manager.load("jump")
-                for i in range(5):
+                for _ in range(5):
                     GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
                     ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
             if self.actual_speed > 0.2 and self.life_multiplicator > 0.35:
