@@ -21,8 +21,9 @@ import src.game_manager as game_manager  # nopep8
 import src.map.Background as bg  # nopep8
 import src.menu_main as menu_main  # nopep8
 import src.tools.opengl_pygame as gl  # nopep8
-from src.tools.constant import EndPartie  # nopep8
+from src.tools.constant import EndPartie, TEAM  # nopep8
 from src.tools.tools import MixeurAudio  # nopep8
+from pypresence import Presence  # nopep8
 
 # there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
 
@@ -33,6 +34,11 @@ class Game:
     serialized = 0
     partie = None
     menu = None
+    rcp = Presence(client_id="970789165010649108")
+    try:
+        rcp.connect()
+    except:
+        rcp = None
 
     @staticmethod
     def run():
@@ -40,8 +46,7 @@ class Game:
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav", volume=0.35)
         gl.config()
 
-        menu_main.setup_manager()
-        Game.menu = menu_main.game
+        Game.start_menu()
         Camera.maximise = False
 
         while Game.running:
@@ -52,16 +57,14 @@ class Game:
                 except EndPartie as e:
                     MixeurAudio.stop("all")
                     if len(e.args) >= 1:
-                        end_menu.setup_manager(*e.args)
-                        Game.menu = end_menu.game
+                        Game.start_end(*e.args)
                     else:
-                        menu_main.setup_manager()
-                        Game.menu = menu_main.game
+                        Game.start_menu()
                     Game.partie = None
             else:
                 Game.menu.Update()
             gl.cleangl()
-            if Game.partie or True:
+            if Game.partie:
                 Camera.render_bg()
             Camera.render()
 
@@ -79,16 +82,22 @@ class Game:
         Game.partie.add_player("j1.2", j1, True)  # ajouter avec respawn pour éviter le bordel
         Game.partie.add_player("j2.2", j2, True)
         MixeurAudio.gn.reset()
-        Game.partie.add_object("test", (400, 200), PATH / "assets" / "weapons" / "shield.png")
-        Game.partie.add_object("test", (1158, 239), PATH / "assets" / "weapons" / "shield.png")
         Camera.HUD = True
         Camera.maximise = True
         MixeurAudio.stop("music")
 
     @staticmethod
     def start_menu():
+        if Game.rcp:
+            Game.rcp.update(details="in menu", large_image="ico")
         menu_main.setup_manager()
         Game.menu = menu_main.game
+
+    def start_end(winner, loser):
+        if Game.rcp:
+            Game.rcp.update(details=f"team {TEAM[winner]['name']} has won !", large_image="ico")
+        end_menu.setup_manager(winner=winner, loser=loser)
+        Game.menu = end_menu.game
 
 
 class Camera:

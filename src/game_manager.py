@@ -42,6 +42,10 @@ class Partie:
         self.last_players = SizedList()
 
         self.turn_length = 15000
+        self.start_time = time.time()
+
+        if GAME.rcp:
+            GAME.rcp.update(details=f"in game : 2 - 2", large_image="ico", start=self.start_time)
 
     @property
     def players(self) -> list[Player]:
@@ -87,6 +91,8 @@ class Partie:
                     else:
                         event.player.kill()
                         self.cycle_players.delete(name=event.player.name)
+                    if GAME.rcp:
+                        GAME.rcp.update(details=f"in game : {len([player for player in self.players if 'j1' in player.name])} - {len([player for player in self.players if 'j2' in player.name])}", large_image="ico", start=self.start_time)
                 case tl.IMPACT:
                     self.map.add_damage(Vector2(event.x, event.y), event.radius)
                     for mob in self.mobs:
@@ -103,7 +109,7 @@ class Partie:
 
         self.timeline.update(GAME, CAMERA)
         self.group_particle.update(GAME.serialized)
-        self.map.update(GAME.serialized)
+        self.map.update(GAME)
         MixeurAudio.update_musique()
 
         # check end game

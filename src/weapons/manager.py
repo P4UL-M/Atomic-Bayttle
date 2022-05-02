@@ -1,6 +1,6 @@
 from __future__ import annotations
 import src.weapons.WEAPON as wp
-from src.tools.tools import Keyboard, ScreenSize, MixeurAudio
+from src.tools.tools import Keyboard, ScreenSize, MixeurAudio, Vector2, Axis
 from src.tools.constant import CHARGING, PATH
 import pygame
 from random import choice
@@ -25,6 +25,8 @@ class inventory:
         self.zoom_factor = 1
 
         self.angle = 0
+        self.x_axis = Axis()
+        self.y_axis = Axis()
 
     def handle(self, event, owner, GAME: Game, CAMERA: Camera):
         self.current_weapon.handle(event, owner, GAME, CAMERA)
@@ -36,22 +38,22 @@ class inventory:
         """
         if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock and not owner.input_lock:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
-        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2) and (Keyboard.up.is_pressed or Keyboard.down.is_pressed):
-            if Keyboard.up.is_pressed:
+        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
+            _vect = Vector2(self.x_axis.value, self.y_axis.value)
+            if _vect.arg is not None:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks():
                     self.__cooldown = pygame.time.get_ticks()
-                    self.index += 1
-                    if self.index >= len(self.weapon_list):
+                    if _vect.arg >= 0 and _vect.arg < pi * 1 / 4:
+                        self.index = 2
+                    elif _vect.arg > pi * 3 / 4 and _vect.arg <= pi:
                         self.index = 0
-            if Keyboard.down.is_pressed:
-                if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-                    self.__cooldown = pygame.time.get_ticks()
-                    self.index -= 1
-                    if self.index < 0:
-                        self.index = len(self.weapon_list) - 1
-            self.current_weapon.clean()
-            self.current_weapon = self.weapon_list[self.index]
+                    elif _vect.arg >= pi * 1 / 4 and _vect.arg <= pi * 3 / 4:
+                        self.index = 1
+                    self.current_weapon.clean()
+                    self.current_weapon = self.weapon_list[self.index]
         if Keyboard.inventory.is_pressed and not owner.lock:
+            self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
+            self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
             if not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
                 _x, _y = CAMERA.to_absolute(owner.rect.centerx, owner.rect.centery)
                 _x = _x / ScreenSize.resolution.x * CAMERA._screen_UI.get_width()

@@ -13,6 +13,7 @@ ENDMUSIC = pygame.USEREVENT + 7
 
 TEAM = {
     "perso_1": {
+        "name": "Captain Clown Nose",
         "idle": (24, 28),
         "run": (25, 30),
         "jump": (26, 30),
@@ -26,6 +27,7 @@ TEAM = {
         "auto_pivot": (1 / 2, 1 / 2),
     },
     "perso_2": {
+        "name": "Crabby",
         "idle": (42, 29),
         "run": (40, 29),
         "jump": (40, 29),
@@ -39,6 +41,7 @@ TEAM = {
         "auto_pivot": (1 / 3, 1 / 2),
     },
     "perso_3": {
+        "name": "Fierce Tooth",
         "idle": (24, 28),
         "run": (25, 28),
         "fall": (24, 28),
@@ -52,6 +55,7 @@ TEAM = {
         "auto_pivot": (1 / 4, 1 / 2),
     },
     "perso_4": {
+        "name": "Pink Star",
         "idle": (31, 28),
         "run": (27, 28),
         "fall": (27, 28),

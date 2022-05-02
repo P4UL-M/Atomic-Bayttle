@@ -4,6 +4,7 @@ from src.tools.tools import Vector2, sprite_sheet, animation_Manager, MixeurAudi
 from src.tools.constant import PATH
 from src.weapons.WEAPON import *
 from math import log
+import random
 
 
 class Map(pygame.sprite.Sprite):
@@ -31,24 +32,43 @@ class Map(pygame.sprite.Sprite):
         self.cave_bg.image = pygame.image.load(
             PATH / "assets" / "environnement" / "cave.png").convert_alpha()
         self.cave_bg.rect = self.cave_bg.image.get_rect(topleft=(927, 221))
+        self.seil = 0
 
     def add_damage(self, _pos: Vector2, radius):  # pass damage and update mask
         pygame.draw.circle(self.image, (0, 0, 0, 0), _pos(), radius)
         pygame.draw.circle(self.cave_bg.image, (0, 0, 0, 0),
                            (_pos - self.cave_bg.rect.topleft)(), radius)
         self.mask = pygame.mask.from_surface(self.image)
-        if radius == Launcher("perso_1").rayon:
+        if radius >= Launcher("perso_1").rayon:
             self.water_target -= 20
         else:
             self.water_target -= 2
 
-    def update(self, serialized):
+    def update(self, GAME):
         MixeurAudio.gn.sound_factor.value = min(- 2 / self.rect.height * max(self.water_target, self.water_level) + 3, 3)
         if self.water_target + 1 < self.water_level:
-            self.water_level -= 0.14 * serialized
+            self.water_level -= 0.14 * GAME.serialized
             self.water_manager.load("agitated")
         elif self.water_target - 1 > self.water_level:
-            self.water_level += 0.3 * serialized
+            self.water_level += 0.3 * GAME.serialized
             self.water_manager.load("agitated")
         else:
             self.water_manager.load("idle")
+
+        if random.random() < self.seil:
+            self.seil = 0
+
+            def place(mask: pygame.mask.Mask):
+                x = random.randint(0 + 100, self.mask.get_size()[0] - 100)
+                y = 0
+                while not self.mask.overlap(mask, (x, y)) and y < self.mask.get_size()[1] - 10:
+                    y += 1
+                if y >= self.mask.get_size()[1] - 10:
+                    place(mask)
+                return x, y
+            img = pygame.image.load(PATH / "assets" / "weapons" / "shield.png")
+            x, y = place(pygame.mask.from_surface(img))
+            y -= 10
+            GAME.partie.add_object("heal", (x, y), PATH / "assets" / "weapons" / "shield.png")
+        else:
+            self.seil += 0.0000011112 * GAME.serialized

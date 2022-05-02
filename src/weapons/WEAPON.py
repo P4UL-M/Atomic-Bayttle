@@ -43,7 +43,7 @@ class Bullet(MOB):
         self.speed = 1
         self.path_sound = PATH / "assets" / "sound" / "kill_sound.wav"
         self.damage = 4
-        self.multiplicator_repulsion = 0.8
+        self.multiplicator_repulsion = 0.6
         self.friendly_fire = False
 
         self.particle_sprite = sprite_sheet(
@@ -142,8 +142,8 @@ class WEAPON(pygame.sprite.Sprite):
         super().__init__()
         self.visible = True
         self.real_image = pygame.image.load(path / img_name).convert_alpha()
-        self.icon=pygame.image.load(path / 'icon.png').convert_alpha()
-        transColor = self.icon.get_at((0,0))
+        self.icon = pygame.image.load(path / 'icon.png').convert_alpha()
+        transColor = self.icon.get_at((0, 0))
         self.icon.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
@@ -322,14 +322,14 @@ class Chainsaw(WEAPON):
     def __init__(self, team) -> None:
         self.rayon = 35
         self.damage = 2
-        self.multiplicator_repulsion = 0.2
+        self.multiplicator_repulsion = 0.15
         self.cooldown = 100
         self.__cooldown = 0
         self.sound_cooldown = 1000
         self.__sound_cooldown = 0
         self.idle_sound = None
         self.path = PATH / "assets" / "perso" / team / "weapon" / "chainsaw"
-        super().__init__(self.path,"chainsaw.png")
+        super().__init__(self.path, "chainsaw.png")
         self.pivot = TEAM[team]["melee_pivot"]
         self.magazine_max = 15
 

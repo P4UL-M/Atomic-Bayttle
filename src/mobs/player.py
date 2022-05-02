@@ -96,7 +96,6 @@ class Player(MOB):
                     if not event.friendly_fire and not self.lock:
                         return
                     vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 3
-                    vector.x *= 1.5
                     self.inertia += vector
                     self.life_multiplicator += event.damage / 100
                     x = self.rect.centerx
@@ -115,11 +114,12 @@ class Player(MOB):
     def update(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         if not self.lock:
-            self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
-            if not Keyboard.inventory.is_pressed:
-                self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
-            else:
+            if Keyboard.inventory.is_pressed:
+                self.x_axis.update(False, False)
                 self.y_axis.update(False, False)
+            else:
+                self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
+                self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown < pygame.time.get_ticks() and (self.grounded or self.double_jump):
                     self.double_jump = self.grounded
