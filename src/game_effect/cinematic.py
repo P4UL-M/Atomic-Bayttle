@@ -56,7 +56,7 @@ class timeline:
 
     @property
     def next_action_type(self):
-        if len(self.actions):
+        if self.actions:
             return type(self.actions[0])
         else:
             return None
@@ -253,7 +253,7 @@ class TurnTransition(Action):
 
         check = len(self.state) != 0
         for key, value in _state.items():
-            if key not in self.state.keys():
+            if key not in self.state:
                 check = False
                 break
             elif value != self.state[key]:
