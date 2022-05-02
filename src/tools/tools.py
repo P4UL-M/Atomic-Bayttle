@@ -60,7 +60,7 @@ class Axis:
 
 
 class sprite_sheet(pygame.Surface):
-    dico = dict()
+    dico = {}
 
     def __init__(self, path, size: tuple[int]):
         _img = pygame.image.load(path)
@@ -71,7 +71,7 @@ class sprite_sheet(pygame.Surface):
         self.render_size = size
         self.x_nb = (self.get_width() // self.tile_size[0])
         self.y_nb = (self.get_height() // self.tile_size[1])
-        self.images = list()
+        self.images = []
         for i in range(self.x_nb * self.y_nb):
             self.images.append(self.get(i))
 
@@ -98,7 +98,7 @@ class sprite_sheet(pygame.Surface):
 
     def config(self, size):
         self.render_size = size
-        self.images = list()
+        self.images = []
         for i in range(self.x_nb * self.y_nb):
             self.images.append(self.get(i))
 
@@ -272,7 +272,7 @@ class Keyboard:
     @staticmethod
     def save(path):
         settings = json.load(open(path / "data" / "settings.json"))
-        settings["keys"] = dict()
+        settings["keys"] = {}
         for key, val in Keyboard.__dict__.items():
             if type(val) is Key:
                 settings["keys"][key] = [
