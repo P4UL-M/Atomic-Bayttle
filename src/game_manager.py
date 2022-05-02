@@ -4,7 +4,6 @@ from pygame.locals import *
 from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
-import src.tools.constant as tl
 from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
 from src.weapons.physique import *
 import src.tools.constant as tl
