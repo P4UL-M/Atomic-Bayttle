@@ -164,7 +164,7 @@ def setup_manager():
 
         return _button
 
-    game.actual_menu = credits_menu
+    game.actual_menu = principal
 
     # endregion
 
