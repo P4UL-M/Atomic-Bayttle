@@ -119,6 +119,7 @@ class MOB(pygame.sprite.Sprite):
                     __d.y -= i
             # collision of head
             elif _n.arg > pi / 4 and _n.arg < 3 * pi / 4 and self.head.collide((__d + self.rect.topleft)(), target):
+                self.grounded = False
                 _NE = (__d + self.rect.topleft)
                 _NE.x -= i * 1.2
                 _NW = (__d + self.rect.topleft)
@@ -135,6 +136,7 @@ class MOB(pygame.sprite.Sprite):
                         __d.y += 1
             # collision on side
             elif self.side_mask.collide((__d + self.rect.topleft)(), target):
+                self.grounded = False
                 if _n.x > 0:
                     while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.x < 0:
                         __d.x += 1

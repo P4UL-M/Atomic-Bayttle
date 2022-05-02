@@ -95,7 +95,7 @@ class Player(MOB):
                 if _dist.lenght < event.radius + self.rect.width // 2:
                     if not event.friendly_fire and not self.lock:
                         return
-                    vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 2
+                    vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 3
                     vector.x *= 1.5
                     self.inertia += vector
                     self.life_multiplicator += event.damage / 100
