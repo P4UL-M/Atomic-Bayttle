@@ -36,14 +36,21 @@ class inventory:
         """
         if Keyboard.interact.is_pressed and not owner.lock and not self.current_weapon.lock and not owner.input_lock:
             pygame.event.post(pygame.event.Event(CHARGING, {"weapon": self.current_weapon, "value": 0.1}))
-        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
-            if self.__cooldown + self.cooldown < pygame.time.get_ticks():
-                self.__cooldown = pygame.time.get_ticks()
-                self.index += 1
-                if self.index >= len(self.weapon_list):
-                    self.index = 0
-                self.current_weapon.clean()
-                self.current_weapon = self.weapon_list[self.index]
+        if Keyboard.inventory.is_pressed and not owner.lock and not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2) and (Keyboard.up.is_pressed or Keyboard.down.is_pressed):
+            if Keyboard.up.is_pressed:
+                if self.__cooldown + self.cooldown < pygame.time.get_ticks():
+                    self.__cooldown = pygame.time.get_ticks()
+                    self.index += 1
+                    if self.index >= len(self.weapon_list):
+                        self.index = 0
+            if Keyboard.down.is_pressed:
+                if self.__cooldown + self.cooldown < pygame.time.get_ticks():
+                    self.__cooldown = pygame.time.get_ticks()
+                    self.index -= 1
+                    if self.index < 0:
+                        self.index = len(self.weapon_list)-1
+            self.current_weapon.clean()
+            self.current_weapon = self.weapon_list[self.index]    
         if Keyboard.inventory.is_pressed and not owner.lock:
             if not self.current_weapon.lock and (not type(self.current_weapon) is wp.Auto or self.current_weapon.magazine == self.current_weapon.magazine_max) and (not type(self.current_weapon) is wp.Chainsaw or self.current_weapon.magazine > self.current_weapon.magazine_max // 2):
                 _x, _y = CAMERA.to_absolute(owner.rect.centerx, owner.rect.centery)
@@ -51,11 +58,12 @@ class inventory:
                 _y = _y / ScreenSize.resolution.y * CAMERA._screen_UI.get_height()
                 i = CAMERA._screen_UI.get_height() * 0.1
                 j = i // 2
-                pygame.draw.circle(CAMERA._screen_UI, (175, 175, 225, 150), (_x, _y), i)
-                for _i, weapon in enumerate(self.weapon_list):
-                    img = weapon.real_image.copy()
-                    img.set_alpha(255 * (0.9 if weapon is self.current_weapon else 0.45))
-                    CAMERA._screen_UI.blit(img, (_x + cos(_i * 2 * pi / len(self.weapon_list)) * j - weapon.real_image.get_width() // 2, _y + sin(_i * 2 * pi / len(self.weapon_list)) * j - weapon.real_image.get_height() // 2))
+                #pygame.draw.circle(CAMERA._screen_UI, (175, 175, 225, 150), (_x, _y), i)
+                tab=[(-20, -20), (0, -35), (20, -20)]
+                for i, weapon in enumerate(self.weapon_list):
+                    img = weapon.icon.copy()
+                    img.set_alpha(255 * (1 if weapon is self.current_weapon else 0.35))
+                    CAMERA._screen_UI.blit(img, (_x-img.get_width()/2+tab[i][0], _y-img.get_height()/2+tab[i][1]))
             else:
                 MixeurAudio.play_effect(PATH / "assets" / "sound" / "error.wav")
 

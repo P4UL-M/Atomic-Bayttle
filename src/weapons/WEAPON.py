@@ -138,10 +138,13 @@ class Grenade(Bullet):
 
 
 class WEAPON(pygame.sprite.Sprite):
-    def __init__(self, path):
+    def __init__(self, path, img_name):
         super().__init__()
         self.visible = True
-        self.real_image = pygame.image.load(path).convert_alpha()
+        self.real_image = pygame.image.load(path / img_name).convert_alpha()
+        self.icon=pygame.image.load(path / 'icon.png').convert_alpha()
+        transColor = self.icon.get_at((0,0))
+        self.icon.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
         self.real_rect = self.real_image.get_rect(topleft=(0, 0))
@@ -216,10 +219,9 @@ class Auto(WEAPON):
         self.rayon = 5
         self.cooldown = 12
         self.magazine_max = 16
-        self.path = PATH / "assets" / "perso" / team / "weapon"
-        super().__init__(PATH / "assets" / "perso" / team / "weapon" / "auto.png")
+        self.path = PATH / "assets" / "perso" / team / "weapon" / 'auto'
+        super().__init__(self.path, "auto.png")
         self.pivot = TEAM[team]["auto_pivot"]
-
         self.bullet_UI = sprite_sheet(PATH / "assets" / "weapons" / "UI" / "red_bullet.png", (24, 24))
         self.bullet_UI.config((24 * 2, 24 * 2))
 
@@ -247,8 +249,8 @@ class Launcher(WEAPON):
         self.rayon = 50
         self.cooldown = 500
         self.__cooldown = 0
-        self.path = PATH / "assets" / "perso" / team / "weapon"
-        super().__init__(PATH / "assets" / "perso" / team / "weapon" / "launcher.png")
+        self.path = PATH / "assets" / "perso" / team / "weapon" / "launcher"
+        super().__init__(self.path, "launcher.png")
         self.pivot = TEAM[team]["launcher_pivot"]
         self.magazine_max = 1
 
@@ -326,8 +328,8 @@ class Chainsaw(WEAPON):
         self.sound_cooldown = 1000
         self.__sound_cooldown = 0
         self.idle_sound = None
-        self.path = PATH / "assets" / "perso" / team / "weapon"
-        super().__init__(PATH / "assets" / "perso" / team / "weapon" / "chainsaw.png")
+        self.path = PATH / "assets" / "perso" / team / "weapon" / "chainsaw"
+        super().__init__(self.path,"chainsaw.png")
         self.pivot = TEAM[team]["melee_pivot"]
         self.magazine_max = 15
 

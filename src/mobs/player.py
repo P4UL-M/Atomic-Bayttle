@@ -116,7 +116,10 @@ class Player(MOB):
         GM = GAME.partie
         if not self.lock:
             self.x_axis.update(Keyboard.right.is_pressed, Keyboard.left.is_pressed)
-            self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
+            if not Keyboard.inventory.is_pressed:
+                self.y_axis.update(Keyboard.up.is_pressed, Keyboard.down.is_pressed)
+            else:
+                self.y_axis.update(False, False)
             if Keyboard.jump.is_pressed:
                 if self.jump_cooldown < pygame.time.get_ticks() and (self.grounded or self.double_jump):
                     self.double_jump = self.grounded
