@@ -87,14 +87,20 @@ class Game:
 
     @staticmethod
     def start_menu():
-        if Game.rcp:
-            Game.rcp.update(details="in menu", large_image="ico")
+        try:
+            if Game.rcp:
+                Game.rcp.update(details="in menu", large_image="ico")
+        except:
+            Game.rcp = None
         menu_main.setup_manager()
         Game.menu = menu_main.game
 
     def start_end(winner, loser):
-        if Game.rcp:
-            Game.rcp.update(details=f"team {TEAM[winner]['name']} has won !", large_image="ico")
+        try:
+            if Game.rcp:
+                Game.rcp.update(details=f"team {TEAM[winner]['name']} has won !", large_image="ico")
+        except:
+            Game.rcp = None
         end_menu.setup_manager(winner=winner, loser=loser)
         Game.menu = end_menu.game
 
