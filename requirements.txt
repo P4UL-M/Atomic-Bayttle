@@ -1,6 +1,9 @@
-pygame==2.1.2
-textwrap3==0.9.2
-pygame_easy_menu==0.0.35
+ffmpeg==1.4
+numpy==1.22.3
 PyAudio==0.2.11
 pydub==0.25.1
+pygame==2.1.2
+pygame-easy-menu==0.0.60
 PyOpenGL==3.1.6
+pypresence==4.2.1
+textwrap3==0.9.2

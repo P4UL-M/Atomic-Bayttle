@@ -77,14 +77,14 @@ class Bullet(MOB):
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
                         x, y = self.mask.collide(self.real_rect.topleft, player, True)
-                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
                         GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                         self.kill()
                         MixeurAudio.play_effect(self.path_sound)
                         return
                 if self.mask.collide(self.real_rect.topleft, GM.map):
                     x, y = self.mask.collide(self.real_rect.topleft, GM.map, True)
-                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire}))
+                    pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
                     GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
                     self.kill()
                     MixeurAudio.play_effect(self.path_sound)
@@ -322,7 +322,7 @@ class Chainsaw(WEAPON):
     def __init__(self, team) -> None:
         self.rayon = 35
         self.damage = 2
-        self.multiplicator_repulsion = 0.15
+        self.multiplicator_repulsion = 0.25
         self.cooldown = 100
         self.__cooldown = 0
         self.sound_cooldown = 1000
@@ -354,7 +354,7 @@ class Chainsaw(WEAPON):
         angle = self.angle
         x = self.l * 0.4 * cos(angle) * (1.5 if owner.right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
-        pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": False}))
+        pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": False, "player_cancel": True}))
         if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
             self.__sound_cooldown = pygame.time.get_ticks()
             if self.idle_sound:
