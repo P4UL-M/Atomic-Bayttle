@@ -1131,14 +1131,23 @@ def setup_manager():
     def unity():
         _text = textZone(
             name="unity",
-            size=Vector2(1500, 150),
+            size=Vector2(1500, 70),
             manager=game,
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 0.97)
+        _text.base_position = Vector2(0.5, 0.93)
         _text.set_position(_text.base_position)
-        _text.set_text("Ultimate game collection from unity assets store", align=(True, False))
+        _text.set_text("Ultimate game collection from unity asset store", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://assetstore.unity.com/packages/audio/music/orchestral/ultimate-game-music-collection-37351", new=1, autoraise=True)
 
         return _text
 
@@ -1151,7 +1160,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.07)
+        _text.base_position = Vector2(0.5, 1.)
         _text.set_position(_text.base_position)
         _text.set_text("Remember The Heroes from audionautix", align=(True, False))
 
@@ -1175,7 +1184,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.14)
+        _text.base_position = Vector2(0.5, 1.07)
         _text.set_position(_text.base_position)
         _text.set_text("RoadToKilcoo from audionautix", align=(True, False))
 
@@ -1199,7 +1208,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.21)
+        _text.base_position = Vector2(0.5, 1.14)
         _text.set_position(_text.base_position)
         _text.set_text("EpicTVTheme from audionautix", align=(True, False))
 
@@ -1223,7 +1232,7 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.28)
+        _text.base_position = Vector2(0.5, 1.21)
         _text.set_position(_text.base_position)
         _text.set_text("Essence2 from audionautix", align=(True, False))
 
@@ -1247,7 +1256,7 @@ def setup_manager():
             text_color="brown"
         )
 
-        _text.base_position = Vector2(0.5, 1.40)
+        _text.base_position = Vector2(0.5, 1.33)
         _text.set_position(_text.base_position)
         _text.set_text("Sound FX from:", align=(True, False))
 
@@ -1262,9 +1271,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.43)
+        _text.base_position = Vector2(0.5, 1.36)
         _text.set_position(_text.base_position)
-        _text.set_text("Universal Sound FX", align=(True, False))
+        _text.set_text("Universal Sound FX from unity asset store", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://assetstore.unity.com/packages/audio/sound-fx/universal-sound-fx-17256", new=1, autoraise=True)
 
         return _text
 
@@ -1277,7 +1295,7 @@ def setup_manager():
             text_color="brown"
         )
 
-        _text.base_position = Vector2(0.5, 1.55)
+        _text.base_position = Vector2(0.5, 1.48)
         _text.set_position(_text.base_position)
         _text.set_text("Game sprites from:", align=(True, False))
 
@@ -1292,9 +1310,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.58)
+        _text.base_position = Vector2(0.5, 1.51)
         _text.set_position(_text.base_position)
         _text.set_text("treasure-hunters by pixel-frog", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://pixelfrog-assets.itch.io/treasure-hunters", new=1, autoraise=True)
 
         return _text
 
@@ -1307,9 +1334,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.65)
+        _text.base_position = Vector2(0.5, 1.58)
         _text.set_position(_text.base_position)
         _text.set_text("TheUltimateWeaponsPack by jestanpixels", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://jestan.itch.io/weapons-pack", new=1, autoraise=True)
 
         return _text
 
@@ -1322,9 +1358,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.72)
+        _text.base_position = Vector2(0.5, 1.65)
         _text.set_position(_text.base_position)
         _text.set_text("Explosion Animations Pack by ansimuz", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://ansimuz.itch.io/explosion-animations-pack", new=1, autoraise=True)
 
         return _text
 
@@ -1337,9 +1382,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.79)
+        _text.base_position = Vector2(0.5, 1.72)
         _text.set_position(_text.base_position)
         _text.set_text("assets-free-laser-bullets-pack-2020 by Wenrexa", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://wenrexa.itch.io/laser2020", new=1, autoraise=True)
 
         return _text
 
@@ -1352,7 +1406,7 @@ def setup_manager():
             text_color="brown"
         )
 
-        _text.base_position = Vector2(0.5, 1.91)
+        _text.base_position = Vector2(0.5, 1.84)
         _text.set_position(_text.base_position)
         _text.set_text("Special thanks to", align=(True, False))
 
@@ -1367,9 +1421,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 1.94)
+        _text.base_position = Vector2(0.5, 1.87)
         _text.set_position(_text.base_position)
         _text.set_text("libresprite", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://libresprite.github.io/#!/", new=1, autoraise=True)
 
         return _text
 
@@ -1382,9 +1445,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 2.01)
+        _text.base_position = Vector2(0.5, 1.94)
         _text.set_position(_text.base_position)
         _text.set_text("tiled", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://www.mapeditor.org/", new=1, autoraise=True)
 
         return _text
 
@@ -1397,9 +1469,18 @@ def setup_manager():
             text_color="black"
         )
 
-        _text.base_position = Vector2(0.5, 2.08)
+        _text.base_position = Vector2(0.5, 2.01)
         _text.set_position(_text.base_position)
         _text.set_text("itch.io", align=(True, False))
+
+        @_text.Event(pygame.MOUSEBUTTONUP)
+        def onclick(_event: pygame.event.Event):
+            if (
+                _text.rect.collidepoint(pygame.mouse.get_pos())
+                and _event.button == 1
+                and _text.isactive
+            ):
+                webbrowser.open("https://itch.io/", new=1, autoraise=True)
 
         return _text
 
