@@ -34,8 +34,8 @@ class Game:
     serialized = 0
     partie = None
     menu = None
-    rcp = Presence(client_id="970789165010649108")
     try:
+        rcp = Presence(client_id="970789165010649108")
         rcp.connect()
     except:
         rcp = None
