@@ -1,8 +1,22 @@
 # Atomic-Bayttle
 
+### disclaimer : ALL ASSETS ARE UNDER THEIR OWN LICENSE, ONLY THE CODE OF THE GAME IS UNDER THE MIT LICENSE
 
-refaire map plus petite - taille max 1280- 720
-calcul again texture UI only if new
-calcul of big spritesheet like background and water optimisation
+How to launch :
+- install python 3.10
+- install all library with ``python -m pip install -r requirements.txt``
+- execute main.py
 
-Faire impact dans map avec texture tour qui dessine en alpha addition
+Controls:
+- Z Q S D to move, you can change keybinds in settings
+- TAB to active inventory then Z Q D to choose the weapon
+- SPACE to jump and double jump
+- E to shoot and respawn
+- ENTER to pass turn
+- ESC to leave
+
+
+à finir : 
+- rcp more secure and stop block the main loop
+- sticky chainsaw when hitting ennemis
+
