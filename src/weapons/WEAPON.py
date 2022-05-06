@@ -27,6 +27,7 @@ class Bullet(MOB):
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group):
         super().__init__(pos, size, group)
         self.real_image = pygame.transform.scale(pygame.image.load(path), size)
+        self.rect = self.real_image.get_rect(center=pos)
         self.image = self.real_image.copy()
         self.real_rect = self.rect.copy()
         self.real_image.convert_alpha()
@@ -76,12 +77,13 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        x, y = self.mask.collide(self.real_rect.topleft, player, True)
-                        pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
-                        GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
-                        self.kill()
-                        MixeurAudio.play_effect(self.path_sound)
-                        return
+                        if not player.lock and t > 5:
+                            x, y = self.mask.collide(self.real_rect.topleft, player, True)
+                            pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
+                            GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
+                            self.kill()
+                            MixeurAudio.play_effect(self.path_sound)
+                            return
                 if self.mask.collide(self.real_rect.topleft, GM.map):
                     x, y = self.mask.collide(self.real_rect.topleft, GM.map, True)
                     pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
@@ -147,6 +149,8 @@ class WEAPON(pygame.sprite.Sprite):
         self.icon.set_colorkey(transColor)
         self.image = self.real_image.copy()
         self.pivot = (1 / 3, 1 / 2)
+        self.end = (1.2, 1 / 2)
+        self.end_offset = ()
         self.real_rect = self.real_image.get_rect(topleft=(0, 0))
         self.rect = self.real_image.get_rect(topleft=(self.real_rect.x - self.pivot[0], self.real_rect.y - self.pivot[1]))
         self.l = self.real_rect.width
@@ -168,8 +172,8 @@ class WEAPON(pygame.sprite.Sprite):
 
     def fire(self, owner: Player, group, particle_group, force=None, speed: int = 1):
         angle = self.angle + random.uniform(-self.angle_spread, self.angle_spread)
-        x = self.l * 0.4 * cos(angle) * (1.5 if owner.right_direction else -2.3) * (1 + owner.actual_speed / 40) + self.real_rect.left
-        y = -self.l * sin(angle) + self.real_rect.top
+        x = self.end_offset[0] * (1 + owner.actual_speed / 40) + owner.rect.centerx
+        y = self.end_offset[1] * (1 + owner.actual_speed / 40) + owner.rect.centery
         Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, owner.right_direction, group)
         self.magazine -= 1
         if self.magazine <= 0:
@@ -181,26 +185,35 @@ class WEAPON(pygame.sprite.Sprite):
     def reload(self):
         ...
 
-    def update(self, pos: tuple, right: bool, angle: int, lock, CAMERA):
+    def update(self, pos: tuple, right: bool, angle: int, lock, CAMERA: Camera):
         self.angle = angle
         self.real_rect.topleft = pos
 
         offset = (int(self.real_image.get_width() * self.pivot[0]), int(self.real_image.get_height() * self.pivot[1]))
+        end = (int(self.real_image.get_width() * self.end[0]), int(self.real_image.get_height() * self.end[1]))
 
         if not right:
             image = pygame.transform.flip(self.real_image, True, False)
             offset = (int(image.get_width() * (1 - self.pivot[0])), int(image.get_height() * self.pivot[1]))
+            end = (int(image.get_width() * (1 - self.end[0])), int(image.get_height() * self.end[1]))
             angle = self.angle * -1
         else:
             image = self.real_image.copy()
             angle = self.angle
 
+        # calcul postion with offset center of rotation
         image_rect = image.get_rect(topleft=(self.real_rect.left - offset[0], self.real_rect.top - offset[1]))
         offset_center_to_pivot = pygame.math.Vector2(self.real_rect.topleft) - image_rect.center
         rotated_offset = offset_center_to_pivot.rotate(-angle * 180 / pi)
         rotated_image_center = (self.real_rect.left - rotated_offset.x, self.real_rect.top - rotated_offset.y)
         self.image = pygame.transform.rotate(image, angle * 180 / pi).convert_alpha()
         self.rect = self.image.get_rect(center=rotated_image_center)
+
+        # calcul end posision
+        image_rect_end = image.get_rect(topleft=(self.real_rect.left - end[0], self.real_rect.top - end[1]))
+        offset_center_to_end = pygame.math.Vector2(self.real_rect.topleft) - image_rect_end.center
+        self.end_offset = offset_center_to_end.rotate(-angle * 180 / pi)
+
         if self.visible:
             self.drawUI(CAMERA)
 
@@ -331,6 +344,7 @@ class Chainsaw(WEAPON):
         self.path = PATH / "assets" / "perso" / team / "weapon" / "chainsaw"
         super().__init__(self.path, "chainsaw.png")
         self.pivot = TEAM[team]["melee_pivot"]
+        self.end = (1.3, 1 / 2)
         self.magazine_max = 15
 
         self.slider = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "energy.png").convert_alpha()
