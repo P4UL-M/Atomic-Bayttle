@@ -77,7 +77,7 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        if not player.lock and t > 5:
+                        if player.lock or t > 5:
                             x, y = self.mask.collide(self.real_rect.topleft, player, True)
                             pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
                             GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))

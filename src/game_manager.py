@@ -104,6 +104,8 @@ class Partie:
                         mob.handle(event, GAME, CAMERA)
                     for obj in self.group_object:
                         obj.handle(event, GAME, CAMERA)
+                case pygame.MOUSEBUTTONUP:
+                    pygame.mouse.set_visible(False)
                 case _:
                     for mob in self.mobs:
                         mob.handle(event, GAME, CAMERA)
