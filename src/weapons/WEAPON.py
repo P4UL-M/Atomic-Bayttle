@@ -24,7 +24,7 @@ def add_weapon(_class):
 
 
 class Bullet(MOB):
-    def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group):
+    def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, group)
         self.real_image = pygame.transform.scale(pygame.image.load(path), size)
         self.rect = self.real_image.get_rect(center=pos)
@@ -53,6 +53,8 @@ class Bullet(MOB):
         self.particle_sprite.config(
             (self.radius * 2 * self.size_particule, self.radius * 2 * self.size_particule))
 
+        self.owner = owner
+
     def move(self, GAME, CAMERA):
         GM = GAME.partie
         try:
@@ -77,7 +79,7 @@ class Bullet(MOB):
                 __d = _d.unity * i
                 for player in GM.players:
                     if player is not self and self.mask.collide(self.real_rect.topleft, player) and not "bullet" in player.name:
-                        if player.lock or t > 5:
+                        if player is not self.owner or t > 5:
                             x, y = self.mask.collide(self.real_rect.topleft, player, True)
                             pygame.event.post(pygame.event.Event(IMPACT, {"x": self.real_rect.left + x, "y": self.real_rect.top + y, "radius": self.radius, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": self.friendly_fire, "player_cancel": False}))
                             GM.group_particle.add(AnimatedParticule(self.particle_sprite, 7, Vector2(self.real_rect.centerx - self.radius * self.size_particule, self.real_rect.centery - self.radius * self.size_particule), 1, Vector2(0, 0), 0, False))
@@ -118,8 +120,8 @@ class Bullet(MOB):
 
 
 class Grenade(Bullet):
-    def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, repulsion: int, speed: int, angle: int, right_direction: bool, group):
-        super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group)
+    def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, repulsion: int, speed: int, angle: int, right_direction: bool, group, owner: Player):
+        super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group, owner)
         self.speed = speed * 0.7
         self.path_sound = PATH / "assets" / "sound" / "grenade_sound.wav"
         self.multiplicator_repulsion = repulsion
@@ -174,7 +176,7 @@ class WEAPON(pygame.sprite.Sprite):
         angle = self.angle + random.uniform(-self.angle_spread, self.angle_spread)
         x = self.end_offset[0] * (1 + owner.actual_speed / 40) + owner.rect.centerx
         y = self.end_offset[1] * (1 + owner.actual_speed / 40) + owner.rect.centery
-        Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, owner.right_direction, group)
+        Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, owner.right_direction, group, owner)
         self.magazine -= 1
         if self.magazine <= 0:
             ev = pygame.event.Event(tl.ENDTURN)
@@ -306,7 +308,7 @@ class Launcher(WEAPON):
         x = self.l * 0.4 * cos(angle) * (1.5 if owner.right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
         rayon = self.rayon * min(max(force / self.v0, 1), 1.4)
-        Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), rayon, force or self.v0, 1.2 * max(force / self.v0, 1), speed, angle, owner.right_direction, group)
+        Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), rayon, force or self.v0, 1.2 * max(force / self.v0, 1), speed, angle, owner.right_direction, group, owner)
         MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 0.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
