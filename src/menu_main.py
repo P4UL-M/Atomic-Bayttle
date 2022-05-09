@@ -958,6 +958,19 @@ def setup_manager():
         return _button
 
     @credits_menu.add_sprite
+    def owl():
+        _sprite=sprite(
+            name="owl_in_palmer",
+            path=PATH / "assets" / "menu" / "owl.png",
+            manager=game
+        )
+
+        _sprite.set_position(Vector2(0.13, 0.02))
+        _sprite.set_scale(Vector2(4.,4.))
+
+        return _sprite
+
+    @credits_menu.add_sprite
     def palmer1():
         _sprite = sprite(
             name="palmer1",
@@ -3049,7 +3062,7 @@ def setup_manager():
         )
 
         _text.set_position(Vector2(0.21, 1.16), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't repel players, the sniper that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True, False))
+        _text.set_text("Each time you shoot them, it will be easier to send them into the water. Or just let them fall... Choose between all your weapons, the chainsaw that blows out the walls but doesn't if it touches players, the auto-riffle that will shoot a few missiles, and the launcher, where the longer you press, the longer it goes, dealing much damage!", align=(True, False))
 
         return _text
 
@@ -3123,13 +3136,13 @@ def setup_manager():
     def text6():
         _text = textZone(
             name="text6",
-            size=Vector2(1000, 130),
+            size=Vector2(1000, 180),
             text_color="black",
             manager=game
         )
 
         _text.set_position(Vector2(0.21, 3.28), parent=rules_menu.get_sprite("panel"), TopLeft=True)
-        _text.set_text("In order to win, kill all of your opponents!", align=(True, False))
+        _text.set_text("In order to win, kill all of your opponents! Make good profits of the healing items present on the map!", align=(True, False))
 
         return _text
 
@@ -3141,7 +3154,7 @@ def setup_manager():
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 3.52), parent=rules_menu.get_sprite("panel"))
+        _sprite.set_position(Vector2(0.5, 3.61), parent=rules_menu.get_sprite("panel"))
         _sprite.set_scale(Vector2(5.1, 5.1))
 
         return _sprite
@@ -3155,7 +3168,7 @@ def setup_manager():
             manager=game
         )
 
-        _text.set_position(Vector2(0.21, 3.61), parent=rules_menu.get_sprite("panel"), TopLeft=True)
+        _text.set_position(Vector2(0.21, 3.69), parent=rules_menu.get_sprite("panel"), TopLeft=True)
         _text.set_text("Have fun!", align=(True, False))
 
         return _text
