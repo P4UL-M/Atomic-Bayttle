@@ -118,7 +118,7 @@ def setup_manager(winner, loser):
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.5, 0.651))
+        _sprite.set_position(Vector2(0.5, 0.652))
         _sprite.set_scale(Vector2(6.0, 6.0))
 
         return _sprite
