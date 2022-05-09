@@ -23,6 +23,11 @@ def add_weapon(_class):
     return _class
 
 
+class trajectoire_without_gravity(trajectoire):
+    def get_y(self, x):
+        return x * sin(self.angle) / cos(self.angle)
+
+
 class Bullet(MOB):
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, group)
@@ -137,7 +142,7 @@ class Grenade(Bullet):
     def update(self, GAME, CAMERA):
         _d = super().update(GAME, CAMERA)
         _d = (_d if _d else Vector2(1, 1)) * -1
-        GAME.partie.group_particle.add(Particule(4, Vector2(*self.real_rect.center), 1, _d, 2, pygame.Color(0, 0, 0), gravity=True, size=(2, 2)))
+        GAME.partie.group_particle.add(Particule(4, Vector2(*self.real_rect.center), 1, _d, 2, pygame.Color(255, 255, 255), gravity=True, size=(2, 2)))
         self.image, self.rect = self.rot_center(pygame.time.get_ticks() / 100)
 
 
@@ -182,7 +187,7 @@ class WEAPON(pygame.sprite.Sprite):
             ev = pygame.event.Event(tl.ENDTURN)
             pygame.event.post(ev)
         for i in range(5):
-            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))
 
     def reload(self):
         ...
@@ -312,7 +317,7 @@ class Launcher(WEAPON):
         MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 0.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
-                x, y).unity * -1, 5, pygame.Color(60, 0, 0), False, (2, 2)))
+                x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))
 
     def reload(self):
         self.magazine = self.magazine_max
@@ -349,6 +354,8 @@ class Chainsaw(WEAPON):
         self.end = (1.3, 1 / 2)
         self.magazine_max = 15
 
+        self.flamethrower = "perso_2" in team
+
         self.slider = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "energy.png").convert_alpha()
         self.slider = pygame.transform.scale(self.slider, (int(self.slider.get_width() * 2), int(self.slider.get_height() * 2)))
         self.bar = pygame.image.load(PATH / "assets" / "weapons" / "UI" / "EnergyBar.png").convert_alpha()
@@ -377,7 +384,13 @@ class Chainsaw(WEAPON):
                 self.idle_sound()
             self.idle_sound = MixeurAudio.play_effect(self.path / "hit_melee.wav", 0.5)
         for i in range(5):
-            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(0, 0, 0), False, (4, 4)))
+            dir = Vector2(cos(angle), sin(angle))
+            if not owner.right_direction:
+                dir.x *= -1
+            if self.flamethrower:
+                dir.y *= -1
+                particle_group.add(Particule(5, Vector2(x, y), 1, dir * 3, 1, pygame.Color(255, 170, 0), False, (15, 15), "particle_round"))
+            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(0, -1), 5, pygame.Color(255, 255, 255), False, (4, 4)))
 
     def update(self, pos, right, angle, lock, CAMERA):
         super().update(pos, right, angle, lock, CAMERA)

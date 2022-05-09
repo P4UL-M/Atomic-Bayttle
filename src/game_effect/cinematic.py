@@ -235,7 +235,7 @@ class Death(Action):
     def __update__(self, GAME: Game, CAMERA: Camera):
         GM = GAME.partie
         if pygame.time.get_ticks() % 50 == 0:
-            GM.group_particle.add(Particule(40, Vector2(self.player.rect.centerx, self.player.rect.bottom), 2, Vector2(0, -1), 0.5, Color(0, 0, 0), False))
+            GM.group_particle.add(Particule(40, Vector2(self.player.rect.centerx, self.player.rect.bottom), 2, Vector2(0, -1), 0.5, Color(255, 255, 255), False))
 
 
 class TurnTransition(Action):

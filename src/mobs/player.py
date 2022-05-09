@@ -131,8 +131,7 @@ class Player(MOB):
                 self.jump_cooldown = pygame.time.get_ticks() + self.cooldown_double_jump
                 self.manager.load("jump")
                 for _ in range(5):
-                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width(
-                    ) // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(20, 20, 0)))
+                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width() // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(1, -2), 2, pygame.Color(255, 255, 220)))
             if self.actual_speed > 0.2 and self.life_multiplicator > 0.35:
                 ev = pygame.event.Event(INTERACT, {"rect": self.rect, "player": self})
                 pygame.event.post(ev)
@@ -145,9 +144,8 @@ class Player(MOB):
             # * walking particle here
             if self.grounded:
                 self.double_jump = True
-                if self.actual_speed > 1 and pygame.time.get_ticks() % 7 == 0:
-                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width() // 2, self.rect.bottom),
-                                          self.image.get_width() // 2, Vector2(-self.x_axis.value * 2, 0), 0.25 * self.actual_speed, pygame.Color(20, 20, 0)))
+                if self.actual_speed > 1 and pygame.time.get_ticks() % 4 == 0:
+                    GM.group_particle.add(Particule(10, Vector2(self.rect.left + self.image.get_width() // 2, self.rect.bottom), self.image.get_width() // 2, Vector2(-self.x_axis.value * 2, 0), 0.25 * self.actual_speed, pygame.Color(255, 255, 220)))
 
             # * CAMERA Update of the player
             x, y = CAMERA.to_virtual(ScreenSize.resolution.x / 2, ScreenSize.resolution.y / 2)
