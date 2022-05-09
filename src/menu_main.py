@@ -959,14 +959,14 @@ def setup_manager():
 
     @credits_menu.add_sprite
     def owl():
-        _sprite=sprite(
+        _sprite = sprite(
             name="owl_in_palmer",
             path=PATH / "assets" / "menu" / "owl.png",
             manager=game
         )
 
         _sprite.set_position(Vector2(0.13, 0.02))
-        _sprite.set_scale(Vector2(4.,4.))
+        _sprite.set_scale(Vector2(4., 4.))
 
         return _sprite
 
