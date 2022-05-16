@@ -35,6 +35,7 @@ class Game:
     partie = None
     menu = None
     try:
+        # TODO : update and connect pressence asynchronously
         rcp = Presence(client_id="970789165010649108")
         rcp.connect()
     except:
