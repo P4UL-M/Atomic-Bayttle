@@ -11,7 +11,7 @@ pygame.display.set_mode(flags=OPENGL | DOUBLEBUF | FULLSCREEN, depth=16)
 ScreenSize.resolution = Vector2(*pygame.display.get_window_size())
 pygame.display.init()
 pygame.display.set_icon(pygame.image.load(PATH / "assets" / "ico.png"))
-img = pygame.image.load(PATH / "assets" / "menu" / "mouse.png").convert_alpha()  # you could also load an image
+img = pygame.image.load(PATH / "assets" / "menu" / "mouse.png").convert_alpha()  # Change of the mouse cursor image
 img = pygame.transform.scale(img, (img.get_width() * 1.3, img.get_height() * 1.3))
 color = pygame.cursors.Cursor((0, 0), img)
 pygame.mouse.set_cursor(*color)
@@ -35,7 +35,7 @@ class Game:
     partie = None
     menu = None
     try:
-        # TODO : update and connect pressence asynchronously
+        # TODO : update and connect presence asynchronously
         rcp = Presence(client_id="970789165010649108")
         rcp.connect()
     except:
@@ -43,6 +43,9 @@ class Game:
 
     @staticmethod
     def run():
+        """
+        Main loop for the game and menus
+        """
         MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
         MixeurAudio.play_until_Stop(PATH / "assets" / "sound" / "water_effect_loop.wav", volume=0.35)
         gl.config()
@@ -50,7 +53,7 @@ class Game:
         Game.start_menu()
         Camera.maximise = False
 
-        while Game.running:
+        while Game.running:     # Update of the game or the menu
             pygame.mouse.get_pos()
             if Game.partie:
                 try:
@@ -79,7 +82,7 @@ class Game:
         Game.partie = game_manager.Partie()
         Game.partie.add_player("j1.1", j1)
         Game.partie.add_player("j2.1", j2, True)
-        Game.partie.add_player("j1.2", j1, True)  # ajouter avec respawn pour éviter le bordel
+        Game.partie.add_player("j1.2", j1, True)  # add with respawn to avoid mess
         Game.partie.add_player("j2.2", j2, True)
         MixeurAudio.gn.reset()
         Camera.HUD = True
@@ -88,8 +91,11 @@ class Game:
 
     @staticmethod
     def start_menu():
+        """
+        Initialize start menu
+        """
         try:
-            if Game.rcp:
+            if Game.rcp:                # Update pypresence
                 Game.rcp.update(details="in menu", large_image="ico")
         except:
             Game.rcp = None
@@ -97,8 +103,11 @@ class Game:
         Game.menu = menu_main.game
 
     def start_end(winner, loser):
+        """
+        Initialize end menu
+        """
         try:
-            if Game.rcp:
+            if Game.rcp:                # Update pypresence
                 Game.rcp.update(details=f"team {TEAM[winner]['name']} has won !", large_image="ico")
         except:
             Game.rcp = None
@@ -120,6 +129,9 @@ class Camera:
 
     @staticmethod
     def render() -> None:
+        """
+        Display game state on screen by OpenGL
+        """
         Camera.zoom = max(1, Camera.zoom)
         Camera.x, Camera.y, Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen, (Camera.x, Camera.y), Camera.zoom, maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
@@ -129,6 +141,9 @@ class Camera:
 
     @staticmethod
     def to_virtual(x, y) -> tuple[int, int]:
+        """
+        Convert coordinates from screen to virtual world
+        """
         x_zoom = Camera.zoom * Camera.zoom_offset[0]
         local = x / ScreenSize.resolution.x - 0.5  # offset to center in %
         _x = local / x_zoom + Camera.x + 0.5
@@ -141,7 +156,9 @@ class Camera:
 
     @staticmethod
     def to_absolute(x, y) -> tuple[int, int]:
-
+        """
+        Convert coordinates from virtual world to screen
+        """
         x_zoom = Camera.zoom * Camera.zoom_offset[0]
         _x = (x / Camera._off_screen.get_width() - 0.5 - Camera.x) * x_zoom + 0.5
 
@@ -152,6 +169,9 @@ class Camera:
 
     @staticmethod
     def render_bg():
+        """
+        Render the actual background to the screen with OpenGL
+        """
         Camera.zoom = max(1, Camera.zoom)
         _bg, _bgsize, _bcloud, _bx, _bsize, _ccloud, _cx, _csize = next(Camera._bg)  # background dynamique
         Camera.x, Camera.y, Camera.zoom_offset = gl.simpleRender(_bg, (Camera.x, Camera.y), _bgsize, Camera.zoom, maximize=Camera.maximise)
@@ -160,6 +180,9 @@ class Camera:
 
     @staticmethod
     def Update(x=None, y=None, zoom=None):
+        """
+        Secured update of coordinates of the camera
+        """
         if zoom is None:
             zoom = Camera.zoom
         if x is None:

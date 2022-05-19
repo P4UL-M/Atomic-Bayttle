@@ -6,6 +6,10 @@ from src.tools.tools import *
 from src.tools.constant import PATH, TEAM
 from src.menu_main import animated_sprite
 
+"""
+The functionnement of this menu is the same as the menu_main.py
+"""
+
 GAME = None
 CAMERA = None
 game = None
