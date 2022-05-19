@@ -6,7 +6,7 @@ from pygame_easy_menu.tools import *
 from src.tools.tools import *
 from src.tools.constant import PATH
 from math import sin
-#TODO check layer in credits
+# TODO check layer in credits
 """
 All menus are done with pygame_easy_menu, a library made by Paul Mairesse that uses the mechanic of decorators
 Every object is an instance of a class derivated from pygame.sprite that allows customization.
@@ -20,7 +20,7 @@ CAMERA = None
 game = None
 
 
-class CursorButton(Button, sprite): # Associated cursor position for each part of the music bar
+class CursorButton(Button, sprite):  # Associated cursor position for each part of the music bar
     def __init__(self, name, path, manager, isactive=True, layer=0, pos: Vector2 = Vector2(0, 0)):
         super().__init__(name, path, manager, isactive, layer)
         self.cursor_position = pos
@@ -46,6 +46,7 @@ class animated_sprite(sprite):  # class without surface set and animated
         return self.manager.surface
 
     def set_scale(self, sca: Vector2, center=True): ...
+
 
 # Keybinds for the keybind change in settings
 DICO = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3, pygame.K_e: 4, pygame.K_f: 5, pygame.K_g: 6, pygame.K_h: 7, pygame.K_i: 8, pygame.K_j: 9,
