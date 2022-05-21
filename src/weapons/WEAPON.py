@@ -32,6 +32,7 @@ class Bullet(MOB):
     """
     Class mother for all bullets, including their trajectories and rotation
     """
+
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, group)
         self.real_image = pygame.transform.scale(pygame.image.load(path), size)
@@ -142,6 +143,7 @@ class Grenade(Bullet):
     """
     Class child of bullet as a grenade with specificities for the damage, explosion, expulsion, ...
     """
+
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, repulsion: int, speed: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group, owner)
         self.speed = speed * 0.7
@@ -167,6 +169,7 @@ class WEAPON(pygame.sprite.Sprite):
     """
     Class mother for all weapons, including their shoot, cooldown, angle and else
     """
+
     def __init__(self, path, img_name):
         super().__init__()
         self.visible = True
@@ -263,6 +266,7 @@ class Auto(WEAPON):
     """
     Auto riffle as a child class of WEAPON
     """
+
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "14.png"
         self.v0 = 100
@@ -296,6 +300,7 @@ class Launcher(WEAPON):
     """
     Launcher as a child class of WEAPON
     """
+
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "grenade.png"
         self.v0 = 50
