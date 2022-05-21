@@ -4,6 +4,9 @@ g = 9.806
 
 
 class trajectoire:
+    """
+    Class to get trajectories and position as functions of time and abscissa
+    """
     def __init__(self, pos, angle, force) -> None:
         self.pos0 = pos
         self.angle = angle

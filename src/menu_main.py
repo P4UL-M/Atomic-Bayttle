@@ -6,6 +6,13 @@ from pygame_easy_menu.tools import *
 from src.tools.tools import *
 from src.tools.constant import PATH
 from math import sin
+#TODO check layer in credits
+"""
+All menus are done with pygame_easy_menu, a library made by Paul Mairesse that uses the mechanic of decorators
+Every object is an instance of a class derivated from pygame.sprite that allows customization.
+It is indeed defined by a name and you can see its image with the path and position with set_position(Vector2(x,y))
+Every object and its comportement is automatically added to the main loop and displayed on screen
+"""
 
 GAME = None
 CAMERA = None
@@ -13,13 +20,13 @@ CAMERA = None
 game = None
 
 
-class CursorButton(Button, sprite):
+class CursorButton(Button, sprite): # Associated cursor position for each part of the music bar
     def __init__(self, name, path, manager, isactive=True, layer=0, pos: Vector2 = Vector2(0, 0)):
         super().__init__(name, path, manager, isactive, layer)
         self.cursor_position = pos
 
 
-class animated_sprite(sprite):  # class without surface set and annimated
+class animated_sprite(sprite):  # class without surface set and animated
     def __init__(self, name, manager, animation_manager, isactive=True, layer=0, pos: Vector2 = Vector2(0, 0)):
         super(sprite, self).__init__()
         self.name = name
@@ -40,7 +47,7 @@ class animated_sprite(sprite):  # class without surface set and annimated
 
     def set_scale(self, sca: Vector2, center=True): ...
 
-
+# Keybinds for the keybind change in settings
 DICO = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3, pygame.K_e: 4, pygame.K_f: 5, pygame.K_g: 6, pygame.K_h: 7, pygame.K_i: 8, pygame.K_j: 9,
         pygame.K_k: 10, pygame.K_l: 11, pygame.K_m: 12, pygame.K_n: 13, pygame.K_o: 14, pygame.K_p: 15, pygame.K_q: 16, pygame.K_r: 17, pygame.K_s: 18, pygame.K_t: 19, pygame.K_u: 20,
         pygame.K_v: 21, pygame.K_w: 22, pygame.K_x: 23, pygame.K_y: 24, pygame.K_z: 25, pygame.K_0: 26, pygame.K_1: 27, pygame.K_2: 28, pygame.K_3: 29, pygame.K_4: 30, pygame.K_5: 31,
@@ -63,6 +70,7 @@ def setup_manager():
     game.running = True
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
 
+    # Different menus for all the possibilities offered
     principal = Menu("Principal", game, childs=["Settings", "Play", "Rules"])
     settings_menu = Menu("Settings", game, parent="Principal", childs=["Keybinds", "Credits"])
     credits_menu = Menu("Credits", game, parent="Settings")
@@ -929,6 +937,7 @@ def setup_manager():
         _button = Button(
             name="goback",
             path=PATH / "assets" / "menu" / "rules" / "goback.png",
+            layer=2,
             manager=game
         )
 
@@ -942,7 +951,7 @@ def setup_manager():
                 if _button.start < 1500:
                     _button.start += 1
                 else:
-                    if _button.name != sprite.name and "palmer" not in sprite.name:
+                    if _button.name != sprite.name and "palmer" not in sprite.name:     # To make all text move
                         x, y = sprite.rect.center
                         sprite.set_position(Vector2(x, y - 1))
             if credits_menu.get_sprite("itch.io").rect.center[1] < 15:
@@ -959,22 +968,28 @@ def setup_manager():
 
     @credits_menu.add_sprite
     def owl():
-        _sprite = sprite(
+        _button = Button(
             name="owl_in_palmer",
             path=PATH / "assets" / "menu" / "owl.png",
+            layer=2,
             manager=game
         )
 
-        _sprite.set_position(Vector2(0.13, 0.02))
-        _sprite.set_scale(Vector2(4., 4.))
+        _button.set_position(Vector2(0.13, 0.02))
+        _button.set_scale(Vector2(4., 4.))
 
-        return _sprite
+        @_button.on_click(PATH / "assets" / "sound" / "EFREI.wav")
+        def sound():
+            pass
+
+        return _button
 
     @credits_menu.add_sprite
     def palmer1():
         _sprite = sprite(
             name="palmer1",
             path=PATH / "assets" / "menu" / "end" / "palmer1.png",
+            layer=1,
             manager=game
         )
 
@@ -988,6 +1003,7 @@ def setup_manager():
         _sprite = sprite(
             name="palmer2",
             path=PATH / "assets" / "menu" / "end" / "palmer2.png",
+            layer=1,
             manager=game
         )
 
@@ -1002,6 +1018,7 @@ def setup_manager():
             name="producers",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1015,6 +1032,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://cutt.ly/DFbWjeT", new=1, autoraise=True)
 
@@ -1026,6 +1044,7 @@ def setup_manager():
             name="Poool",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1041,6 +1060,7 @@ def setup_manager():
             name="Axell",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1056,6 +1076,7 @@ def setup_manager():
             name="Looki",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1071,6 +1092,7 @@ def setup_manager():
             name="Roquetteur_2",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1086,6 +1108,7 @@ def setup_manager():
             name="Unicorn",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1101,6 +1124,7 @@ def setup_manager():
             name="beta-testers",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1116,6 +1140,7 @@ def setup_manager():
             name="/4voiliers/",
             size=Vector2(1500, 100),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1131,6 +1156,7 @@ def setup_manager():
             name="music",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1146,6 +1172,7 @@ def setup_manager():
             name="unity",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1159,6 +1186,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://assetstore.unity.com/packages/audio/music/orchestral/ultimate-game-music-collection-37351", new=1, autoraise=True)
 
@@ -1170,6 +1198,7 @@ def setup_manager():
             name="heroes",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1183,6 +1212,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://audionautix.com/Music/RememberTheHeroes.mp3", new=1, autoraise=True)
 
@@ -1194,6 +1224,7 @@ def setup_manager():
             name="kilcoo",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1207,6 +1238,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://audionautix.com/Music/RoadToKilcoo.mp3", new=1, autoraise=True)
 
@@ -1218,6 +1250,7 @@ def setup_manager():
             name="epictv",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1231,6 +1264,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://audionautix.com/Music/EpicTVTheme.mp3", new=1, autoraise=True)
 
@@ -1242,6 +1276,7 @@ def setup_manager():
             name="essence",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1255,6 +1290,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://audionautix.com/Music/Essence2.mp3", new=1, autoraise=True)
 
@@ -1266,6 +1302,7 @@ def setup_manager():
             name="sound",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1281,6 +1318,7 @@ def setup_manager():
             name="universal_sound",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1294,6 +1332,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://assetstore.unity.com/packages/audio/sound-fx/universal-sound-fx-17256", new=1, autoraise=True)
 
@@ -1305,6 +1344,7 @@ def setup_manager():
             name="sprites",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1320,6 +1360,7 @@ def setup_manager():
             name="sprites",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1333,6 +1374,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://pixelfrog-assets.itch.io/treasure-hunters", new=1, autoraise=True)
 
@@ -1344,6 +1386,7 @@ def setup_manager():
             name="jestanpixels",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1357,6 +1400,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://jestan.itch.io/weapons-pack", new=1, autoraise=True)
 
@@ -1368,6 +1412,7 @@ def setup_manager():
             name="ansimuz",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1381,6 +1426,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://ansimuz.itch.io/explosion-animations-pack", new=1, autoraise=True)
 
@@ -1392,6 +1438,7 @@ def setup_manager():
             name="wenrexa",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1405,6 +1452,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://wenrexa.itch.io/laser2020", new=1, autoraise=True)
 
@@ -1416,6 +1464,7 @@ def setup_manager():
             name="special_thanks",
             size=Vector2(1900, 150),
             manager=game,
+            layer=1,
             text_color="brown"
         )
 
@@ -1431,6 +1480,7 @@ def setup_manager():
             name="libresprite",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1444,6 +1494,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://libresprite.github.io/#!/", new=1, autoraise=True)
 
@@ -1455,6 +1506,7 @@ def setup_manager():
             name="tiled",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1468,6 +1520,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://www.mapeditor.org/", new=1, autoraise=True)
 
@@ -1479,6 +1532,7 @@ def setup_manager():
             name="itch.io",
             size=Vector2(1500, 70),
             manager=game,
+            layer=1,
             text_color="black"
         )
 
@@ -1492,6 +1546,7 @@ def setup_manager():
                 _text.rect.collidepoint(pygame.mouse.get_pos())
                 and _event.button == 1
                 and _text.isactive
+                and Button.check_layer(_text)
             ):
                 webbrowser.open("https://itch.io/", new=1, autoraise=True)
 
