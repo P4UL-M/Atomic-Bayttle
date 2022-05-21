@@ -29,6 +29,9 @@ class trajectoire_without_gravity(trajectoire):
 
 
 class Bullet(MOB):
+    """
+    Class mother for all bullets, including their trajectories and rotation
+    """
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, group)
         self.real_image = pygame.transform.scale(pygame.image.load(path), size)
@@ -61,6 +64,9 @@ class Bullet(MOB):
         self.owner = owner
 
     def move(self, GAME, CAMERA):
+        """
+        Motion of the bullet, including sound and particles
+        """
         GM = GAME.partie
         try:
             self.__getattribute__("rect")
@@ -104,18 +110,26 @@ class Bullet(MOB):
         return _d.unity
 
     def collide_reaction(self, *arg, **kargs):
+        """Function specific for child classes"""
         ...
 
-    def handle(self, event: pygame.event.Event, *args, **kargs): ...
+    def handle(self, event: pygame.event.Event, *args, **kargs):
+        """Function specific for child classes"""
+        ...
 
     def update(self, GAME, CAMERA):
+        """
+        Update state and position of the bullet
+        """
         GM = GAME.partie
         if (self.rect.y > 0 and not self.rect.colliderect(GM.map.rect)) or self.rect.y < -GM.map.rect.height * 0.3:
             self.kill()
         return super().update(GAME, CAMERA)
 
     def rot_center(self, angle):
-
+        """
+        Make the bullet rotate following its center and not the corner
+        """
         rotated_image = pygame.transform.rotate(
             self.real_image, -(angle or 0) * 180 / pi)
         new_rect = rotated_image.get_rect(
@@ -125,6 +139,9 @@ class Bullet(MOB):
 
 
 class Grenade(Bullet):
+    """
+    Class child of bullet as a grenade with specificities for the damage, explosion, expulsion, ...
+    """
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, repulsion: int, speed: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group, owner)
         self.speed = speed * 0.7
@@ -147,6 +164,9 @@ class Grenade(Bullet):
 
 
 class WEAPON(pygame.sprite.Sprite):
+    """
+    Class mother for all weapons, including their shoot, cooldown, angle and else
+    """
     def __init__(self, path, img_name):
         super().__init__()
         self.visible = True
@@ -169,7 +189,7 @@ class WEAPON(pygame.sprite.Sprite):
         self.lock = False
 
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
-        """methode appele a chaque event"""
+        """method called at every event"""
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
@@ -178,6 +198,7 @@ class WEAPON(pygame.sprite.Sprite):
                     self.lock = False
 
     def fire(self, owner: Player, group, particle_group, force=None, speed: int = 1):
+        """Function for the weapon to shoot a bullet"""
         angle = self.angle + random.uniform(-self.angle_spread, self.angle_spread)
         x = self.end_offset[0] * (1 + owner.actual_speed / 40) + owner.rect.centerx
         y = self.end_offset[1] * (1 + owner.actual_speed / 40) + owner.rect.centery
@@ -190,9 +211,13 @@ class WEAPON(pygame.sprite.Sprite):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))
 
     def reload(self):
+        """Function specific for child classes"""
         ...
 
     def update(self, pos: tuple, right: bool, angle: int, lock, CAMERA: Camera):
+        """
+        Update state and position of the weapon
+        """
         self.angle = angle
         self.real_rect.topleft = pos
 
@@ -208,7 +233,7 @@ class WEAPON(pygame.sprite.Sprite):
             image = self.real_image.copy()
             angle = self.angle
 
-        # calcul postion with offset center of rotation
+        # calcul position with offset center of rotation
         image_rect = image.get_rect(topleft=(self.real_rect.left - offset[0], self.real_rect.top - offset[1]))
         offset_center_to_pivot = pygame.math.Vector2(self.real_rect.topleft) - image_rect.center
         rotated_offset = offset_center_to_pivot.rotate(-angle * 180 / pi)
@@ -216,7 +241,7 @@ class WEAPON(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(image, angle * 180 / pi).convert_alpha()
         self.rect = self.image.get_rect(center=rotated_image_center)
 
-        # calcul end posision
+        # calcul end position
         image_rect_end = image.get_rect(topleft=(self.real_rect.left - end[0], self.real_rect.top - end[1]))
         offset_center_to_end = pygame.math.Vector2(self.real_rect.topleft) - image_rect_end.center
         self.end_offset = offset_center_to_end.rotate(-angle * 180 / pi)
@@ -225,14 +250,19 @@ class WEAPON(pygame.sprite.Sprite):
             self.drawUI(CAMERA)
 
     def clean(self):
+        """Function specific for child classes"""
         ...
 
     def drawUI(self, CAMERA):
+        """Function specific for child classes"""
         ...
 
 
 @ add_weapon
 class Auto(WEAPON):
+    """
+    Auto riffle as a child class of WEAPON
+    """
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "14.png"
         self.v0 = 100
@@ -263,6 +293,9 @@ class Auto(WEAPON):
 
 @ add_weapon
 class Launcher(WEAPON):
+    """
+    Launcher as a child class of WEAPON
+    """
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "grenade.png"
         self.v0 = 50
@@ -283,7 +316,7 @@ class Launcher(WEAPON):
         self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 2), int(self.bar.get_height() * 2)))
 
     def handle(self, event: pygame.event.Event, owner, GAME, CAMERA):
-        """methode appele a chaque event"""
+        """method called at every event"""
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
@@ -362,7 +395,7 @@ class Chainsaw(WEAPON):
         self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 2), int(self.bar.get_height() * 2)))
 
     def handle(self, event: pygame.event.Event, owner, GAME: Game, CAMERA: Camera):
-        """methode appele a chaque event"""
+        """method called at every event"""
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
