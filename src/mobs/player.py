@@ -85,14 +85,15 @@ class Player(MOB):
         if not self.lock:
             pygame.event.post(pygame.event.Event(ENDTURN))
 
-    def handle(self, event: pygame.event.Event, GAME, CAMERA):
+    def handle(self, event: pygame.event.Event, GAME: Game, CAMERA: Camera):
         """methode appele a chaque event"""
         match event.type:
             case pygame.KEYUP if event.key == Keyboard.end_turn.key and not self.lock:
                 pygame.event.post(pygame.event.Event(ENDTURN))
             case tl.IMPACT:
                 _dist = Vector2(self.rect.centerx - event.x, self.rect.centery - event.y)
-                if _dist.lenght < event.radius + self.rect.width // 2:
+                point = _dist.copy().unity * event.radius + (event.x, event.y)
+                if self.rect.clipline((event.x, event.y), point()):
                     if not event.friendly_fire and not self.lock:
                         return
                     vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 3
