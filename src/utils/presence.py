@@ -26,8 +26,6 @@ class Presence:
 
 
 def worker(id, details, time):
-    # var declaration
-    print("worker Presence started")
     try:
         rcp = pyPresence(client_id=id)
         rcp.connect()
