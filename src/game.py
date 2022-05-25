@@ -23,7 +23,7 @@ import src.menu_main as menu_main  # nopep8
 import src.tools.opengl_pygame as gl  # nopep8
 from src.tools.constant import EndPartie, TEAM  # nopep8
 from src.tools.tools import MixeurAudio  # nopep8
-from pypresence import Presence  # nopep8
+from src.utils.presence import Presence  # nopep8
 
 # there is only one game so we do not need a instance, modifying dinamically the class allow us to access it without an instance
 
@@ -34,12 +34,9 @@ class Game:
     serialized = 0
     partie = None
     menu = None
-    try:
-        # TODO : update and connect presence asynchronously
-        rcp = Presence(client_id="970789165010649108")
-        rcp.connect()
-    except:
-        rcp = None
+
+    rcp = Presence(id="970789165010649108")
+    rcp.start()
 
     @staticmethod
     def run():
@@ -94,11 +91,8 @@ class Game:
         """
         Initialize start menu
         """
-        try:
-            if Game.rcp:                # Update pypresence
-                Game.rcp.update(details="in menu", large_image="ico")
-        except:
-            Game.rcp = None
+        Game.rcp.details.value = "In menu"
+        Game.rcp.time.value = 0.0
         menu_main.setup_manager()
         Game.menu = menu_main.game
 
@@ -106,11 +100,8 @@ class Game:
         """
         Initialize end menu
         """
-        try:
-            if Game.rcp:                # Update pypresence
-                Game.rcp.update(details=f"team {TEAM[winner]['name']} has won !", large_image="ico")
-        except:
-            Game.rcp = None
+        Game.rcp.details.value = f"team {TEAM[winner]['name']} has won !"
+        Game.rcp.time.value = 0.0
         end_menu.setup_manager(winner=winner, loser=loser)
         Game.menu = end_menu.game
 

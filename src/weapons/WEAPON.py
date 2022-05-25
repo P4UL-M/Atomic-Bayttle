@@ -32,6 +32,7 @@ class Bullet(MOB):
     """
     Class mother for all bullets, including their trajectories and rotation
     """
+
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, group)
         self.real_image = pygame.transform.scale(pygame.image.load(path), size)
@@ -142,6 +143,7 @@ class Grenade(Bullet):
     """
     Class child of bullet as a grenade with specificities for the damage, explosion, expulsion, ...
     """
+
     def __init__(self, pos: tuple[int], size: tuple[int], path: str, impact_surface: pygame.Surface, radius, force: int, repulsion: int, speed: int, angle: int, right_direction: bool, group, owner: Player):
         super().__init__(pos, size, path, impact_surface, radius, force, angle, right_direction, group, owner)
         self.speed = speed * 0.7
@@ -167,6 +169,7 @@ class WEAPON(pygame.sprite.Sprite):
     """
     Class mother for all weapons, including their shoot, cooldown, angle and else
     """
+
     def __init__(self, path, img_name):
         super().__init__()
         self.visible = True
@@ -203,6 +206,7 @@ class WEAPON(pygame.sprite.Sprite):
         x = self.end_offset[0] * (1 + owner.actual_speed / 40) + owner.rect.centerx
         y = self.end_offset[1] * (1 + owner.actual_speed / 40) + owner.rect.centery
         Bullet((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), self.rayon, self.v0, angle, owner.right_direction, group, owner)
+        MixeurAudio.play_effect(PATH / "assets" / "sound" / "fire_sound.wav")
         self.magazine -= 1
         if self.magazine <= 0:
             ev = pygame.event.Event(tl.ENDTURN)
@@ -263,6 +267,7 @@ class Auto(WEAPON):
     """
     Auto riffle as a child class of WEAPON
     """
+
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "14.png"
         self.v0 = 100
@@ -296,6 +301,7 @@ class Launcher(WEAPON):
     """
     Launcher as a child class of WEAPON
     """
+
     def __init__(self, team) -> None:
         self.bullet = PATH / "assets" / "laser" / "grenade.png"
         self.v0 = 50
@@ -328,7 +334,7 @@ class Launcher(WEAPON):
                         self.factor = event.value + 0.032 * GAME.serialized
                         if not self.chargingsound:
                             self.chargingsound = MixeurAudio.play_until_Stop(
-                                PATH / "assets" / "sound" / "weapon_charge.wav", volume=2)
+                                PATH / "assets" / "sound" / "weapon_charge.wav", volume=1.5)
                     else:
                         owner.weapon_manager.zoom_factor = 1
                         self.__cooldown = pygame.time.get_ticks()
@@ -347,7 +353,7 @@ class Launcher(WEAPON):
         y = -self.l * sin(angle) + self.real_rect.top
         rayon = self.rayon * min(max(force / self.v0, 1), 1.4)
         Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), rayon, force or self.v0, 1.2 * max(force / self.v0, 1), speed, angle, owner.right_direction, group, owner)
-        MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 0.5)
+        MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 1.5)
         for i in range(5):
             particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
                 x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))

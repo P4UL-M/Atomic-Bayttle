@@ -41,11 +41,8 @@ class Partie:
         self.turn_length = 15000
         self.start_time = time.time()
 
-        try:
-            if GAME.rcp:
-                GAME.rcp.update(details="in game : 2 - 2", large_image="ico", start=self.start_time)
-        except:
-            GAME.rcp = None
+        GAME.rcp.details.value = "in game : 2 - 2"
+        GAME.rcp.time.value = self.start_time
 
     @property
     def players(self) -> list[Player]:
@@ -91,11 +88,7 @@ class Partie:
                     else:
                         event.player.kill()
                         self.cycle_players.delete(name=event.player.name)
-                    try:
-                        if GAME.rcp:
-                            GAME.rcp.update(details=f"in game : {len([player for player in self.players if 'j1' in player.name])} - {len([player for player in self.players if 'j2' in player.name])}", large_image="ico", start=self.start_time)
-                    except:
-                        GAME.rcp = None
+                    GAME.rcp.details.value = f"in game : {len([player for player in self.players if 'j1' in player.name])} - {len([player for player in self.players if 'j2' in player.name])}"
                 case tl.IMPACT:
                     collide_player = any([Vector2(player.rect.centerx - event.x, player.rect.centery - event.y).lenght < event.radius + player.rect.width // 2 for player in self.players if player.lock])
                     if not event.player_cancel or not collide_player:

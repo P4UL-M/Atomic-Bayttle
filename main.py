@@ -10,14 +10,10 @@ PATH = pathlib.Path(__file__).parent
 
 # region windows build support
 # Module multiprocessing is organized differently in Python 3.4+
-try:
-    # Python 3.4+
-    if sys.platform.startswith('win'):
-        import multiprocessing.popen_spawn_win32 as forking
-    else:
-        import multiprocessing.popen_fork as forking
-except ImportError:
-    import multiprocessing.forking as forking
+if sys.platform.startswith('win'):
+    import multiprocessing.popen_spawn_win32 as forking
+else:
+    import multiprocessing.popen_fork as forking
 
 if sys.platform.startswith('win'):
     # First define a modified version of Popen.
@@ -61,4 +57,5 @@ if __name__ == "__main__":
         game.run()
     except SystemExit:
         gn.p.terminate()
+        game.rcp.p.terminate()
         print("bye !")
