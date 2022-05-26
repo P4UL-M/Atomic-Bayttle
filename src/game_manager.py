@@ -68,6 +68,7 @@ class Partie:
         self.group_object.add(Object_map(name, pos, path))
 
     def Update(self):
+        T3 = pygame.time.get_ticks()
         CAMERA._screen_UI.fill((0, 0, 0, 0))
         CAMERA.cache = False
         """ fonction qui update les informations du jeu"""
@@ -117,7 +118,10 @@ class Partie:
         if "j1" not in names or "j2" not in names and self.timeline.current_action_type != TurnTransition:
             raise tl.EndPartie(TEAM[self.players[0].name], [name for name in TEAM.values() if name != TEAM[self.players[0].name]][0])
 
+        print(f"inner 1 :{pygame.time.get_ticks() - T3} ms")
+        T4 = pygame.time.get_ticks()
         self.Draw()
+        print(f"inner 2 :{pygame.time.get_ticks() - T4} ms")
 
     def Draw(self):
         _surf = pygame.Surface(self.map.image.get_size(), flags=pygame.SRCALPHA)

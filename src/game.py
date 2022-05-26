@@ -51,6 +51,8 @@ class Game:
         Camera.maximise = False
 
         while Game.running:     # Update of the game or the menu
+            print("before update")
+            T1 = pygame.time.get_ticks()
             if Game.partie:
                 try:
                     Game.partie.Update()
@@ -63,14 +65,18 @@ class Game:
                     Game.partie = None
             else:
                 Game.menu.Update()
+            print(f"{pygame.time.get_ticks() - T1} ms")
+            T2 = pygame.time.get_ticks()
             gl.cleangl()
             if Game.partie:
                 Camera.render_bg()
             Camera.render()
+            print(f"{pygame.time.get_ticks() - T2} ms")
 
             pygame.display.flip()
 
-            Game.serialized = Game.clock.tick(60) / 16.7
+            Game.serialized = Game.clock.tick() / 16.7
+            print("FPS:", Game.clock.get_fps())
         raise SystemExit
 
     @staticmethod
