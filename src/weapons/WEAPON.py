@@ -380,7 +380,7 @@ class Launcher(WEAPON):
 class Chainsaw(WEAPON):
     def __init__(self, team) -> None:
         self.rayon = 35
-        self.damage = 4
+        self.damage = 3
         self.multiplicator_repulsion = 0.25
         self.cooldown = 100
         self.__cooldown = 0

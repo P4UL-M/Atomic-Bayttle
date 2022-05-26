@@ -158,10 +158,11 @@ class MOB(pygame.sprite.Sprite):
             # collision undefined
             else:
                 _last_n = _n.lenght
+
                 while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.lenght < i * 3:
                     __d += _n.unity
                     _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
-                    if _n.lenght > _last_n:
+                    if _n.lenght >= _last_n:
                         break
                     _last_n = _n.lenght
         else:  # * else no collison so no operation
