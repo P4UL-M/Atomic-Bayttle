@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class inventory:
     """Class to change weapon with the User Interface"""
+
     def __init__(self, team) -> None:
         self.weapon_list: list[wp.WEAPON] = [weapon(team) for weapon in wp._list_weapon]
         self.current_weapon: wp.WEAPON = choice(self.weapon_list)
