@@ -14,9 +14,10 @@ Controls:
 - E to shoot and respawn
 - ENTER to pass turn
 - ESC to leave
+  *control can be changed in settings*
 
+About the code :
+- the code used to emulate the physics of the game is defined in the file ``src/weapons/physique.py``, it is used to calculate trajectory of all bullets in the game.
 
 à finir : 
-- rcp more secure and stop block the main loop
 - sticky chainsaw when hitting ennemis
-

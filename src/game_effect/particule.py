@@ -1,7 +1,7 @@
 """
 Atomic Bay'ttle
 Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file contains the details for the particles while moving or shooting for example
+This file contain the definition of the elements of game effect of the game
 """
 import pygame
 import random

@@ -1,7 +1,7 @@
 """
 Atomic Bay'ttle
 Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file definites the actions and the turns in game
+This file contain the definition of the main timeline of the game
 """
 from __future__ import annotations
 import pygame

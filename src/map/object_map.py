@@ -1,7 +1,7 @@
 """
 Atomic Bay'ttle
 Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file contains main functions to handle the map objects and their collisions
+This file contain the definition of the pickable object in the game
 """
 import pygame
 import src.tools.constant as tools

@@ -1,7 +1,7 @@
 """
 Atomic Bay'ttle
 Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file generates the background
+This file allow to render the background of the game with opengl
 """
 import pygame
 from pygame.locals import *

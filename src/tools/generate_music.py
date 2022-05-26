@@ -1,15 +1,11 @@
 """
 Atomic Bay'ttle
 Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file contains the generation of the theme music
+A scrit that allow real time musique speed modification with calcul on another Proccess to avoid overloading the main boucle
 """
 from multiprocessing import Process, Value, Manager, Queue
 from pydub import AudioSegment
 from queue import Empty
-
-"""
-A scrit that allow real time musique speed modification with calcul on another Proccess to avoid overloading the main boucle
-"""
 
 # method from https://stackoverflow.com/questions/51434897/how-to-change-audio-playback-speed-using-pydub
 
