@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains all physics formulas needed in the program
+"""
 from math import cos, tan
 
 g = 9.806

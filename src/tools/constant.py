@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains all constants that we could need in other files
+"""
 import pygame
 import pathlib
 
@@ -11,7 +16,7 @@ GRAVITY = pygame.USEREVENT + 5
 INTERACT = pygame.USEREVENT + 6
 ENDMUSIC = pygame.USEREVENT + 7
 
-TEAM = {
+TEAM = {        # All informations on sprite and dimensions that we could need
     "perso_1": {
         "name": "Captain Clown Nose",
         "idle": (24, 28),

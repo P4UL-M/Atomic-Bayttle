@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file rewrites some pygame functions to be more adapted to our code
+"""
 import pygame
 from src.game import Camera
 

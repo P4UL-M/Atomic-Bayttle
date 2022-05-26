@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains the main loop for the game and the menus
+"""
 import pygame
 from pygame.locals import *
 

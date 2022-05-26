@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file initializes and updates the game
+"""
 from __future__ import annotations
 import pygame
 from pygame.locals import *
@@ -28,7 +33,7 @@ class Partie:
         self.group_particle = pygame.sprite.Group()
         self.group_object = pygame.sprite.Group()
 
-        # the swpan point à remplacer après par le system
+        # the spawn point à remplacer après par le system
         self.checkpoint = Vector2(100, 50)
         self.checkpoints = {"j1.1": Vector2(160, 50), "j1.2": Vector2(400, 50), "j2.1": Vector2(1030, 50), "j2.2": Vector2(1235, 50)}
         pygame.mouse.set_visible(False)

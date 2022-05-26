@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file manages the weapons in game
+"""
 from __future__ import annotations
 import src.weapons.WEAPON as wp
 from src.tools.tools import Keyboard, ScreenSize, MixeurAudio, Vector2, Axis

@@ -1,11 +1,12 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+Script to modify presence on discord, use of multiprocessing for better performance
+"""
 from pypresence import Presence as pyPresence
 from multiprocessing import Process, Value, Manager
 from ctypes import c_char_p, c_float
 import time as TIME
-
-"""
-Script to modify presence on discord, use of multiprocessing for better performance
-"""
 
 
 class Presence:

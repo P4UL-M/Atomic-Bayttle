@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains all elements for the end menu
+"""
 import pygame
 from pygame.locals import *
 from pygame_easy_menu import *

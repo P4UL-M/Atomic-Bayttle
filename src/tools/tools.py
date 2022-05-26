@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains class that are useful in many parts of the program
+"""
 import pygame
 import json
 from pygame_easy_menu import Vector2
