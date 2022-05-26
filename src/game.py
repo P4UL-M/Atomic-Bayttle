@@ -75,6 +75,8 @@ class Game:
 
             pygame.display.flip()
 
+            pygame.time.wait(50)
+
             Game.serialized = Game.clock.tick(60) / 16.7
         raise SystemExit
 

@@ -57,7 +57,7 @@ class Particule(pygame.sprite.Sprite):
         if self.lifetime < 0:
             self.kill()
         else:
-            self.lifetime -= 1
+            self.lifetime -= 1 * serialized
             self.move(serialized)
 
 

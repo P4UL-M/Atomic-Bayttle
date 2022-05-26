@@ -214,6 +214,7 @@ class WEAPON(pygame.sprite.Sprite):
         MixeurAudio.play_effect(PATH / "assets" / "sound" / "fire_sound.wav")
         self.magazine -= 1
         if self.magazine <= 0:
+            self.magazine = 0
             ev = pygame.event.Event(tl.ENDTURN)
             pygame.event.post(ev)
         for i in range(5):
@@ -412,9 +413,6 @@ class Chainsaw(WEAPON):
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:
                     self.__cooldown = pygame.time.get_ticks()
                     self.fire(owner, GAME.partie.mobs, GAME.partie.group_particle)
-                    self.magazine -= 1
-                    if self.magazine <= 0:
-                        pygame.event.post(pygame.event.Event(tl.ENDTURN, {"player": owner}))
                     self.lock = False
 
     def fire(self, owner: Player, group, particle_group):
@@ -422,6 +420,10 @@ class Chainsaw(WEAPON):
         x = self.l * 0.4 * cos(angle) * (1.5 if owner.right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
         pygame.event.post(pygame.event.Event(IMPACT, {"x": x, "y": y, "radius": self.rayon, "multiplicator_repulsion": self.multiplicator_repulsion, "damage": self.damage, "friendly_fire": False, "player_cancel": True}))
+        self.magazine -= 1
+        if self.magazine <= 0:
+            self.magazine = 0
+            pygame.event.post(pygame.event.Event(tl.ENDTURN, {"player": owner}))
         if self.__sound_cooldown + self.sound_cooldown < pygame.time.get_ticks():
             self.__sound_cooldown = pygame.time.get_ticks()
             if self.idle_sound:
