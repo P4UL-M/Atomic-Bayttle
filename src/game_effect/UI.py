@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains the User Interface with all static images
+"""
 from src.tools.tools import sprite_sheet
 from src.tools.constant import PATH
 import pygame

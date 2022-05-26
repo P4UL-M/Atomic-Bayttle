@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file updates the map and damage done to it
+"""
 import pygame
 from pygame.locals import *
 from src.tools.tools import Vector2, sprite_sheet, animation_Manager, MixeurAudio

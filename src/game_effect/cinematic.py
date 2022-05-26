@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file definites the actions and the turns in game
+"""
 from __future__ import annotations
 import pygame
 from src.tools.constant import EndAction

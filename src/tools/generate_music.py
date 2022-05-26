@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains the generation of the theme music
+"""
 from multiprocessing import Process, Value, Manager, Queue
 from pydub import AudioSegment
 from queue import Empty

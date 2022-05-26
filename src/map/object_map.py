@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains main functions to handle the map objects and their collisions
+"""
 import pygame
 import src.tools.constant as tools
 from src.tools.tools import Vector2, MixeurAudio

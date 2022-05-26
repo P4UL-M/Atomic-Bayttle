@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains more specific functions for the players, their teams and updates
+"""
 from __future__ import annotations
 import pygame
 from .MOTHER import MOB

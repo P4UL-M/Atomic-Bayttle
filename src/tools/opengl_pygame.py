@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains functions to link OpenGL and Pygame
+"""
 from OpenGL.GL import *
 from src.tools.tools import ScreenSize
 import pygame

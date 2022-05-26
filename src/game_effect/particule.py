@@ -1,3 +1,8 @@
+"""
+Atomic Bay'ttle
+Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
+This file contains the details for the particles while moving or shooting for example
+"""
 import pygame
 import random
 from pygame.locals import *
