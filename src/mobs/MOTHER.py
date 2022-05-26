@@ -1,7 +1,13 @@
+from __future__ import annotations
 import pygame
 from math import ceil, pi, sin, cos
 from src.tools.tools import Vector2, Axis
 import src.tools.constant as tl
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.game import *
+    from src.mobs.player import Player
 
 
 class BodyPartSprite(pygame.mask.Mask):
@@ -52,17 +58,15 @@ class MOB(pygame.sprite.Sprite):
         self.grounded = False  # vérification si au sol ou non
 
         # body part with position relative to the player position
-        self.body_mask = BodyPartSprite(
-            (0, 0), (self.rect.width, self.rect.height))
-        self.feet = BodyPartSprite(
-            (self.rect.width * 0.15, self.rect.height * 0.6), (self.rect.width * 0.7, self.rect.height * 0.8))
-        self.head = BodyPartSprite(
-            (0, self.rect.height * -0.2), (self.rect.width, self.rect.height * 0.5))
-        self.side_mask = BodyPartSprite(
-            (0, self.rect.width * 0.3), (self.rect.width, self.rect.height * 0.4))
+        self.body_mask = BodyPartSprite((0, 0), (self.rect.width, self.rect.height))
+        self.feet = BodyPartSprite((self.rect.width * 0.15, self.rect.height * 0.6), (self.rect.width * 0.7, self.rect.height * 0.8))
+        self.head = BodyPartSprite((0, self.rect.height * -0.2), (self.rect.width, self.rect.height * 0.5))
+        self.side_mask = BodyPartSprite((0, self.rect.height * 0.3), (self.rect.width, self.rect.height * 0.4))
         self.mask = self.body_mask  # for collision with other and projectil
 
-    def move(self, GAME, CAMERA):
+    def move(self, GAME: Game, CAMERA: Camera):
+        global Y
+        global L
         GM = GAME.partie
         try:
             self.__getattribute__("rect")
@@ -95,9 +99,26 @@ class MOB(pygame.sprite.Sprite):
                 self.rect.move_ip(*__d)
 
     def collide_reaction(self, __d: Vector2, i: int, target, serialized):
-        _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
+        _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target,)
         if _n.arg is not None:  # * arg is not none then we have collision
-            if self.actual_speed / serialized > self.speed * 2 and __d.lenght > 0:  # boucing effect
+            # collision on side
+            if self.side_mask.collide((__d + self.rect.topleft)(), target):
+                self.grounded = False
+                if _n.x > 0:
+                    while self.side_mask.collide((__d + self.rect.topleft)(), target) and abs(__d.x) < i * 2:
+                        __d.x += 1
+                    if __d.y:
+                        __d.y += 0.5 * __d.y / abs(__d.y)
+                elif _n.x < 0:
+                    while self.side_mask.collide((__d + self.rect.topleft)(), target) and abs(__d.x) < i * 2:
+                        __d.x -= 1
+                    if __d.y:
+                        __d.y += 0.5 * __d.y / abs(__d.y)
+            # update of the collision
+            _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
+            if _n.arg is None:
+                pass
+            elif self.actual_speed / serialized > self.speed * 2 and __d.lenght > 0:  # boucing effect
                 _angle = 2 * _n.arg - __d.arg  # the absolute angle of our new vector
                 _dangle = __d.arg - _angle  # the diff of angle between the two
                 self.inertia.x = - \
@@ -134,24 +155,15 @@ class MOB(pygame.sprite.Sprite):
                     self.inertia.y = 0
                     while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.y < 0:
                         __d.y += 1
-            # collision on side
-            elif self.side_mask.collide((__d + self.rect.topleft)(), target):
-                self.grounded = False
-                if _n.x > 0:
-                    while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.x < 0:
-                        __d.x += 1
-                    if not self.grounded:  # strange bug clip surface while flying
-                        self.inertia.x += self.speed / 4
-                elif _n.x < 0:
-                    while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.x > 0:
-                        __d.x -= 1
-                    if not self.grounded:  # strange bug clip surface while flying
-                        self.inertia.x -= self.speed / 4
-            else:  # collision undefined
-                while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.lenght < self.speed * 3:
+            # collision undefined
+            else:
+                _last_n = _n.lenght
+                while self.body_mask.collide((__d + self.rect.topleft)(), target) and __d.lenght < i * 3:
                     __d += _n.unity
-                    self.body_mask.collide_normal(
-                        (__d + self.rect.topleft)(), target)
+                    _n = self.body_mask.collide_normal((__d + self.rect.topleft)(), target)
+                    if _n.lenght > _last_n:
+                        break
+                    _last_n = _n.lenght
         else:  # * else no collison so no operation
             self.grounded = False
         if not self.body_mask.collide((__d + self.rect.topleft)(), target):
@@ -164,14 +176,13 @@ class MOB(pygame.sprite.Sprite):
         """methode appele a chaque event"""
         match event.type:
             case tl.GRAVITY:
-                if not self.grounded and self.inertia.y < self.speed * 2:
+                if not self.grounded and self.inertia.y < self.speed * 1.5:
                     self.inertia.y += 9.81 * event.serialized * self.gravity
                 if self.inertia.x != 0:
                     if abs(self.inertia.x) < self.speed / 2:
                         _d = (0 - self.inertia.x) / 2
                     else:
-                        _d = -9.81 * event.serialized * self.gravity * \
-                            Axis.sign(self.inertia.x) * 0.5
+                        _d = -9.81 * event.serialized * self.gravity * Axis.sign(self.inertia.x) * 0.5
                     self.inertia.x += _d
             case _:
                 ...

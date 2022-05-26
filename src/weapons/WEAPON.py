@@ -53,7 +53,7 @@ class Bullet(MOB):
         self.speed = 1
         self.path_sound = PATH / "assets" / "sound" / "kill_sound.wav"
         self.damage = 4
-        self.multiplicator_repulsion = 0.6
+        self.multiplicator_repulsion = 0.7
         self.friendly_fire = False
 
         self.particle_sprite = sprite_sheet(
@@ -312,6 +312,7 @@ class Launcher(WEAPON):
         super().__init__(self.path, "launcher.png")
         self.pivot = TEAM[team]["launcher_pivot"]
         self.magazine_max = 1
+        self.repulsion_factor = 1
 
         self.chargingsound = None
         self.factor = 0.1
@@ -352,11 +353,10 @@ class Launcher(WEAPON):
         x = self.l * 0.4 * cos(angle) * (1.5 if owner.right_direction else -2.3) + self.real_rect.left
         y = -self.l * sin(angle) + self.real_rect.top
         rayon = self.rayon * min(max(force / self.v0, 1), 1.4)
-        Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), rayon, force or self.v0, 1.2 * max(force / self.v0, 1), speed, angle, owner.right_direction, group, owner)
+        Grenade((x, y), (14, 7), self.bullet, pygame.Surface((5, 3)), rayon, force or self.v0, self.repulsion_factor * max(force / self.v0, 1), speed, angle, owner.right_direction, group, owner)
         MixeurAudio.play_effect(PATH / "assets" / "sound" / "rocket_launch.wav", 1.5)
         for i in range(5):
-            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(
-                x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))
+            particle_group.add(Particule(2, Vector2(x, y), 1, Vector2(x, y).unity * -1, 5, pygame.Color(255, 200, 200), False, (2, 2)))
 
     def reload(self):
         self.magazine = self.magazine_max
@@ -380,7 +380,7 @@ class Launcher(WEAPON):
 class Chainsaw(WEAPON):
     def __init__(self, team) -> None:
         self.rayon = 35
-        self.damage = 2
+        self.damage = 4
         self.multiplicator_repulsion = 0.25
         self.cooldown = 100
         self.__cooldown = 0

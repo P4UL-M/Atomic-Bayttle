@@ -96,16 +96,18 @@ class Player(MOB):
                 if self.rect.clipline((event.x, event.y), point()):
                     if not event.friendly_fire and not self.lock:
                         return
-                    vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed * 3
-                    self.inertia += vector
                     self.life_multiplicator += event.damage / 100
+                    vector = _dist.unity * self.life_multiplicator * event.multiplicator_repulsion * self.speed
+                    if self.grounded and vector.y > 0:  # if we are on the ground and shoot from the top
+                        vector.y = vector.y * -1
+                    self.inertia += vector
                     x = self.rect.centerx
                     y = self.rect.centery
                     size = 7 + event.damage**1.15 / 6
                     GAME.partie.group_particle.add(textParticle(30, (x, y), Vector2(0, -1), 1, int(str(event.damage)[0]), (size, size)))
                     if len(str(event.damage)) > 1:
                         GAME.partie.group_particle.add(textParticle(30, (x + size + 1, y), Vector2(0, -1), 1, int(str(event.damage)[1]), (size, size)))
-                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.20)
+                    MixeurAudio.play_effect(PATH / "assets" / "sound" / "voice_hit.wav", 0.6)
             case pygame.KEYDOWN:
                 if not self.lock and self.input_lock:
                     self.input_lock = False
@@ -180,7 +182,7 @@ class Player(MOB):
         # * death
         if self.visible:
             if self.rect.bottom > GM.map.water_level:
-                MixeurAudio.play_effect(tl.PATH / "assets" / "sound" / "fall_in_water.wav", 0.5)
+                MixeurAudio.play_effect(tl.PATH / "assets" / "sound" / "fall_in_water.wav", 1)
                 ev = pygame.event.Event(DEATH, {"player": self})
                 pygame.event.post(ev)
                 self.visible = False

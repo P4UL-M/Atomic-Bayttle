@@ -276,7 +276,7 @@ class Keyboard:
 
 
 class MixeurAudio:
-    pygame.mixer.set_num_channels(6)
+    pygame.mixer.set_num_channels(12)
 
     __musicMixer = pygame.mixer.music
     __inGameMixer = pygame.mixer.Channel(1)

@@ -51,7 +51,6 @@ class Game:
         Camera.maximise = False
 
         while Game.running:     # Update of the game or the menu
-            pygame.mouse.get_pos()
             if Game.partie:
                 try:
                     Game.partie.Update()

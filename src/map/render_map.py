@@ -39,9 +39,9 @@ class Map(pygame.sprite.Sprite):
                            (_pos - self.cave_bg.rect.topleft)(), radius)
         self.mask = pygame.mask.from_surface(self.image)
         if radius >= Launcher("perso_1").rayon:
-            self.water_target -= 20
+            self.water_target -= 15
         else:
-            self.water_target -= 2
+            self.water_target -= 1.5
 
     def update(self, GAME):
         MixeurAudio.gn.sound_factor.value = min(- 2 / self.rect.height * max(self.water_target, self.water_level) + 3, 3)
