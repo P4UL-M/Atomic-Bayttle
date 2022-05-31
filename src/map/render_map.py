@@ -39,10 +39,17 @@ class Map(pygame.sprite.Sprite):
         self.seil = 0
 
     def add_damage(self, _pos: Vector2, radius):  # pass damage and update mask
-        pygame.draw.circle(self.image, (0, 0, 0, 0), _pos(), radius)
-        pygame.draw.circle(self.cave_bg.image, (0, 0, 0, 0),
-                           (_pos - self.cave_bg.rect.topleft)(), radius)
-        self.mask = pygame.mask.from_surface(self.image)
+        # create mask from surface of deletion
+        _pos = _pos - Vector2(radius, radius)
+        _surf = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(_surf, (255, 255, 255, 255), (radius, radius), radius)
+        _mask = pygame.mask.from_surface(_surf)
+        # add damage to surface
+        self.image.blit(_surf, _pos(), special_flags=BLEND_RGBA_SUB)
+        self.cave_bg.image.blit(_surf, (_pos - self.cave_bg.rect.topleft)(), special_flags=BLEND_RGBA_SUB)
+        # update mask
+        self.mask.erase(_mask, _pos())
+        # update water level
         if radius >= Launcher("perso_1").rayon:
             self.water_target -= 15
         else:
