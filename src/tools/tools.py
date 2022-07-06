@@ -315,14 +315,10 @@ class MixeurAudio:
         json.dump(settings, open(path / "data" / "settings.json", "w"))
 
     @staticmethod
-    def set_musique(path, loops=True, queue=False):
-        MixeurAudio.stop("musique")
+    def set_musique(path, loops=True):
+        print(MixeurAudio.volume_musique)
         MixeurAudio.__musicMixer.set_volume(MixeurAudio.volume_musique)
-        if queue:
-            MixeurAudio.__musicMixer.queue(path, loops=-1 if loops else 0)
-        else:
-            MixeurAudio.__musicMixer.load(path)
-            MixeurAudio.__musicMixer.play(-1 if loops else 0)
+        MixeurAudio.__musicMixer.play(pygame.mixer.Sound(path), -1 if loops else 0)
 
     @staticmethod
     def update_musique():

@@ -407,7 +407,7 @@ class Chainsaw(WEAPON):
         self.bar = pygame.transform.scale(self.bar, (int(self.bar.get_width() * 2), int(self.bar.get_height() * 2)))
 
     def handle(self, event: pygame.event.Event, owner, GAME: Game, CAMERA: Camera):
-        """method called at every event"""
+        """methode appele a chaque event"""
         match event.type:
             case tl.CHARGING:
                 if self.__cooldown + self.cooldown < pygame.time.get_ticks() and event.weapon == self:

@@ -9,10 +9,11 @@ from pygame.locals import *
 from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
-from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
+from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList, ScreenSize
 from src.weapons.physique import *
 import src.tools.constant as tl
 from src.game_effect.cinematic import *
+from src.tools.Surface_class import SurfaceOpenGl, Surface2SurfaceOpenGl
 import time
 
 if TYPE_CHECKING:
@@ -48,6 +49,7 @@ class Partie:
 
         GAME.rcp.details.value = "in game : 2 - 2"
         GAME.rcp.time.value = self.start_time
+        CAMERA._off_screen = SurfaceOpenGl(ScreenSize.resolution())
 
     @property
     def players(self) -> list[Player]:
@@ -66,6 +68,7 @@ class Partie:
         self.cycle_players = Cycle(*[mob.name for mob in self.mobs.sprites()])
         self.last_players = SizedList(*self.players)
         self.mobs.add(player)
+        self.last_players += player
         self.timeline.purge()
         self.timeline.add_action(Turn(GAME, CAMERA))
 
@@ -125,17 +128,19 @@ class Partie:
         self.Draw()
 
     def Draw(self):
-        _surf = pygame.Surface(self.map.image.get_size(), flags=pygame.SRCALPHA)
-        _surf.blit(self.map.cave_bg.image, self.map.cave_bg.rect.topleft)
-        _surf.blit(self.map.image, (0, 0))
-        self.mobs.draw(_surf)
+        T1 = pygame.time.get_ticks()
+        CAMERA._off_screen.clean()
+        CAMERA._off_screen.blit(self.map.cave_bg.image, self.map.cave_bg.rect.topleft)
+        CAMERA._off_screen.blit(self.map.image, (0, 0))
+        self.mobs.draw(CAMERA._off_screen)
         for player in self.mobs.sprites():
             if (
                 type(player) is Player
                 and player.weapon_manager.current_weapon.visible
             ):
-                _surf.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
-        self.group_particle.draw(_surf)
-        self.group_object.draw(_surf)
-        _surf.blit(self.map.water_manager.surface, (0, self.map.water_level))
-        CAMERA._off_screen = _surf
+                CAMERA._off_screen.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
+        self.group_particle.draw(CAMERA._off_screen)
+        self.group_object.draw(CAMERA._off_screen)
+        CAMERA._off_screen.blit(self.map.water_manager.surface, (0, self.map.water_level))
+        CAMERA._off_screen = CAMERA._off_screen
+        print(pygame.time.get_ticks() - T1)

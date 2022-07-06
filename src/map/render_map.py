@@ -8,14 +8,15 @@ from pygame.locals import *
 from src.tools.tools import Vector2, sprite_sheet, animation_Manager, MixeurAudio
 from src.tools.constant import PATH
 from src.weapons.WEAPON import *
+from src.tools.Surface_class import SurfaceOpenGl, Surface2SurfaceOpenGl
 import random
 
 
 class Map(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load(
-            PATH / "assets" / "environnement" / "map.png").convert_alpha()
+        self.image = pygame.image.load(PATH / "assets" / "environnement" / "map.png").convert_alpha()
+        self.image = Surface2SurfaceOpenGl(self.image)
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.water_level = self.image.get_height() - 30
@@ -33,8 +34,8 @@ class Map(pygame.sprite.Sprite):
         self.water_manager.load("idle")
 
         self.cave_bg = pygame.sprite.Sprite()
-        self.cave_bg.image = pygame.image.load(
-            PATH / "assets" / "environnement" / "cave.png").convert_alpha()
+        self.cave_bg.image = pygame.image.load(PATH / "assets" / "environnement" / "cave.png").convert_alpha()
+        self.cave_bg.image = Surface2SurfaceOpenGl(self.cave_bg.image)
         self.cave_bg.rect = self.cave_bg.image.get_rect(topleft=(927, 221))
         self.seil = 0
 

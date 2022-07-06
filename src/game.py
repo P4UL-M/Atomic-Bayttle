@@ -56,6 +56,7 @@ class Game:
         Camera.maximise = False
 
         while Game.running:     # Update of the game or the menu
+            T1 = pygame.time.get_ticks()
             if Game.partie:
                 try:
                     Game.partie.Update()
@@ -68,14 +69,18 @@ class Game:
                     Game.partie = None
             else:
                 Game.menu.Update()
+            print(f"logic : {pygame.time.get_ticks() - T1} ms")
+            T2 = pygame.time.get_ticks()
             gl.cleangl()
             if Game.partie:
                 Camera.render_bg()
             Camera.render()
+            print(f"render : {pygame.time.get_ticks() - T2} ms")
 
             pygame.display.flip()
 
             Game.serialized = Game.clock.tick(60) / 16.7
+            print("fps:", Game.clock.get_fps())
         raise SystemExit
 
     @staticmethod
@@ -128,6 +133,11 @@ class Camera:
         Display game state on screen by OpenGL
         """
         Camera.zoom = max(1, Camera.zoom)
+
+        def debug(surf, arg=None):
+            print(surf, arg)
+        if type(Camera._off_screen) is not pygame.Surface:
+            Camera._off_screen.render(debug)
         Camera.x, Camera.y, Camera.zoom_offset = gl.surfaceToScreen(Camera._off_screen, (Camera.x, Camera.y), Camera.zoom, maximize=Camera.maximise)
         # add when we will need UI, for now render is not fully optimised so we wont render useless surface
         if Camera.HUD:
