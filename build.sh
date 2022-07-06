@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onedir --windowed --icon "/Users/paulmairesse/Documents/python/Atomic-Bayttle/assets/ico.png" --name "Atomic-Bayttle" --add-data "/Users/paulmairesse/Documents/python/Atomic-Bayttle/assets:assets/" --add-data "/Users/paulmairesse/Documents/python/Atomic-Bayttle/data:data/"  "/Users/paulmairesse/Documents/python/Atomic-Bayttle/main.py"
