@@ -1,5 +1,9 @@
 # Atomic-Bayttle
 
+https://github.com/P4UL-M/Atomic-Bayttle/assets/74359642/8e98c3a6-a7c3-4233-8aa6-e8dcb0a6427b
+
+https://github.com/P4UL-M/Atomic-Bayttle/assets/74359642/776f8400-dd36-414d-83c5-76b05bcc0203
+
 ### disclaimer : ALL ASSETS ARE UNDER THEIR OWN LICENSE, ONLY THE CODE OF THE GAME IS UNDER THE MIT LICENSE
 
 How to launch :
