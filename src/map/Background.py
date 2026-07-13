@@ -1,21 +1,26 @@
-"""
-Atomic Bay'ttle
-Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
-This file allow to render the background of the game with opengl
-"""
+"""Preloaded parallax background assets."""
+
 import pygame
-from pygame.locals import *
-import src.tools.opengl_pygame as gl
-from src.tools.tools import sprite_sheet
+
 from src.tools.constant import PATH
+from src.tools.tools import sprite_sheet
 
 
-def background():
-    sp = sprite_sheet(PATH / "assets" / "environnement" / "background_sheet.png", (448, 252))
-    _bgs = [gl.returnSurfaceToTexture(spr) for spr in sp]
+class BackgroundAssets:
+    def __init__(self):
+        self.frames = list(
+            sprite_sheet(
+                PATH / "assets" / "environnement" / "background_sheet.png",
+                (448, 252),
+            )
+        )
+        self.back_cloud = pygame.image.load(
+            PATH / "assets" / "environnement" / "cloud_back_sheet.png"
+        ).convert_alpha()
+        self.front_cloud = pygame.image.load(
+            PATH / "assets" / "environnement" / "cloud_front_sheet.png"
+        ).convert_alpha()
 
-    _b_cloud = gl.returnSurfaceToTexture(pygame.image.load(PATH / "assets" / "environnement" / "cloud_back_sheet.png"), True)
-    _f_cloud = gl.returnSurfaceToTexture(pygame.image.load(PATH / "assets" / "environnement" / "cloud_front_sheet.png"), True)
-
-    while True:
-        yield _bgs[pygame.time.get_ticks() // 150 % len(_bgs)], (448, 252), _b_cloud, pygame.time.get_ticks() / 40000 % 0.5 - 0.25, (896, 252), _f_cloud, pygame.time.get_ticks() / 80000 % 0.5 - 0.25, (896, 252)
+    def current(self):
+        frame = self.frames[pygame.time.get_ticks() // 150 % len(self.frames)]
+        return frame, self.back_cloud, self.front_cloud

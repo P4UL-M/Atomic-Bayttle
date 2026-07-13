@@ -23,13 +23,18 @@ game = None
 def setup_manager(winner, loser):
     """Corresponding to the screen once the game is finished"""
     global game
-    CAMERA._off_screen = pygame.Surface((1920, 1080), flags=HWSURFACE + HWACCEL)
     CAMERA.HUD = False
     CAMERA.zoom = 1
     CAMERA.maximise = False
     pygame.mouse.set_visible(True)
 
-    game = Menu_Manager(name="end_screen", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")
+    game = Menu_Manager(
+        name="end_screen",
+        size=Vector2(1920, 1080),
+        backend=GAME.menu_backend((1920, 1080)),
+        auto_present=False,
+        background=PATH / "assets" / "menu" / "background_sheet.png",
+    )
     game.play_effect = MixeurAudio.play_effect
     game.running = True
 

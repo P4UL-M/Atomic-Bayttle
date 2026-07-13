@@ -25,6 +25,13 @@ CAMERA = None
 game = None
 
 
+def animate_key_button(button, key):
+    """Select a cached key frame and pulse it with a shader tint."""
+    button.image = button.spritesheet[key]
+    alpha = 200 + 55 * sin(pygame.time.get_ticks() / 200) if button.active else 255
+    button.tint = (1.0, 1.0, 1.0, alpha / 255)
+
+
 class CursorButton(Button, sprite):  # Associated cursor position for each part of the music bar
     def __init__(self, name, path, manager, isactive=True, layer=0, pos: Vector2 = Vector2(0, 0)):
         super().__init__(name, path, manager, isactive, layer)
@@ -64,14 +71,19 @@ DICO = {pygame.K_a: 0, pygame.K_b: 1, pygame.K_c: 2, pygame.K_d: 3, pygame.K_e: 
 
 def setup_manager():
     global game
-    CAMERA._off_screen = pygame.Surface((1920, 1080), flags=HWSURFACE + HWACCEL)
     CAMERA.HUD = False
     CAMERA.zoom = 1
     CAMERA.maximise = False
     MixeurAudio.set_musique(path=PATH / "assets" / "music" / "main-loop.wav")
     pygame.mouse.set_visible(True)
 
-    game = Menu_Manager(name="Atomic Bay'ttle", window=CAMERA._off_screen, background=PATH / "assets" / "menu" / "background_sheet.png")
+    game = Menu_Manager(
+        name="Atomic Bay'ttle",
+        size=Vector2(1920, 1080),
+        backend=GAME.menu_backend((1920, 1080)),
+        auto_present=False,
+        background=PATH / "assets" / "menu" / "background_sheet.png",
+    )
     game.play_effect = MixeurAudio.play_effect
     game.running = True
     game.set_font(PATH / "assets" / "menu" / "rules" / "font.ttf")
@@ -1035,7 +1047,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1189,7 +1201,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1215,7 +1227,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1241,7 +1253,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1267,7 +1279,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1293,7 +1305,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1335,7 +1347,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1377,7 +1389,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1403,7 +1415,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1429,7 +1441,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1455,7 +1467,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1497,7 +1509,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1523,7 +1535,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1549,7 +1561,7 @@ def setup_manager():
         @_text.Event(pygame.MOUSEBUTTONUP)
         def onclick(_event: pygame.event.Event):
             if (
-                _text.rect.collidepoint(pygame.mouse.get_pos())
+                _text.rect.collidepoint(game.mouse_position)
                 and _event.button == 1
                 and _text.isactive
                 and Button.check_layer(_text)
@@ -1666,10 +1678,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.left.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.left.key)
 
         return _button
 
@@ -1720,10 +1729,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.left.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.left.alias)
 
         return _button
 
@@ -1774,10 +1780,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.right.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.right.alias)
         return _button
 
     @keybind_menu.get_sprite("panel").add_sprite
@@ -1827,10 +1830,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.right.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.right.key)
 
         return _button
 
@@ -1895,10 +1895,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.up.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.up.key)
 
         return _button
 
@@ -1949,10 +1946,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.up.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.up.alias)
 
         return _button
 
@@ -2003,10 +1997,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.down.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.down.key)
 
         return _button
 
@@ -2057,10 +2048,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.down.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.down.alias)
 
         return _button
 
@@ -2125,10 +2113,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.jump.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.jump.key)
 
         return _button
 
@@ -2179,10 +2164,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.jump.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.jump.alias)
 
         return _button
 
@@ -2247,10 +2229,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.inventory.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.inventory.key)
 
         return _button
 
@@ -2301,11 +2280,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.inventory.alias].copy(
-            )
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.inventory.alias)
 
         return _button
 
@@ -2370,10 +2345,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.interact.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.interact.key)
 
         return _button
 
@@ -2424,10 +2396,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.interact.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.interact.alias)
 
         return _button
 
@@ -2492,10 +2461,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.pause.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.pause.key)
 
         return _button
 
@@ -2546,10 +2512,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.pause.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.pause.alias)
 
         return _button
 
@@ -2614,10 +2577,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.end_turn.key].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.end_turn.key)
 
         return _button
 
@@ -2668,10 +2628,7 @@ def setup_manager():
 
         @_button.Event(None)
         def animate():
-            _button.image = _button.spritesheet[Keyboard.end_turn.alias].copy()
-            if _button.active:
-                _button.image.fill(
-                    (255, 255, 255, 200 + 55 * sin(pygame.time.get_ticks() / 200)), special_flags=BLEND_RGBA_MULT)
+            animate_key_button(_button, Keyboard.end_turn.alias)
 
         return _button
 

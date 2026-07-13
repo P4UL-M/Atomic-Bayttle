@@ -13,6 +13,34 @@ from src.tools.generate_music import generator
 
 PATH = pathlib.Path(__file__).parent
 
+
+def renderer_smoke_test():
+    """Headless packaged-build check for the GL context and shader pipeline."""
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+    import moderngl
+    import pygame
+
+    from src.rendering import Renderer2D
+
+    pygame.init()
+    pygame.display.set_mode((32, 32))
+    context = moderngl.create_standalone_context(require=330)
+    framebuffer = context.simple_framebuffer((32, 32), components=4)
+    framebuffer.use()
+    renderer = Renderer2D(context, (32, 32))
+    image = pygame.Surface((1, 1), pygame.SRCALPHA)
+    image.fill("white")
+    renderer.begin_frame()
+    renderer.begin_pass((32, 32))
+    renderer.draw(image, (0, 0, 32, 32))
+    renderer.end_frame()
+    assert framebuffer.read(components=4)[0:4] == bytes((255, 255, 255, 255))
+    renderer.release()
+    framebuffer.release()
+    context.release()
+    pygame.quit()
+
 # region windows build support
 # Module multiprocessing is organized differently in Python 3.4+
 if sys.platform.startswith('win'):
@@ -47,6 +75,9 @@ if sys.platform.startswith('win'):
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
+    if "--renderer-smoke" in sys.argv:
+        renderer_smoke_test()
+        raise SystemExit(0)
     gn = generator(PATH / "assets" / "music" / "Halloween LOOP.wav")
     gn.start()
 
@@ -54,8 +85,6 @@ if __name__ == "__main__":
     tl.MixeurAudio.gn = gn
     tl.MixeurAudio.music_factor = gn.sound_factor
 
-    # import the gamew
-    import src.pygame_edit
     from src.game import Game as game
 
     try:

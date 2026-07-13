@@ -50,12 +50,11 @@ class Player(MOB):
 
     @property
     def image(self) -> pygame.Surface:
-        surf = self.manager.surface
-        if self.right_direction:
-            return surf
-        else:
-            # ! if too much loss of perf we will stock both
-            return pygame.transform.flip(surf, True, False)
+        return self.manager.surface
+
+    @property
+    def render_flip_x(self):
+        return not self.right_direction
 
     def load_team(self, team):
         # load all annimation in annimation manager

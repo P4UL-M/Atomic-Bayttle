@@ -4,20 +4,20 @@ Paul Mairesse, Axel Loones, Louis Le Meilleur, Joseph Bénard, Théo de Aranjo
 This file initializes and updates the game
 """
 from __future__ import annotations
+from typing import TYPE_CHECKING
+
 import pygame
-from pygame.locals import *
 from src.map.render_map import Map
 from src.mobs.player import Player
 from src.map.object_map import Object_map
-from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList, ScreenSize
-from src.weapons.physique import *
+from src.tools.tools import MixeurAudio, Cycle, Vector2, Keyboard, SizedList
 import src.tools.constant as tl
-from src.game_effect.cinematic import *
-from src.tools.Surface_class import SurfaceOpenGl, Surface2SurfaceOpenGl
+from src.game_effect.cinematic import Death, Respawn, Turn, TurnTransition, timeline
+from src.rendering import DamageStamp
 import time
 
 if TYPE_CHECKING:
-    from src.game import *
+    from src.game import Camera, Game
 
 GAME: Game = None
 CAMERA: Camera = None
@@ -49,7 +49,6 @@ class Partie:
 
         GAME.rcp.details.value = "in game : 2 - 2"
         GAME.rcp.time.value = self.start_time
-        CAMERA._off_screen = SurfaceOpenGl(ScreenSize.resolution())
 
     @property
     def players(self) -> list[Player]:
@@ -100,7 +99,13 @@ class Partie:
                 case tl.IMPACT:
                     collide_player = any([Vector2(player.rect.centerx - event.x, player.rect.centery - event.y).lenght < event.radius + player.rect.width // 2 for player in self.players if player.lock])
                     if not event.player_cancel or not collide_player:
-                        self.map.add_damage(Vector2(event.x, event.y), event.radius)
+                        stamp = getattr(event, "damage_stamp", None)
+                        if stamp is None:
+                            stamp = DamageStamp.circle(round(event.radius))
+                        self.map.apply_damage(
+                            Vector2(event.x, event.y), stamp, GAME.renderer,
+                            radius=event.radius,
+                        )
                     for mob in self.mobs:
                         mob.handle(event, GAME, CAMERA)
                     for obj in self.group_object:
@@ -125,22 +130,22 @@ class Partie:
         if "j1" not in names or "j2" not in names and self.timeline.current_action_type != TurnTransition:
             raise tl.EndPartie(TEAM[self.players[0].name], [name for name in TEAM.values() if name != TEAM[self.players[0].name]][0])
 
-        self.Draw()
-
     def Draw(self):
-        T1 = pygame.time.get_ticks()
-        CAMERA._off_screen.clean()
-        CAMERA._off_screen.blit(self.map.cave_bg.image, self.map.cave_bg.rect.topleft)
-        CAMERA._off_screen.blit(self.map.image, (0, 0))
-        self.mobs.draw(CAMERA._off_screen)
+        renderer = GAME.renderer
+        renderer.draw(self.map.cave_bg.image, self.map.cave_bg.rect)
+        renderer.draw(self.map.image, self.map.rect)
+        renderer.draw_group(self.mobs)
         for player in self.mobs.sprites():
             if (
                 type(player) is Player
                 and player.weapon_manager.current_weapon.visible
             ):
-                CAMERA._off_screen.blit(player.weapon_manager.current_weapon.image, player.weapon_manager.current_weapon.rect)
-        self.group_particle.draw(CAMERA._off_screen)
-        self.group_object.draw(CAMERA._off_screen)
-        CAMERA._off_screen.blit(self.map.water_manager.surface, (0, self.map.water_level))
-        CAMERA._off_screen = CAMERA._off_screen
-        print(pygame.time.get_ticks() - T1)
+                renderer.draw_sprite(player.weapon_manager.current_weapon)
+        renderer.draw_group(self.group_particle)
+        renderer.draw_group(self.group_object)
+        renderer.push_clip(self.map.rect)
+        water_rect = pygame.Rect(
+            0, round(self.map.water_level), self.map.rect.width, self.map.rect.height
+        )
+        renderer.draw(self.map.water_manager.surface, water_rect)
+        renderer.pop_clip()

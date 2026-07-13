@@ -12,6 +12,10 @@ from src.tools.constant import PATH
 
 SP = sprite_sheet(PATH / "assets" / "UI" / "numbers.png", (10, 11))
 SP.dico = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, "%": 10}
+PARTICLE_IMAGES = {
+    "particle": pygame.image.load(PATH / "assets" / "particle.png").convert_alpha(),
+    "particle_round": pygame.image.load(PATH / "assets" / "particle_round.png").convert_alpha(),
+}
 
 
 def bound(val, _min, _max):
@@ -29,12 +33,17 @@ class Particule(pygame.sprite.Sprite):
         self.gravity = gravity
         self.speed = speed
 
-        self.image = pygame.transform.scale(pygame.image.load(PATH / "assets" / f"{form}.png"), size).convert_alpha()
-        self.image = pygame.transform.rotate(self.image, random.randrange(0, 90))
+        self.image = PARTICLE_IMAGES[form]
+        self.render_angle = random.randrange(0, 90)
         li_loss = random.randrange(0, 55)
         li_teinte = pygame.Color(bound(teinte.r - random.randint(-25, 25), 0, 255), bound(teinte.g - random.randint(-25, 25), 0, 255), bound(teinte.b - random.randint(-25, 25), 0, 255))
-        self.image.fill((bound(li_teinte.r - li_loss, 0, 255), bound(li_teinte.g - li_loss, 0, 255), bound(li_teinte.b - li_loss, 0, 255)), special_flags=BLEND_RGBA_MULT)
-        self.rect = self.image.get_rect(topleft=self.position())
+        color = (
+            bound(li_teinte.r - li_loss, 0, 255),
+            bound(li_teinte.g - li_loss, 0, 255),
+            bound(li_teinte.b - li_loss, 0, 255),
+        )
+        self.render_tint = (*[channel / 255 for channel in color], 1.0)
+        self.rect = pygame.Rect(self.position(), size)
 
     def move(self, serialized):
         try:
@@ -109,11 +118,12 @@ class textParticle(pygame.sprite.Sprite):
         self.lifetime = lifetime
         self.position = position
         self.text = text
-        self.image: pygame.Surface = pygame.transform.scale(SP[text], size)
-        self.rect = self.image.get_rect(topleft=self.position)
+        self.image: pygame.Surface = SP[text]
+        self.rect = pygame.Rect(self.position, size)
         self.direction = direction
         self.speed = speed
         self.time = lifetime
+        self.render_opacity = 1.0
 
     def move(self, serialized):
         try:
@@ -133,5 +143,5 @@ class textParticle(pygame.sprite.Sprite):
             self.kill()
         else:
             self.time -= 1
-            self.image.set_alpha(self.time / self.lifetime * 255)
+            self.render_opacity = max(0.0, self.time / self.lifetime)
             self.move(serialized)

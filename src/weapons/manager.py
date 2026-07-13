@@ -71,9 +71,14 @@ class inventory:
                 j = i // 2
                 tab = [(-20, -20), (0, -35), (20, -20)]
                 for i, weapon in enumerate(self.weapon_list):
-                    img = weapon.icon.copy()
-                    img.set_alpha(255 * (1 if weapon is self.current_weapon else 0.35))
-                    CAMERA._screen_UI.blit(img, (_x - img.get_width() / 2 + tab[i][0], _y - img.get_height() / 2 + tab[i][1]))
+                    img = weapon.icon
+                    CAMERA._screen_UI.blit_scaled(
+                        img,
+                        (_x - img.get_width() / 2 + tab[i][0],
+                         _y - img.get_height() / 2 + tab[i][1],
+                         img.get_width(), img.get_height()),
+                        opacity=1.0 if weapon is self.current_weapon else 0.35,
+                    )
             else:
                 MixeurAudio.play_effect(PATH / "assets" / "sound" / "error.wav")
 

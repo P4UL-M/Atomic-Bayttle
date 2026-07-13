@@ -135,7 +135,7 @@ class animation_Manager():
             self.frame %= self.__loaded.x_nb * self.__loaded.y_nb
             if self._loaded_name in self.links:
                 self.load(self.links[self._loaded_name])
-        return self.__loaded[int(self.frame)].copy()
+        return self.__loaded[int(self.frame)]
 
     @property
     def actual_surface(self):
@@ -280,12 +280,34 @@ class Keyboard:
         json.dump(settings, open(path / "data" / "settings.json", "w"))
 
 
-class MixeurAudio:
-    pygame.mixer.set_num_channels(12)
+class _SilentMixer:
+    """No-op mixer used by headless tooling when SDL_mixer is unavailable."""
 
-    __musicMixer = pygame.mixer.music
-    __inGameMixer = pygame.mixer.Channel(1)
-    __effectMixerCallback = pygame.mixer.Channel(2)
+    def set_volume(self, *args): ...
+    def play(self, *args, **kwargs): ...
+    def load(self, *args): ...
+    def queue(self, *args, **kwargs): ...
+    def stop(self): ...
+    def get_sound(self): return None
+    def get_queue(self): return None
+    def get_busy(self): return False
+
+
+try:
+    pygame.mixer.set_num_channels(12)
+    _MUSIC_MIXER = pygame.mixer.music
+    _GAME_MIXER = pygame.mixer.Channel(1)
+    _EFFECT_MIXER = pygame.mixer.Channel(2)
+except (ImportError, NotImplementedError, pygame.error):
+    _MUSIC_MIXER = _SilentMixer()
+    _GAME_MIXER = _SilentMixer()
+    _EFFECT_MIXER = _SilentMixer()
+
+
+class MixeurAudio:
+    __musicMixer = _MUSIC_MIXER
+    __inGameMixer = _GAME_MIXER
+    __effectMixerCallback = _EFFECT_MIXER
     __listEffectChannel = []
     volume_musique = 0
     volume_effect = 0
@@ -315,10 +337,13 @@ class MixeurAudio:
         json.dump(settings, open(path / "data" / "settings.json", "w"))
 
     @staticmethod
-    def set_musique(path, loops=True):
-        print(MixeurAudio.volume_musique)
+    def set_musique(path, loops=True, queue=False):
         MixeurAudio.__musicMixer.set_volume(MixeurAudio.volume_musique)
-        MixeurAudio.__musicMixer.play(pygame.mixer.Sound(path), -1 if loops else 0)
+        if queue:
+            MixeurAudio.__musicMixer.queue(str(path), loops=-1 if loops else 0)
+        else:
+            MixeurAudio.__musicMixer.load(str(path))
+            MixeurAudio.__musicMixer.play(-1 if loops else 0)
 
     @staticmethod
     def update_musique():
