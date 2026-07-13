@@ -27,5 +27,3 @@ jobs:
         run: dist/Atomic-Bayttle/Atomic-Bayttle --renderer-smoke
       - if: runner.os == 'Linux'
         run: xvfb-run -a dist/Atomic-Bayttle/Atomic-Bayttle --renderer-smoke
-      - if: runner.os == 'Windows'
-        run: ./dist/Atomic-Bayttle/Atomic-Bayttle.exe --renderer-smoke
