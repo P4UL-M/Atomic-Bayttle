@@ -1,4 +1,5 @@
 import moderngl
+import pytest
 
 from pygame_easy_menu import ModernGLBackend
 
@@ -6,7 +7,10 @@ import src.menu_main as menu_main
 
 
 def test_main_menu_renders_natively_in_shared_context(monkeypatch):
-    context = moderngl.create_standalone_context(require=330)
+    try:
+        context = moderngl.create_standalone_context(require=330)
+    except Exception as error:
+        pytest.skip(f"OpenGL 3.3 context unavailable on this runner: {error}")
     framebuffer = context.simple_framebuffer((320, 180), components=4)
     framebuffer.use()
 
