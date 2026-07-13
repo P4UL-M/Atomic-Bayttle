@@ -277,7 +277,7 @@ class WEAPON(pygame.sprite.Sprite):
         ...
 
 
-@ add_weapon
+@add_weapon
 class Auto(WEAPON):
     """
     Auto riffle as a child class of WEAPON
@@ -315,7 +315,7 @@ class Auto(WEAPON):
         return super().update(pos, right, angle, lock, CAMERA)
 
 
-@ add_weapon
+@add_weapon
 class Launcher(WEAPON):
     """
     Launcher as a child class of WEAPON
@@ -402,7 +402,7 @@ class Launcher(WEAPON):
         return super().update(pos, right, angle, lock, CAMERA)
 
 
-@ add_weapon
+@add_weapon
 class Chainsaw(WEAPON):
     def __init__(self, team) -> None:
         self.rayon = 35

@@ -41,6 +41,7 @@ def renderer_smoke_test():
     context.release()
     pygame.quit()
 
+
 # region windows build support
 # Module multiprocessing is organized differently in Python 3.4+
 if sys.platform.startswith('win'):
